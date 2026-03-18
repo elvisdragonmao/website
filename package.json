@@ -7,6 +7,7 @@
 		"dev": "astro dev",
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
+		"prepare": "husky",
 		"preview": "astro preview"
 	},
 	"dependencies": {
@@ -17,6 +18,7 @@
 		"three": "^0.133.0"
 	},
 	"devDependencies": {
+		"husky": "^9.1.7",
 		"prettier": "^3.8.1",
 		"prettier-plugin-astro": "^0.14.1",
 		"prettier-plugin-organize-imports": "^4.3.0",
