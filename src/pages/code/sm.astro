@@ -1,0 +1,125 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-Hant">
+	<head>
+		<Head path="code/sm" title="Simple Text Display | 毛哥EM的基地" description="簡單的文字顯示" theme="#585379" />
+		<style is:global>
+			body {
+				background: #faf3eb;
+				color: #585379;
+				font-family: sans-serif;
+				height: 100vh;
+				margin: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			* {
+				outline: transparent;
+				border: none;
+			}
+			.ctrl {
+				position: fixed;
+				justify-content: center;
+				display: flex;
+				width: 100vw;
+				gap: 10px;
+				top: 0;
+				padding-top: 10px;
+			}
+			.ctrl:hover svg {
+				opacity: 1;
+			}
+			.text {
+				text-align: center;
+			}
+			svg {
+				width: 30px;
+				height: 30px;
+				cursor: pointer;
+				fill: #6e6a86;
+				transition: 0.2s;
+				opacity: 0;
+			}
+			@media (prefers-color-scheme: dark) {
+				body {
+					background: #1a1825;
+					color: #deddf4;
+				}
+				svg {
+					fill: #9893a5;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="ctrl">
+			<svg id="expend" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+				<path
+					d="M128 96C110.3 96 96 110.3 96 128L96 224C96 241.7 110.3 256 128 256C145.7 256 160 241.7 160 224L160 160L224 160C241.7 160 256 145.7 256 128C256 110.3 241.7 96 224 96L128 96zM160 416C160 398.3 145.7 384 128 384C110.3 384 96 398.3 96 416L96 512C96 529.7 110.3 544 128 544L224 544C241.7 544 256 529.7 256 512C256 494.3 241.7 480 224 480L160 480L160 416zM416 96C398.3 96 384 110.3 384 128C384 145.7 398.3 160 416 160L480 160L480 224C480 241.7 494.3 256 512 256C529.7 256 544 241.7 544 224L544 128C544 110.3 529.7 96 512 96L416 96zM544 416C544 398.3 529.7 384 512 384C494.3 384 480 398.3 480 416L480 480L416 480C398.3 480 384 494.3 384 512C384 529.7 398.3 544 416 544L512 544C529.7 544 544 529.7 544 512L544 416z"
+				>
+				</path>
+			</svg>
+			<svg id="copy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+				<path
+					d="M451.5 160C434.9 160 418.8 164.5 404.7 172.7C388.9 156.7 370.5 143.3 350.2 133.2C378.4 109.2 414.3 96 451.5 96C537.9 96 608 166 608 252.5C608 294 591.5 333.8 562.2 363.1L491.1 434.2C461.8 463.5 422 480 380.5 480C294.1 480 224 410 224 323.5C224 322 224 320.5 224.1 319C224.6 301.3 239.3 287.4 257 287.9C274.7 288.4 288.6 303.1 288.1 320.8C288.1 321.7 288.1 322.6 288.1 323.4C288.1 374.5 329.5 415.9 380.6 415.9C405.1 415.9 428.6 406.2 446 388.8L517.1 317.7C534.4 300.4 544.2 276.8 544.2 252.3C544.2 201.2 502.8 159.8 451.7 159.8zM307.2 237.3C305.3 236.5 303.4 235.4 301.7 234.2C289.1 227.7 274.7 224 259.6 224C235.1 224 211.6 233.7 194.2 251.1L123.1 322.2C105.8 339.5 96 363.1 96 387.6C96 438.7 137.4 480.1 188.5 480.1C205 480.1 221.1 475.7 235.2 467.5C251 483.5 269.4 496.9 289.8 507C261.6 530.9 225.8 544.2 188.5 544.2C102.1 544.2 32 474.2 32 387.7C32 346.2 48.5 306.4 77.8 277.1L148.9 206C178.2 176.7 218 160.2 259.5 160.2C346.1 160.2 416 230.8 416 317.1C416 318.4 416 319.7 416 321C415.6 338.7 400.9 352.6 383.2 352.2C365.5 351.8 351.6 337.1 352 319.4C352 318.6 352 317.9 352 317.1C352 283.4 334 253.8 307.2 237.5z"
+				>
+				</path>
+			</svg>
+		</div>
+		<div contenteditable class="text"></div>
+		<script is:inline>
+			const text = document.querySelector(".text");
+			text.innerHTML = new URLSearchParams(window.location.search).get("text");
+			const fill = () => {
+				const url = new URL(window.location);
+				url.searchParams.set("text", text.innerText);
+				window.history.replaceState({}, "", url);
+				let fontSize = window.innerHeight;
+				document.body.style.fontSize = fontSize + "px";
+				while (text.scrollWidth > window.innerWidth - 32 || text.scrollHeight > window.innerHeight) {
+					fontSize--;
+					document.body.style.fontSize = fontSize + "px";
+				}
+			};
+
+			window.addEventListener("resize", fill);
+			window.addEventListener("input", fill);
+
+			fill();
+			text.focus();
+
+			window.addEventListener("keydown", () => {
+				text.focus();
+			});
+
+			const copy = document.getElementById("copy");
+			copy.addEventListener("click", () => {
+				navigator.clipboard
+					.writeText(window.location.href)
+					.then(() => {
+						copy.style.fill = "#4caf50";
+						setTimeout(() => {
+							copy.style.fill = "";
+						}, 1000);
+					})
+					.catch(() => {
+						copy.style.fill = "#f44336";
+						setTimeout(() => {
+							copy.style.fill = "";
+						}, 1000);
+					});
+			});
+
+			document.getElementById("expend").addEventListener("click", () => {
+				if (document.fullscreenElement) {
+					document.exitFullscreen();
+				} else {
+					document.documentElement.requestFullscreen();
+				}
+			});
+		</script>
+	</body>
+</html>
