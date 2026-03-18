@@ -1,7 +1,7 @@
 // @ts-check
-import { defineConfig } from "astro/config";
-import { i18n, filterSitemapByDefaultLocale } from "astro-i18n-aut/integration";
 import sitemap from "@astrojs/sitemap";
+import { filterSitemapByDefaultLocale, i18n } from "astro-i18n-aut/integration";
+import { defineConfig } from "astro/config";
 
 const defaultLocale = "en";
 const locales = {

@@ -229,9 +229,9 @@ import Head from "@components/Head.astro";
 				void 0 !== currentTouchF && (tare.style.webkitTransform = "rotateX(" + 60 * currentTouchF.force + "deg)");
 			}
 			function tareTouchStart(e) {
-				(e.preventDefault(), (currentTouchF = e.touches[0]), (tareForce = e.touches[0].force));
+				e.preventDefault(), (currentTouchF = e.touches[0]), (tareForce = e.touches[0].force);
 			}
-			(setInterval(transformTare, 10), tare.addEventListener("touchstart", tareTouchStart, !1));
+			setInterval(transformTare, 10), tare.addEventListener("touchstart", tareTouchStart, !1);
 			var currentTouch,
 				weight = document.getElementById("weight"),
 				forceConversions = [0.8, 1, 1.2],
@@ -244,45 +244,45 @@ import Head from "@components/Head.astro";
 				touches = {},
 				force = 0;
 			document.getElementById("sense").onchange = function (e) {
-				((fcIndex = this.selectedIndex), (document.cookie = "fc=" + fcIndex));
+				(fcIndex = this.selectedIndex), (document.cookie = "fc=" + fcIndex);
 			};
 			var fcCookie = ("; " + document.cookie).split("; fc=").pop().split(";").shift();
 			function onForceStart(e) {
-				((currentTouch = e.touches[0]), (numTouches = e.touches.length));
+				(currentTouch = e.touches[0]), (numTouches = e.touches.length);
 			}
 			function onForceMove(e) {
-				(e.preventDefault(), (currentTouch = e.touches[0]), (numTouches = e.touches.length));
+				e.preventDefault(), (currentTouch = e.touches[0]), (numTouches = e.touches.length);
 			}
 			function onForceEnded(e) {
-				(e.preventDefault(),
+				e.preventDefault(),
 					setTimeout(function () {
-						((currentTouch = void 0), (force = 0), delete touches[e.changedTouches[0].identifier]);
+						(currentTouch = void 0), (force = 0), delete touches[e.changedTouches[0].identifier];
 					}, 2),
-					(numTouches = e.touches.length));
+					(numTouches = e.touches.length);
 			}
 			function onForceChange(e) {
-				(e.preventDefault(), (currentTouch = e.changedTouches[0]));
+				e.preventDefault(), (currentTouch = e.changedTouches[0]);
 				for (var c = (force = 0); c < e.changedTouches.length; c++) touches[e.changedTouches[c].identifier] = e.changedTouches[c].force;
 				for (var t in ((numTouches = Object.keys(touches).length), touches)) touches.hasOwnProperty(t) && (force += touches[t]);
 			}
 			function weigh(e) {
 				var c = 405.257 * (e - tareForce) * forceConversions[fcIndex] + 2.056 * forceConversions[fcIndex];
-				return (c < 12 && (c -= 2.056 * forceConversions[fcIndex]), c.toFixed(2));
+				return c < 12 && (c -= 2.056 * forceConversions[fcIndex]), c.toFixed(2);
 			}
 			function updateForce() {
-				((warning.style.display = 1 < numTouches ? "inline-block" : "none"),
+				(warning.style.display = 1 < numTouches ? "inline-block" : "none"),
 					(circle2.style.height = (force / numTouches) * 345 + "px"),
 					(circle2.style.width = (force / numTouches) * 345 + "px"),
-					(document.getElementById("container").style.webkitTransform = "rotateX(" + (force / numTouches) * -20 + "deg) scale(" + (1 - (force / numTouches) * 0.06) + ")"));
+					(document.getElementById("container").style.webkitTransform = "rotateX(" + (force / numTouches) * -20 + "deg) scale(" + (1 - (force / numTouches) * 0.06) + ")");
 				var e = (force / numTouches) * 5 + "px";
-				(0 < force && (document.body.style.boxShadow = "0px 0px  15px " + e + " rgba(0, 0, 0, 0.333) inset"), (weight.innerHTML = weigh(force) + "g"));
+				0 < force && (document.body.style.boxShadow = "0px 0px  15px " + e + " rgba(0, 0, 0, 0.333) inset"), (weight.innerHTML = weigh(force) + "g");
 			}
-			((fcIndex = "" == fcCookie ? fcIndex : +fcCookie), (document.getElementById("sense").selectedIndex = fcIndex), setInterval(updateForce, 1));
+			(fcIndex = "" == fcCookie ? fcIndex : +fcCookie), (document.getElementById("sense").selectedIndex = fcIndex), setInterval(updateForce, 1);
 			var circle = document.getElementById("circle");
-			(circle.addEventListener("touchmove", onForceMove, !1),
+			circle.addEventListener("touchmove", onForceMove, !1),
 				circle.addEventListener("touchstart", onForceStart, !1),
 				circle.addEventListener("touchend", onForceEnded, !1),
-				circle.addEventListener("touchforcechange", onForceChange, !1));
+				circle.addEventListener("touchforcechange", onForceChange, !1);
 		</script>
 	</body>
 </html>

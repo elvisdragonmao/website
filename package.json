@@ -1,23 +1,26 @@
 {
-	"name": "site",
+	"name": "website",
 	"type": "module",
-	"version": "0.0.1",
 	"scripts": {
-		"dev": "astro dev",
+		"astro": "astro",
 		"build": "astro build",
-		"preview": "astro preview",
-		"astro": "astro"
+		"dev": "astro dev",
+		"format": "prettier --write .",
+		"lint": "prettier --check .",
+		"preview": "astro preview"
 	},
 	"dependencies": {
-		"@astrojs/sitemap": "^3.4.0",
-		"astro": "^5.7.10",
+		"@astrojs/sitemap": "^3.7.1",
+		"astro": "^6.0.5",
 		"astro-i18n-aut": "^0.7.3",
 		"html2canvas": "^1.4.1",
 		"three": "^0.133.0"
 	},
-	"packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f",
 	"devDependencies": {
 		"prettier": "3.5.3",
-		"prettier-plugin-astro": "^0.14.1"
-	}
+		"prettier-plugin-astro": "^0.14.1",
+		"prettier-plugin-organize-imports": "^4.3.0",
+		"prettier-plugin-packagejson": "^3.0.2"
+	},
+	"packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be"
 }

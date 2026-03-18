@@ -3,11 +3,11 @@
 // import "./style.css";
 import * as THREE from "three";
 //import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 import { AsciiEffect } from "three/examples/jsm/effects/AsciiEffect.js";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 //import html2canvas from "html2canvas";
-import { local } from "@i18n";
 import EMModelURL from "@assets/intro/EM.stl?url";
+import { local } from "@i18n";
 
 const MUCH =
 	{
