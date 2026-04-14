@@ -822,6 +822,7 @@ import Head from "@components/Head.astro";
 						<div class="card card-dark">
 							<h2>時間軸</h2>
 							<div id="timelineChart" class="chart"></div>
+							<div class="footer-note">滾輪縮放，拖曳平移，按住 Shift 再滾輪可左右移動。</div>
 						</div>
 						<div class="card card-dark">
 							<h2>各 App 總使用時間</h2>
@@ -1253,6 +1254,17 @@ import Head from "@components/Head.astro";
 							}
 						},
 						grid: { left: 90, right: 20, top: 20, bottom: 50 },
+						dataZoom: [
+							{
+								type: "inside",
+								xAxisIndex: 0,
+								filterMode: "weakFilter",
+								zoomOnMouseWheel: true,
+								moveOnMouseMove: true,
+								moveOnMouseWheel: "shift",
+								preventDefaultMouseMove: true
+							}
+						],
 						xAxis: {
 							min: startMs,
 							max: endMs,
