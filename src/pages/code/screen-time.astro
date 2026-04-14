@@ -7,75 +7,149 @@ import Head from "@components/Head.astro";
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>macOS App Usage Dashboard</title>
-		<Head path="code/clock" title="macOS App Usage Dashboard | 毛哥EM的基地" description="大字體數位時鐘與漸層文字" theme="#1C1C2B" />
+		<title>macOS 螢幕使用時間分析</title>
+		<Head path="code/screen-time" title="macOS 螢幕使用時間分析 | 毛哥EM的基地" description="匯出並視覺化 macOS knowledgeC.db 的 App 使用紀錄，查看每日 sessions、時間軸與摘要統計。" theme="#1d1d1f" />
 		<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
-		<style>
+		<style is:global>
 			:root {
-				--bg: #0b1020;
-				--panel: #121933;
-				--panel-2: #182243;
-				--text: #eef2ff;
-				--muted: #a8b1d1;
-				--line: #2a3768;
-				--accent: #7aa2ff;
-				--good: #7ee787;
-				--warn: #ffcc66;
-				--bad: #ff7b72;
-				--shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
-				--radius: 18px;
+				color-scheme: light;
+				--bg: #f5f5f7;
+				--surface: #ffffff;
+				--surface-subtle: #fafafc;
+				--surface-dark: #000000;
+				--text: #1d1d1f;
+				--text-soft: rgba(29, 29, 31, 0.72);
+				--text-faint: rgba(29, 29, 31, 0.48);
+				--text-dark: #ffffff;
+				--text-dark-soft: rgba(255, 255, 255, 0.76);
+				--line: rgba(29, 29, 31, 0.08);
+				--line-dark: rgba(255, 255, 255, 0.14);
+				--accent: #0071e3;
+				--accent-hover: #0077ed;
+				--link: #0066cc;
+				--link-dark: #2997ff;
+				--good: #2d7d46;
+				--warn: #b26b00;
+				--bad: #c9342c;
+				--radius: 12px;
+				--pill-radius: 980px;
 			}
 
 			* {
 				box-sizing: border-box;
 			}
 
+			html {
+				background: var(--bg);
+			}
+
 			body {
 				margin: 0;
 				font-family:
-					Inter,
-					ui-sans-serif,
-					system-ui,
+					"SF Pro Text",
+					"SF Pro Display",
 					-apple-system,
 					BlinkMacSystemFont,
-					"Segoe UI",
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
 					sans-serif;
-				background: radial-gradient(circle at top left, rgba(122, 162, 255, 0.18), transparent 32%), radial-gradient(circle at top right, rgba(126, 231, 135, 0.12), transparent 22%), var(--bg);
+				-webkit-font-smoothing: antialiased;
+				background: var(--bg);
 				color: var(--text);
 				min-height: 100vh;
 			}
 
 			.wrap {
-				max-width: 1500px;
+				max-width: 1480px;
 				margin: 0 auto;
-				padding: 24px;
+				padding: 32px 24px 48px;
 			}
 
 			.hero {
 				display: grid;
-				grid-template-columns: 1.5fr 1fr;
-				gap: 20px;
-				margin-bottom: 20px;
+				grid-template-columns: minmax(0, 1.65fr) minmax(320px, 1fr);
+				gap: 18px;
+				margin-bottom: 24px;
 			}
 
 			.card {
-				background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
-				border: 1px solid var(--line);
+				background: var(--surface);
 				border-radius: var(--radius);
-				box-shadow: var(--shadow);
-				padding: 20px;
+				box-shadow: inset 0 0 0 1px var(--line);
+				min-width: 0;
+				padding: 28px;
+			}
+
+			.hero > *,
+			.grid > *,
+			.charts-2 > *,
+			.inline > *,
+			.content-grid,
+			.controls {
+				min-width: 0;
+			}
+
+			.hero-primary {
+				background: #1d1d1f;
+				color: var(--text-dark);
+				display: grid;
+				place-items: center;
+				min-height: 360px;
+				text-align: center;
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+			}
+
+			.hero-primary .title {
+				max-width: 12ch;
+				line-height: 120%;
+			}
+
+			.hero-primary .subtitle {
+				color: var(--text-dark-soft);
+				max-width: 40rem;
+			}
+
+			.hero-primary .mono {
+				color: var(--text-dark);
+			}
+
+			.hero-primary .pill-row {
+				justify-content: center;
+			}
+
+			.hero-secondary {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+			}
+
+			.hero-secondary .subtitle {
+				max-width: none;
 			}
 
 			.title {
-				font-size: 32px;
-				font-weight: 800;
-				margin: 0 0 8px;
-				letter-spacing: -0.02em;
+				font-family:
+					"SF Pro Display",
+					"SF Pro Text",
+					-apple-system,
+					BlinkMacSystemFont,
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
+					sans-serif;
+				font-size: clamp(2.5rem, 4vw, 3.5rem);
+				font-weight: 600;
+				margin: 0 0 12px;
+				line-height: 1.07;
+				letter-spacing: -0.028em;
 			}
 
 			.subtitle {
-				color: var(--muted);
-				line-height: 1.6;
+				color: var(--text-soft);
+				font-size: 17px;
+				line-height: 1.47;
+				letter-spacing: -0.022em;
 				margin: 0;
 			}
 
@@ -83,60 +157,99 @@ import Head from "@components/Head.astro";
 				display: flex;
 				flex-wrap: wrap;
 				gap: 10px;
-				margin-top: 16px;
+				margin-top: 24px;
 			}
 
 			.pill {
-				padding: 8px 12px;
-				border-radius: 999px;
-				background: rgba(122, 162, 255, 0.1);
-				border: 1px solid rgba(122, 162, 255, 0.25);
-				color: #dfe8ff;
-				font-size: 13px;
+				padding: 8px 14px;
+				border-radius: var(--pill-radius);
+				background: rgba(255, 255, 255, 0.06);
+				border: 1px solid rgba(255, 255, 255, 0.14);
+				color: var(--text-dark-soft);
+				font-size: 12px;
+				line-height: 1.33;
+				letter-spacing: -0.01em;
 			}
 
 			h2 {
-				margin: 0 0 14px;
-				font-size: 18px;
+				font-family:
+					"SF Pro Display",
+					"SF Pro Text",
+					-apple-system,
+					BlinkMacSystemFont,
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
+					sans-serif;
+				margin: 0 0 16px;
+				font-size: clamp(1.6rem, 2vw, 2.125rem);
+				font-weight: 600;
+				line-height: 1.14;
+				letter-spacing: -0.024em;
+				color: inherit;
 			}
 
 			h3 {
 				margin: 0 0 10px;
-				font-size: 16px;
+				font-size: 21px;
+				font-weight: 600;
+				line-height: 1.19;
+				letter-spacing: -0.014em;
 			}
 
 			.grid {
 				display: grid;
-				grid-template-columns: 360px 1fr;
-				gap: 20px;
+				grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
+				gap: 18px;
 				align-items: start;
 			}
 
 			.controls {
 				display: grid;
-				gap: 16px;
+				gap: 18px;
 				position: sticky;
-				top: 18px;
+				top: 24px;
 			}
 
 			label {
 				display: block;
-				font-size: 13px;
-				color: var(--muted);
+				font-size: 12px;
+				font-weight: 600;
+				line-height: 1.33;
+				letter-spacing: -0.01em;
+				color: var(--text-soft);
 				margin-bottom: 8px;
 			}
 
 			input,
 			select,
-			button,
 			textarea {
 				width: 100%;
-				border: 1px solid var(--line);
-				background: var(--panel-2);
+				border: 1px solid transparent;
+				background: var(--surface-subtle);
 				color: var(--text);
-				border-radius: 12px;
-				padding: 11px 12px;
+				border-radius: 11px;
+				padding: 12px 14px;
 				font: inherit;
+				box-shadow: inset 0 0 0 1px var(--line);
+				outline: none;
+				transition:
+					box-shadow 0.15s ease,
+					background-color 0.15s ease;
+			}
+
+			input::placeholder,
+			textarea::placeholder {
+				color: var(--text-faint);
+			}
+
+			input:focus,
+			select:focus,
+			textarea:focus {
+				background: #ffffff;
+				box-shadow:
+					inset 0 0 0 1px rgba(0, 113, 227, 0.42),
+					0 0 0 2px rgba(0, 113, 227, 0.18);
 			}
 
 			textarea {
@@ -146,28 +259,74 @@ import Head from "@components/Head.astro";
 				line-height: 1.5;
 			}
 
-			button {
-				cursor: pointer;
-				background: linear-gradient(180deg, #7aa2ff, #4e79e6);
+			input[type="file"] {
+				padding: 0;
+				background: transparent;
+				box-shadow: none;
+			}
+
+			input[type="file"]::file-selector-button {
 				border: 0;
-				color: white;
-				font-weight: 700;
+				margin-right: 12px;
+				border-radius: var(--pill-radius);
+				background: var(--accent);
+				color: #ffffff;
+				font: inherit;
+				padding: 10px 16px;
+				cursor: pointer;
+				transition: background-color 0.12s ease;
+			}
+
+			input[type="file"]::file-selector-button:hover {
+				background: var(--accent-hover);
+			}
+
+			button {
+				min-width: 128px;
+				width: auto;
+				cursor: pointer;
+				background: var(--accent);
+				border: 1px solid transparent;
+				color: #ffffff;
+				border-radius: var(--pill-radius);
+				padding: 12px 18px;
+				font-size: 17px;
+				font-weight: 400;
+				line-height: 1;
+				letter-spacing: -0.022em;
 				transition:
 					transform 0.12s ease,
-					opacity 0.12s ease;
+					background-color 0.12s ease,
+					color 0.12s ease,
+					border-color 0.12s ease;
 			}
 
 			button:hover {
 				transform: translateY(-1px);
+				background: var(--accent-hover);
 			}
+
+			button:active {
+				transform: translateY(0);
+			}
+
+			button:focus-visible {
+				outline: 2px solid var(--accent);
+				outline-offset: 2px;
+			}
+
 			button.secondary {
-				background: var(--panel-2);
-				border: 1px solid var(--line);
-				color: var(--text);
+				background: transparent;
+				border-color: rgba(0, 102, 204, 0.22);
+				color: var(--link);
+			}
+
+			button.secondary:hover {
+				background: rgba(0, 102, 204, 0.05);
 			}
 
 			.muted {
-				color: var(--muted);
+				color: var(--text-soft);
 			}
 			.small {
 				font-size: 12px;
@@ -190,39 +349,77 @@ import Head from "@components/Head.astro";
 
 			.stats {
 				display: grid;
-				grid-template-columns: repeat(4, 1fr);
-				gap: 14px;
+				grid-template-columns: repeat(4, minmax(0, 1fr));
+				gap: 12px;
 				margin-bottom: 20px;
 			}
 
 			.stat {
-				background: rgba(255, 255, 255, 0.03);
-				border: 1px solid var(--line);
-				border-radius: 16px;
-				padding: 16px;
+				background: var(--surface-subtle);
+				border-radius: 12px;
+				padding: 18px;
+				box-shadow: inset 0 0 0 1px var(--line);
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
 			}
 
 			.stat .k {
-				color: var(--muted);
+				color: var(--text-soft);
 				font-size: 12px;
+				font-weight: 600;
+				line-height: 1.33;
+				letter-spacing: -0.01em;
 				margin-bottom: 8px;
 			}
 
 			.stat .v {
-				font-size: 28px;
-				font-weight: 800;
+				font-family:
+					"SF Pro Display",
+					"SF Pro Text",
+					-apple-system,
+					BlinkMacSystemFont,
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
+					sans-serif;
+				font-size: clamp(1.9rem, 3vw, 2.5rem);
+				font-weight: 600;
+				line-height: 1.07;
 				letter-spacing: -0.03em;
+			}
+
+			#statDate {
+				font-size: clamp(1.5rem, 2vw, 2rem);
 			}
 
 			.content-grid {
 				display: grid;
-				gap: 20px;
+				gap: 18px;
 			}
 
 			.charts-2 {
 				display: grid;
-				grid-template-columns: 1.2fr 0.8fr;
-				gap: 20px;
+				grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+				gap: 18px;
+			}
+
+			.card-dark {
+				background: var(--surface-dark);
+				color: var(--text-dark);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+			}
+
+			.card-dark .subtitle,
+			.card-dark .muted,
+			.card-dark .footer-note,
+			.card-dark label {
+				color: var(--text-dark-soft);
+			}
+
+			.card-dark button.secondary {
+				color: var(--link-dark);
+				border-color: rgba(41, 151, 255, 0.24);
 			}
 
 			.chart {
@@ -232,35 +429,50 @@ import Head from "@components/Head.astro";
 
 			.table-wrap {
 				overflow: auto;
-				border: 1px solid var(--line);
-				border-radius: 14px;
+				max-width: 100%;
+				border-radius: 12px;
+				background: var(--surface-subtle);
+				box-shadow: inset 0 0 0 1px var(--line);
+			}
+
+			.table-wrap-scroll {
+				max-height: 500px;
 			}
 
 			table {
 				width: 100%;
-				border-collapse: collapse;
+				border-collapse: separate;
+				border-spacing: 0;
 				min-width: 760px;
 			}
 
 			th,
 			td {
-				padding: 12px 14px;
-				border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+				padding: 14px 16px;
+				border-bottom: 1px solid var(--line);
 				text-align: left;
 				vertical-align: top;
 				font-size: 14px;
+				line-height: 1.43;
+				letter-spacing: -0.016em;
 			}
 
 			th {
 				position: sticky;
 				top: 0;
-				background: #121933;
+				background: rgba(250, 250, 252, 0.92);
+				backdrop-filter: saturate(180%) blur(20px);
 				z-index: 1;
-				color: #dfe8ff;
+				color: rgba(29, 29, 31, 0.72);
+				font-weight: 600;
+			}
+
+			tbody tr:last-child td {
+				border-bottom: 0;
 			}
 
 			tr:hover td {
-				background: rgba(122, 162, 255, 0.06);
+				background: rgba(0, 113, 227, 0.04);
 			}
 
 			code,
@@ -272,38 +484,42 @@ import Head from "@components/Head.astro";
 				margin: 0;
 				white-space: pre-wrap;
 				word-break: break-word;
-				background: #09101f;
-				border: 1px solid var(--line);
-				border-radius: 14px;
-				padding: 14px;
+				background: var(--surface-subtle);
+				box-shadow: inset 0 0 0 1px var(--line);
+				border-radius: 12px;
+				padding: 16px;
 				line-height: 1.5;
-				color: #dbe5ff;
+				color: var(--text);
+				overflow: auto;
+				font-size: 12px;
 			}
 
 			.section-actions {
 				display: flex;
 				gap: 10px;
 				flex-wrap: wrap;
-				margin-top: 12px;
+				justify-content: center;
+				margin-top: 14px;
 			}
 
 			.file-input {
 				padding: 12px;
-				border: 1px dashed var(--line);
-				border-radius: 14px;
-				background: rgba(255, 255, 255, 0.02);
+				border-radius: 12px;
+				background: var(--surface-subtle);
+				box-shadow: inset 0 0 0 1px var(--line);
 			}
 
 			details {
-				border: 1px solid var(--line);
-				border-radius: 14px;
-				padding: 14px;
-				background: rgba(255, 255, 255, 0.02);
+				border-radius: 12px;
+				padding: 16px;
+				background: var(--surface-subtle);
+				box-shadow: inset 0 0 0 1px var(--line);
 			}
 
 			summary {
 				cursor: pointer;
-				font-weight: 700;
+				font-weight: 600;
+				line-height: 1.24;
 			}
 
 			.ok {
@@ -319,8 +535,96 @@ import Head from "@components/Head.astro";
 			.footer-note {
 				margin-top: 16px;
 				font-size: 12px;
-				color: var(--muted);
-				line-height: 1.7;
+				color: var(--text-soft);
+				line-height: 1.5;
+				letter-spacing: -0.01em;
+			}
+
+			.page-footer {
+				margin-top: 28px;
+				padding: 8px 4px 0;
+				font-size: 12px;
+				color: var(--text-soft);
+				line-height: 1.5;
+				letter-spacing: -0.01em;
+				text-align: center;
+			}
+
+			.page-footer a {
+				color: var(--link);
+				text-decoration: none;
+			}
+
+			.page-footer a:hover {
+				text-decoration: underline;
+			}
+
+			.drag-overlay {
+				position: fixed;
+				inset: 20px;
+				z-index: 50;
+				display: grid;
+				place-items: center;
+				padding: 24px;
+				border-radius: 20px;
+				border: 2px dashed rgba(0, 113, 227, 0.34);
+				background: rgba(245, 245, 247, 0.88);
+				backdrop-filter: saturate(180%) blur(20px);
+				color: var(--text);
+				text-align: center;
+				pointer-events: none;
+				opacity: 0;
+				visibility: hidden;
+				transform: scale(0.985);
+				transition:
+					opacity 0.16s ease,
+					visibility 0.16s ease,
+					transform 0.16s ease;
+			}
+
+			.drag-overlay strong {
+				display: block;
+				margin-bottom: 8px;
+				font-family:
+					"SF Pro Display",
+					"SF Pro Text",
+					-apple-system,
+					BlinkMacSystemFont,
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
+					sans-serif;
+				font-size: clamp(1.6rem, 3vw, 2.25rem);
+				font-weight: 600;
+				line-height: 1.14;
+				letter-spacing: -0.024em;
+			}
+
+			.drag-overlay span {
+				font-size: 14px;
+				line-height: 1.43;
+				letter-spacing: -0.016em;
+				color: var(--text-soft);
+			}
+
+			body.is-file-dragging .drag-overlay {
+				opacity: 1;
+				visibility: visible;
+				transform: scale(1);
+			}
+
+			::-webkit-scrollbar {
+				height: 10px;
+				width: 10px;
+			}
+
+			::-webkit-scrollbar-thumb {
+				background: rgba(29, 29, 31, 0.18);
+				border-radius: 999px;
+			}
+
+			::-webkit-scrollbar-track {
+				background: transparent;
 			}
 
 			@media (max-width: 1100px) {
@@ -333,39 +637,78 @@ import Head from "@components/Head.astro";
 				.controls {
 					position: static;
 				}
+				.hero-primary {
+					min-height: auto;
+				}
 				.chart {
 					height: 360px;
+				}
+			}
+
+			@media (max-width: 720px) {
+				.wrap {
+					padding: 20px 16px 32px;
+				}
+
+				.card {
+					padding: 22px;
+				}
+
+				.inline,
+				.triple,
+				.stats {
+					grid-template-columns: 1fr;
+				}
+
+				.section-actions button {
+					width: 100%;
+				}
+
+				.drag-overlay {
+					inset: 12px;
+					padding: 20px;
+				}
+
+				table {
+					min-width: 560px;
+				}
+			}
+
+			@media (max-width: 420px) {
+				table {
+					min-width: 480px;
 				}
 			}
 		</style>
 	</head>
 	<body>
+		<div id="dropOverlay" class="drag-overlay" aria-hidden="true">
+			<div>
+				<strong>拖曳 .json 到這裡</strong>
+				<span>放開滑鼠後會直接載入並更新分析結果。</span>
+			</div>
+		</div>
 		<div class="wrap">
 			<section class="hero">
-				<div class="card">
-					<h1 class="title">macOS App Usage Dashboard</h1>
+				<div class="card hero-primary">
+					<h1 class="title">macOS 螢幕使用時間分析</h1>
 					<p class="subtitle">
 						匯出 <span class="mono">knowledgeC.db</span> 裡的 <span class="mono">/app/usage</span> 資料成 JSON， 再把檔案拖進這個頁面，就能看某天用了哪些 App、多長時間、什麼時間切換，以及簡單的統計分析。
 					</p>
 					<div class="pill-row">
-						<span class="pill">單檔 HTML</span>
-						<span class="pill">本地端運作</span>
-						<span class="pill">Apache ECharts</span>
-						<span class="pill">可上傳 JSON</span>
+						<span class="pill">不上傳資料</span>
 						<span class="pill">可依日期篩選</span>
 					</div>
 				</div>
-				<div class="card">
+				<div class="card hero-secondary">
 					<h2>使用流程</h2>
 					<ol class="subtitle" style="padding-left: 20px; margin: 0;">
 						<li>在 Terminal 安裝 sqlite3。</li>
 						<li>執行頁面裡提供的 bash 指令，把資料匯出到桌面。</li>
-						<li>把桌面的 JSON 檔拖進這個頁面。</li>
+						<li>把桌面的 JSON 拖曳到這個頁面任意地方。</li>
 						<li>選日期、過濾短 session、搜尋 App。</li>
 					</ol>
-					<div class="footer-note">
-						建議格式：<span class="mono">JSON</span>。對 bash、JavaScript、ECharts 都最好處理，也方便之後再轉 CSV。
-					</div>
+					<div class="footer-note">毛哥EM 製作。不上傳任何資料到伺服器，所有處理都在瀏覽器本地進行。</div>
 				</div>
 			</section>
 
@@ -381,6 +724,7 @@ import Head from "@components/Head.astro";
 						</div>
 						<div style="margin-top: 12px;"></div>
 						<pre id="commandBox"></pre>
+						<p id="commandStatus" class="footer-note" aria-live="polite"></p>
 						<div class="footer-note">
 							這段會把指定日期的 App 使用紀錄匯出成一個 JSON 檔到你的桌面，例如 <span class="mono">app_usage_2026-04-14.json</span>。
 						</div>
@@ -475,11 +819,11 @@ import Head from "@components/Head.astro";
 					</section>
 
 					<section class="charts-2">
-						<div class="card">
+						<div class="card card-dark">
 							<h2>時間軸</h2>
 							<div id="timelineChart" class="chart"></div>
 						</div>
-						<div class="card">
+						<div class="card card-dark">
 							<h2>各 App 總使用時間</h2>
 							<div id="summaryChart" class="chart"></div>
 						</div>
@@ -507,7 +851,7 @@ import Head from "@components/Head.astro";
 
 					<section class="card">
 						<h2>Sessions 明細</h2>
-						<div class="table-wrap">
+						<div class="table-wrap table-wrap-scroll">
 							<table>
 								<thead>
 									<tr>
@@ -524,19 +868,24 @@ import Head from "@components/Head.astro";
 					</section>
 				</main>
 			</div>
+
+			<footer class="page-footer">
+				毛哥EM 製作
+				<a href="https://github.com/elvisdragonmao/website/blob/main/src/pages/code/screen-time.astro" target="_blank" rel="noreferrer">GitHub</a>
+			</footer>
 		</div>
 
 		<script is:inline>
 			function initDashboard() {
 				const timelineChart = window.echarts.init(document.getElementById("timelineChart"));
 				const summaryChart = window.echarts.init(document.getElementById("summaryChart"));
-
-				console.log("echarts loaded", window.echarts);
 				const els = {
+					dropOverlay: document.getElementById("dropOverlay"),
 					exportDate: document.getElementById("exportDate"),
 					genCommandBtn: document.getElementById("genCommandBtn"),
 					copyCommandBtn: document.getElementById("copyCommandBtn"),
 					commandBox: document.getElementById("commandBox"),
+					commandStatus: document.getElementById("commandStatus"),
 					fileInput: document.getElementById("fileInput"),
 					fileStatus: document.getElementById("fileStatus"),
 					loadSampleBtn: document.getElementById("loadSampleBtn"),
@@ -557,8 +906,19 @@ import Head from "@components/Head.astro";
 
 				let rawData = [];
 				let filteredData = [];
+				let fileStatusResetTimer = null;
+				let commandStatusResetTimer = null;
+				let dragDepth = 0;
 
 				const APPLE_EPOCH_OFFSET = 978307200;
+				const chartTokens = {
+					accent: "#0071e3",
+					text: "rgba(255,255,255,0.72)",
+					textStrong: "#ffffff",
+					line: "rgba(255,255,255,0.12)",
+					stroke: "rgba(255,255,255,0.18)",
+					tooltipBg: "rgba(29,29,31,0.96)"
+				};
 
 				function todayStr() {
 					const d = new Date();
@@ -586,6 +946,74 @@ import Head from "@components/Head.astro";
 				function parseMaybeNumber(v) {
 					const n = Number(v);
 					return Number.isFinite(n) ? n : 0;
+				}
+
+				function setFileStatus(html) {
+					if (fileStatusResetTimer) {
+						clearTimeout(fileStatusResetTimer);
+						fileStatusResetTimer = null;
+					}
+					els.fileStatus.innerHTML = html;
+				}
+
+				function setCommandStatus(html) {
+					if (commandStatusResetTimer) {
+						clearTimeout(commandStatusResetTimer);
+						commandStatusResetTimer = null;
+					}
+					els.commandStatus.innerHTML = html;
+				}
+
+				function flashFileStatus(html, duration = 2000) {
+					const previous = els.fileStatus.innerHTML;
+					if (fileStatusResetTimer) clearTimeout(fileStatusResetTimer);
+					els.fileStatus.innerHTML = html;
+					fileStatusResetTimer = window.setTimeout(() => {
+						if (els.fileStatus.innerHTML === html) {
+							els.fileStatus.innerHTML = previous;
+						}
+						fileStatusResetTimer = null;
+					}, duration);
+				}
+
+				function flashCommandStatus(html, duration = 2000) {
+					const previous = els.commandStatus.innerHTML;
+					if (commandStatusResetTimer) clearTimeout(commandStatusResetTimer);
+					els.commandStatus.innerHTML = html;
+					commandStatusResetTimer = window.setTimeout(() => {
+						if (els.commandStatus.innerHTML === html) {
+							els.commandStatus.innerHTML = previous;
+						}
+						commandStatusResetTimer = null;
+					}, duration);
+				}
+
+				function isFileDrag(event) {
+					return Array.from(event.dataTransfer?.types || []).includes("Files");
+				}
+
+				function setFileDragActive(active) {
+					document.body.classList.toggle("is-file-dragging", active);
+					els.dropOverlay.setAttribute("aria-hidden", String(!active));
+				}
+
+				async function loadJsonFile(file, label = `已載入 ${file.name}`) {
+					if (!file) return;
+					const fileName = String(file.name || "").toLowerCase();
+					const isJson = file.type === "application/json" || fileName.endsWith(".json");
+					if (!isJson) {
+						setFileStatus('<span class="warn">請拖曳或選擇 .json 檔案。</span>');
+						return;
+					}
+
+					try {
+						const text = await file.text();
+						const data = JSON.parse(text);
+						if (!Array.isArray(data)) throw new Error("JSON 根層必須是陣列");
+						setData(data, label);
+					} catch (err) {
+						setFileStatus(`<span class="bad">讀取失敗：</span> ${escapeHtml(err.message || String(err))}`);
+					}
 				}
 
 				function parseRow(row) {
@@ -687,7 +1115,10 @@ import Head from "@components/Head.astro";
 						.map(
 							item => `
         <tr>
-          <td><div><strong>${escapeHtml(item.appName)}</strong></div><div class="muted small mono">${escapeHtml(item.bundle_id)}</div></td>
+          <td class="name-cell">
+            <div><strong>${escapeHtml(item.appName)}</strong></div>
+            <div class="muted small mono">${escapeHtml(item.bundle_id)}</div>
+					</td>
           <td>${item.sessions}</td>
           <td>${item.total_sec.toFixed(1)}</td>
           <td>${item.total_min.toFixed(1)}</td>
@@ -742,6 +1173,9 @@ import Head from "@components/Head.astro";
 						animation: true,
 						grid: { left: 90, right: 20, top: 20, bottom: 30 },
 						tooltip: {
+							backgroundColor: chartTokens.tooltipBg,
+							borderWidth: 0,
+							textStyle: { color: chartTokens.textStrong },
 							trigger: "axis",
 							axisPointer: { type: "shadow" },
 							formatter(params) {
@@ -752,21 +1186,26 @@ import Head from "@components/Head.astro";
 						xAxis: {
 							type: "value",
 							name: "分鐘",
-							nameTextStyle: { color: "#a8b1d1" },
-							axisLabel: { color: "#a8b1d1" },
-							splitLine: { lineStyle: { color: "rgba(255,255,255,0.08)" } }
+							nameTextStyle: { color: chartTokens.text },
+							axisLabel: { color: chartTokens.text },
+							splitLine: { lineStyle: { color: chartTokens.line } }
 						},
 						yAxis: {
 							type: "category",
 							data: top.map(x => x.appName),
-							axisLabel: { color: "#dbe5ff" },
-							axisLine: { lineStyle: { color: "#33416f" } }
+							axisLabel: { color: chartTokens.textStrong },
+							axisLine: { lineStyle: { color: chartTokens.line } }
 						},
 						series: [
 							{
 								type: "bar",
 								data: top.map(x => x.total_min),
-								roundCap: true
+								roundCap: true,
+								barMaxWidth: 20,
+								itemStyle: {
+									color: chartTokens.accent,
+									borderRadius: 999
+								}
 							}
 						]
 					});
@@ -780,7 +1219,7 @@ import Head from "@components/Head.astro";
 								text: "沒有符合條件的資料",
 								left: "center",
 								top: "middle",
-								textStyle: { color: "#a8b1d1", fontSize: 16, fontWeight: "normal" }
+								textStyle: { color: chartTokens.text, fontSize: 16, fontWeight: "normal" }
 							}
 						});
 						return;
@@ -797,6 +1236,9 @@ import Head from "@components/Head.astro";
 					timelineChart.setOption({
 						backgroundColor: "transparent",
 						tooltip: {
+							backgroundColor: chartTokens.tooltipBg,
+							borderWidth: 0,
+							textStyle: { color: chartTokens.textStrong },
 							formatter(param) {
 								const v = param.data.value;
 								return [
@@ -813,15 +1255,15 @@ import Head from "@components/Head.astro";
 							min: startMs,
 							max: endMs,
 							type: "time",
-							axisLabel: { color: "#a8b1d1" },
-							axisLine: { lineStyle: { color: "#33416f" } },
-							splitLine: { lineStyle: { color: "rgba(255,255,255,0.08)" } }
+							axisLabel: { color: chartTokens.text },
+							axisLine: { lineStyle: { color: chartTokens.line } },
+							splitLine: { lineStyle: { color: chartTokens.line } }
 						},
 						yAxis: {
 							type: "category",
 							data: apps,
-							axisLabel: { color: "#dbe5ff" },
-							axisLine: { lineStyle: { color: "#33416f" } }
+							axisLabel: { color: chartTokens.textStrong },
+							axisLine: { lineStyle: { color: chartTokens.line } }
 						},
 						series: [
 							{
@@ -840,8 +1282,9 @@ import Head from "@components/Head.astro";
 											height
 										},
 										style: api.style({
+											fill: chartTokens.accent,
 											opacity: 0.9,
-											stroke: "rgba(255,255,255,0.18)",
+											stroke: chartTokens.stroke,
 											lineWidth: 1,
 											borderRadius: 6
 										})
@@ -884,7 +1327,7 @@ import Head from "@components/Head.astro";
 					const dates = uniqueDates(rawData);
 					populateDateFilter(dates);
 					if (dates.length) els.dateFilter.value = dates[0];
-					els.fileStatus.innerHTML = `<span class="ok">${label}</span><br>${rawData.length} 筆 session，${dates.length} 個日期。`;
+					setFileStatus(`<span class="ok">${label}</span><br>${rawData.length} 筆 session，${dates.length} 個日期。`);
 					applyFilters();
 				}
 
@@ -910,7 +1353,7 @@ import Head from "@components/Head.astro";
 					els.fileInput.value = "";
 					els.searchInput.value = "";
 					els.minDurationInput.value = "0";
-					els.fileStatus.textContent = "尚未載入資料。";
+					setFileStatus("尚未載入資料。");
 					populateDateFilter([]);
 					renderStats([], [], "");
 					renderSummaryTable([]);
@@ -929,23 +1372,57 @@ import Head from "@components/Head.astro";
 				els.copyCommandBtn.addEventListener("click", async () => {
 					try {
 						await navigator.clipboard.writeText(els.commandBox.textContent);
-						els.fileStatus.innerHTML = '<span class="ok">已複製 terminal 指令到剪貼簿。</span>';
+						flashCommandStatus('<span class="ok">已複製 terminal 指令到剪貼簿。</span>');
 					} catch {
-						els.fileStatus.innerHTML = '<span class="warn">複製失敗，請手動選取指令。</span>';
+						flashCommandStatus('<span class="warn">複製失敗，請手動選取指令。</span>');
 					}
 				});
 
 				els.fileInput.addEventListener("change", async e => {
 					const file = e.target.files?.[0];
 					if (!file) return;
-					try {
-						const text = await file.text();
-						const data = JSON.parse(text);
-						if (!Array.isArray(data)) throw new Error("JSON 根層必須是陣列");
-						setData(data, `已載入 ${file.name}`);
-					} catch (err) {
-						els.fileStatus.innerHTML = `<span class="bad">讀取失敗：</span> ${escapeHtml(err.message || String(err))}`;
-					}
+					await loadJsonFile(file, `已載入 ${file.name}`);
+				});
+
+				window.addEventListener("dragenter", e => {
+					if (!isFileDrag(e)) return;
+					e.preventDefault();
+					dragDepth += 1;
+					setFileDragActive(true);
+				});
+
+				window.addEventListener("dragover", e => {
+					if (!isFileDrag(e)) return;
+					e.preventDefault();
+					e.dataTransfer.dropEffect = "copy";
+				});
+
+				window.addEventListener("dragleave", e => {
+					if (!isFileDrag(e)) return;
+					e.preventDefault();
+					dragDepth = Math.max(0, dragDepth - 1);
+					if (dragDepth === 0) setFileDragActive(false);
+				});
+
+				window.addEventListener("dragend", () => {
+					dragDepth = 0;
+					setFileDragActive(false);
+				});
+
+				window.addEventListener("drop", async e => {
+					if (!isFileDrag(e)) return;
+					e.preventDefault();
+					dragDepth = 0;
+					setFileDragActive(false);
+					const files = Array.from(e.dataTransfer?.files || []);
+					const file =
+						files.find(item =>
+							String(item.name || "")
+								.toLowerCase()
+								.endsWith(".json")
+						) || files[0];
+					if (!file) return;
+					await loadJsonFile(file, `已拖曳載入 ${file.name}`);
 				});
 
 				els.loadSampleBtn.addEventListener("click", loadSample);
@@ -966,7 +1443,7 @@ import Head from "@components/Head.astro";
 				});
 
 				clearAll();
-				loadSample();
+				setCommandStatus("");
 			}
 
 			function waitForEcharts() {
