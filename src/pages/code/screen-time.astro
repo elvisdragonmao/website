@@ -1225,6 +1225,8 @@ import Head from "@components/Head.astro";
 						return;
 					}
 
+					timelineChart.clear();
+
 					const apps = [...new Set(rows.map(r => r.appName))];
 					const startMs = Math.min(...rows.map(r => r.startDate.getTime()));
 					const endMs = Math.max(...rows.map(r => r.endDate.getTime()));
