@@ -175,6 +175,9 @@ importers:
       astro:
         specifier: ^7.4.8
         version: 7.4.8(esbuild@0.28.2)(yaml@2.9.1)
+      lenis:
+        specifier: ^1.3.27
+        version: 1.3.27
       three:
         specifier: ^0.187.0
         version: 0.187.0
@@ -1421,6 +1424,20 @@ packages:
 
   ktx-parse@1.1.0:
     resolution: {integrity: sha512-mKp3y+FaYgR7mXWAbyyzpa/r1zDWeaunH+INJO4fou3hb45XuNSwar+7llrRyvpMWafxSIi99RNFJ05MHedaJQ==}
+
+  lenis@1.3.27:
+    resolution: {integrity: sha512-QIHNH4LIfWyLfgH/5K0aTGZgyFJJ7GfHNcaH/AIgyKjb8gstLh5siNGvrVqz1w5ClLXzOvllBVk7vby8JzUVPQ==}
+    peerDependencies:
+      '@nuxt/kit': '>=3.0.0'
+      react: '>=17.0.0'
+      vue: '>=3.0.0'
+    peerDependenciesMeta:
+      '@nuxt/kit':
+        optional: true
+      react:
+        optional: true
+      vue:
+        optional: true
 
   lightningcss-android-arm64@1.33.0:
     resolution: {integrity: sha512-gEpRTalKdosp4Bb8qWtc2iOgE5SeIHlpS1up9bFq2wAyYhl1UdTObYiHe98zEM9SQvSoqQZ1IQD0JNpg3Ml5pg==}
@@ -3300,6 +3317,8 @@ snapshots:
   kleur@4.1.5: {}
 
   ktx-parse@1.1.0: {}
+
+  lenis@1.3.27: {}
 
   lightningcss-android-arm64@1.33.0:
     optional: true

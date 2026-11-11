@@ -70,15 +70,22 @@ export class StoryText {
 				continue;
 			}
 			const contact = layer.name === "contact";
-			const enter = ease((scroll - range.top + height * (contact ? 0.24 : 0.42)) / (height * (contact ? 0.18 : 0.26)));
-			const exitStart = contact ? range.top + height * 0.55 : range.top + range.height - height * 0.64;
-			const exit = 1 - ease((scroll - exitStart) / (height * (contact ? 0.25 : 0.36)));
-			if (contact) layer.element.style.setProperty("--contact-reveal", ease((scroll - range.top + height * 0.04) / (height * 0.4)).toFixed(3));
+			const why = layer.name === "why";
+			const contactRange = ranges.find(item => item.name === "contact");
+			const enter = ease((scroll - range.top + height * (contact ? 0.34 : 0.42)) / (height * (contact ? 0.4 : 0.26)));
+			const exitStart = contact ? range.top + height * 0.6 : why && contactRange ? contactRange.top + height * 0.6 : range.top + range.height - height * 0.64;
+			const exitProgress = ease((scroll - exitStart) / (height * (contact || why ? 0.4 : 0.36)));
+			const exit = 1 - exitProgress;
+			let offset = layer.name === "beyond" ? -height * 0.18 * exitProgress : 0;
+			if (why && contactRange) offset = -height * 0.21 * ease((scroll - contactRange.top + height * 0.36) / (height * 0.7)) - height * 0.08 * exitProgress;
+			if (contact) offset = -height * 0.08 * exitProgress;
+			layer.element.style.setProperty("--story-offset-y", `${offset.toFixed(2)}px`);
+			if (contact) layer.element.style.setProperty("--contact-reveal", ease((scroll - range.top + height * 0.18) / (height * 0.52)).toFixed(3));
 			const opacity = enter * exit;
 			this.setVisible(layer, opacity > 0.002, opacity);
 			// The intro clips fixed content as the ordinary footer enters; clipped links
 			// must leave the tab order even while the decorative text finishes fading.
-			if (contact) for (const link of layer.links) link.tabIndex = opacity > 0.002 && scroll - range.top < height * 0.25 ? 0 : -1;
+			if (contact) for (const link of layer.links) link.tabIndex = opacity > 0.1 && scroll - range.top < height * 0.95 ? 0 : -1;
 			if (opacity <= 0.002) continue;
 			const progress = clamp((scroll - range.top + height * 0.2) / Math.max(height * 0.7, range.height * 0.48));
 			for (const line of layer.lines) {
@@ -145,6 +152,7 @@ export class StoryText {
 			delete layer.element.dataset.storyActive;
 			layer.element.style.removeProperty("--story-opacity");
 			layer.element.style.removeProperty("--contact-reveal");
+			layer.element.style.removeProperty("--story-offset-y");
 			for (const link of layer.links) link.removeAttribute("tabindex");
 			for (const line of layer.lines) this.write(line, line.source);
 		}

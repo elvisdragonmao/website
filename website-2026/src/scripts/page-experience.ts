@@ -1,4 +1,5 @@
 import { navigate, type TransitionBeforePreparationEvent } from "astro:transitions/client";
+import { setupScrollExperience } from "./scroll-experience";
 
 /** Page-only interactions. ClientRouter retains ownership of normal link navigation. */
 type ExperienceDebug = {
@@ -175,7 +176,7 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 			this.thresholds = new Float32Array(0);
 			debug.phase = "covering";
 			debug.covers++;
-			await this.tween(1, reducedMotion() ? 55 : 350);
+			await this.tween(1, reducedMotion() ? 55 : 520);
 			if (token === this.generation && this.amount === 1) {
 				debug.phase = "covered";
 				if (this.canvas) this.canvas.dataset.phase = debug.phase;
@@ -187,7 +188,7 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 			const token = ++this.generation;
 			debug.phase = "uncovering";
 			debug.uncovers++;
-			await this.tween(0, reducedMotion() ? 65 : 420);
+			await this.tween(0, reducedMotion() ? 65 : 640);
 			if (token === this.generation && this.amount === 0) {
 				debug.phase = "idle";
 				if (this.canvas) this.canvas.dataset.phase = debug.phase;
@@ -352,105 +353,82 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 
 	function nextPage(scope: PageScope) {
 		const link = document.querySelector<HTMLAnchorElement>("a[data-next-page]");
-		if (!link) return;
-		const meter = link.querySelector<HTMLElement>("[data-next-progress]");
-		const threshold = 650;
-		let amount = 0;
-		let lastInput = 0;
-		let lastFrame = 0;
+		const heading = link?.querySelector<HTMLElement>(".next-page-ascii");
+		const meter = link?.querySelector<HTMLElement>("[data-next-progress]");
+		if (!link || !heading) return;
+		let start = 0,
+			end = 0,
+			pending = false,
+			lastInput = 0,
+			intent = 0,
+			touchY: number | null = null;
 		let frame = 0;
-		let touchY: number | null = null;
-		let pending = false;
-		let impulses = 0;
-		const eligible = () => {
-			const box = link.getBoundingClientRect();
-			const bottom = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) - innerHeight - scrollY;
-			return bottom <= 4 && box.top < innerHeight && box.bottom > 0;
+		const measure = () => {
+			end = document.documentElement.scrollHeight - innerHeight - 3;
+			start = Math.min(end - 80, heading.getBoundingClientRect().top + scrollY - innerHeight * 0.94);
 		};
 		const paint = () => {
-			const progress = clamp(amount / threshold);
+			frame = 0;
+			const progress = clamp((scrollY - start) / Math.max(1, end - start));
+			const entrance = ease(clamp((innerHeight * 0.94 - heading.getBoundingClientRect().top) / (innerHeight * 0.13)));
 			debug.bottomProgress = progress;
 			link.style.setProperty("--next-progress", String(progress));
-			link.style.setProperty("--next-stretch", `${reducedMotion() ? 0 : progress * 14}px`);
+			link.style.setProperty("--next-enter", String(entrance));
 			link.dataset.nextState = pending ? "opening" : progress > 0 ? "pulling" : "ready";
-			meter?.style.setProperty("--progress", String(progress));
-			if (meter) {
-				meter.style.transform = `scaleX(${progress})`;
-				meter.setAttribute("aria-valuenow", String(Math.round(progress * 100)));
+			meter?.setAttribute("aria-valuenow", String(Math.round(progress * 100)));
+			if (scrollY < start) {
+				intent = 0;
 			}
-		};
-		const release = () => {
-			amount = 0;
-			impulses = 0;
-			lastInput = 0;
-			paint();
-		};
-		const animate = (time: number) => {
-			frame = 0;
-			const dt = Math.min((time - (lastFrame || time)) / 1000, 0.05);
-			lastFrame = time;
-			if (!eligible() && !pending) release();
-			if (time - lastInput > 220 && !pending) {
-				amount = Math.max(0, amount - dt * 380);
-				if (amount === 0) impulses = 0;
-				paint();
-			}
-			if (amount > 0 && !pending) frame = requestAnimationFrame(animate);
-		};
-		const push = (delta: number, event: Event) => {
-			if (delta <= 0) {
-				if (delta < 0) release();
-				return;
-			}
-			if (!eligible() || pending) return;
-			// Keep ordinary wheel/touch scrolling everywhere except this end-of-page resistance.
-			if (event.cancelable) event.preventDefault();
-			const now = performance.now();
-			if (now - lastInput > 110) impulses++;
-			lastInput = now;
-			amount += Math.min(delta, 110);
-			paint();
-			if (amount >= threshold && impulses >= 3) {
+			if (progress >= 0.998 && intent > 180 && performance.now() - lastInput < 1800 && !pending) {
 				pending = true;
-				paint();
 				debug.bottomNavigations++;
 				void navigate(link.href).catch(() => {
 					pending = false;
-					release();
+					intent = 0;
 				});
-			} else if (!frame) {
-				lastFrame = now;
-				frame = requestAnimationFrame(animate);
+			}
+		};
+		const schedule = () => {
+			if (!frame) frame = requestAnimationFrame(paint);
+		};
+		const observeIntent = (delta: number) => {
+			if (delta <= 0) {
+				intent = 0;
+				return;
+			}
+			if (heading.getBoundingClientRect().top < innerHeight * 0.94 + Math.min(delta, innerHeight)) {
+				intent += Math.min(delta, 160);
+				lastInput = performance.now();
+				schedule();
 			}
 		};
 		const signal = scope.abort.signal;
 		window.addEventListener(
 			"wheel",
-			event => {
-				if (event.ctrlKey || event.metaKey || event.shiftKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-				const target = event.target instanceof Element ? event.target : null;
-				if (target?.closest('input, textarea, select, [contenteditable="true"], [data-native-scroll]')) return;
-				push(event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1), event);
+			e => {
+				if (e.ctrlKey || e.metaKey || e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+				const target = e.target instanceof Element ? e.target : null;
+				if (target?.closest('input,textarea,select,[contenteditable="true"],[data-native-scroll]')) return;
+				observeIntent(e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1));
 			},
-			{ passive: false, signal }
+			{ passive: true, signal }
 		);
 		window.addEventListener(
 			"touchstart",
-			event => {
-				touchY = event.touches.length === 1 ? event.touches[0]!.clientY : null;
+			e => {
+				touchY = e.touches.length === 1 ? e.touches[0]!.clientY : null;
 			},
 			{ passive: true, signal }
 		);
 		window.addEventListener(
 			"touchmove",
-			event => {
-				if (touchY === null || event.touches.length !== 1) return;
-				const y = event.touches[0]!.clientY;
-				const delta = touchY - y;
+			e => {
+				if (touchY === null || e.touches.length !== 1) return;
+				const y = e.touches[0]!.clientY;
+				observeIntent((touchY - y) * 2);
 				touchY = y;
-				push(delta * 2, event);
 			},
-			{ passive: false, signal }
+			{ passive: true, signal }
 		);
 		window.addEventListener(
 			"touchend",
@@ -459,25 +437,25 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 			},
 			{ passive: true, signal }
 		);
+		window.addEventListener("scroll", schedule, { passive: true, signal });
 		window.addEventListener(
-			"touchcancel",
+			"resize",
 			() => {
-				touchY = null;
-				release();
+				measure();
+				schedule();
 			},
 			{ passive: true, signal }
 		);
-		window.addEventListener(
-			"scroll",
-			() => {
-				if (!eligible() && !pending) release();
-			},
-			{ passive: true, signal }
-		);
+		const observer = new ResizeObserver(() => {
+			measure();
+			schedule();
+		});
+		observer.observe(document.body);
 		scope.add(() => {
 			cancelAnimationFrame(frame);
-			release();
+			observer.disconnect();
 		});
+		measure();
 		paint();
 	}
 
@@ -525,6 +503,7 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 		debug.pageInitializations++;
 		pixelReveals(page);
 		nextPage(page);
+		setupScrollExperience(page.abort.signal);
 		newsletters(page);
 		navContrast(page);
 		if (debug.phase === "covered") void wipe.uncover();

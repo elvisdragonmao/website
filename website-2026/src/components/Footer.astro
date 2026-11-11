@@ -11,15 +11,21 @@ const { compact = false, newsletter = false } = Astro.props;
 <footer class:list={["site-footer", { compact, "has-newsletter": newsletter }]}>
 	<div class="footer-main">
 		<div class="footer-note">
-			<a class="footer-name" href="/">Elvis Mao.</a><p>Curiosity, in progress.</p><a class="footer-studio" href="https://linyao.tw/">For commissioned work,<br />visit LinYao Studio <Icon /></a>
+			<a class="footer-name" href="/">Elvis Mao.</a><a class="footer-studio" href="https://linyao.tw/" target="_blank" rel="noopener noreferrer">
+				For commissioned work in Taiwan,<br />visit LinYao Studio <Icon />
+			</a>
 		</div>
 		<nav class="footer-socials" aria-label="Find Elvis Mao">
-			<a href="mailto:info@elvismao.com"><Icon name="envelope" />Email</a>
-			<a href="https://github.com/elvisdragonmao"><Icon name="github" />GitHub</a>
-			<a href="https://t.me/elvisdragonmao"><Icon name="telegram" />Telegram</a>
-			<a href="https://www.instagram.com/elvisdragonmao/"><Icon name="instagram" />Instagram</a>
+			<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer"><Icon name="envelope" />Email</a>
+			<a href="https://github.com/elvisdragonmao" target="_blank" rel="noopener noreferrer"><Icon name="github" />GitHub</a>
+			<a href="https://t.me/elvisdragonmao" target="_blank" rel="noopener noreferrer"><Icon name="telegram" />Telegram</a>
+			<a href="https://www.instagram.com/elvisdragonmao/" target="_blank" rel="noopener noreferrer"><Icon name="instagram" />Instagram</a>
 		</nav>
 		{newsletter && <Newsletter />}
 	</div>
-	<div class="footer-fine"><span>© {new Date().getFullYear()} Elvis Mao</span><a href="/colophon/">Colophon & model credits</a><span>Made with a little too much curiosity.</span></div>
+	<div class="footer-fine">
+		<span>© {new Date().getFullYear()} Elvis Mao</span><div class="footer-meta">
+			<a href="https://github.com/elvisdragonmao/website" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/colophon/">Credits ↗</a>
+		</div>
+	</div>
 </footer>

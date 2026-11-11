@@ -8,21 +8,13 @@ export interface StoryRange {
 export const clamp01 = (n: number) => THREE.MathUtils.clamp(n, 0, 1);
 export const ease = (n: number) => {
 	const t = clamp01(n);
-	return t * t * (3 - 2 * t);
+	return t * t * t * (t * (t * 6 - 15) + 10);
 };
-export const DESK_OFFSET = new THREE.Vector3(3.5, 0, -2.7);
+export const DESK_OFFSET = new THREE.Vector3(4.25, 0, -2.7);
 export const EARTH_CENTER = new THREE.Vector3(8.9, 3.6, -4.1);
 // The flyover is a short change of scene, ending at the first workstation.
-const flyPosition = new THREE.CatmullRomCurve3(
-	[new THREE.Vector3(0, 4.25, 1.55), new THREE.Vector3(0.02, 4.8, 0.78), new THREE.Vector3(0.03, 5.08, -0.18), new THREE.Vector3(0.04, 4.76, -1.25), new THREE.Vector3(0.05, 4.3, -1.55)],
-	false,
-	"centripetal"
-);
-const flyLook = new THREE.CatmullRomCurve3(
-	[new THREE.Vector3(0, 3.9, 0.12), new THREE.Vector3(0, 4.45, -0.05), new THREE.Vector3(0, 4.25, -0.8), new THREE.Vector3(0.02, 2.9, -3.9), new THREE.Vector3(0.05, 2.55, -4.05)],
-	false,
-	"centripetal"
-);
+const flyPosition = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(0.7, 5.45, 2.55), new THREE.Vector3(-0.5, 5.25, -0.25), new THREE.Vector3(0.35, 5.25, -0.25));
+const flyLook = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(0.4, 4.35, -0.4), new THREE.Vector3(-0.4, 2.55, -4.1), new THREE.Vector3(0.45, 2.55, -4.1));
 export class CameraJourney {
 	position = new THREE.Vector3();
 	look = new THREE.Vector3();
@@ -39,6 +31,10 @@ export class CameraJourney {
 	earthPresence = 0;
 	earthProgress = 0;
 	private target = new THREE.Vector3();
+	setCoverStart(position: THREE.Vector3, look: THREE.Vector3): void {
+		flyPosition.v0.copy(position);
+		flyLook.v0.copy(look);
+	}
 	frame(scroll: number, height: number, width: number, ranges: StoryRange[], _time: number, _pointer: THREE.Vector2, reduced: boolean): void {
 		const range = (name: string) => ranges.find(r => r.name === name) ?? { name, top: 0, height };
 		const desk = range("desk"),
@@ -52,22 +48,27 @@ export class CameraJourney {
 		this.phase = (ranges.find(r => eyeLine >= r.top && eyeLine < r.top + r.height) ?? ranges.at(-1))?.name ?? "cover";
 		const progress = (r: StoryRange) => clamp01((scroll - r.top + height * 0.48) / Math.max(height * 0.6, r.height - height * 0.2));
 		this.localProgress = progress(range(this.phase));
-		const deskStart = Math.max(height * 0.65, desk.top - height * 0.15);
+		const deskStart = height * 0.68;
 		const deskEnd = desk.top + desk.height - height * 0.75;
+		// Match the cubic's outgoing tangent to the scan's velocity in scroll units.
+		flyPosition.v2.x = 0.35 - (7.85 * deskStart) / (3 * Math.max(height, deskEnd - deskStart));
+		flyLook.v2.x = flyPosition.v2.x + 0.1;
 		this.coverProgress = clamp01(scroll / deskStart);
 		this.deskProgress = clamp01((scroll - deskStart) / Math.max(height, deskEnd - deskStart));
 		if (scroll < deskStart) {
-			flyPosition.getPoint(this.coverProgress, this.position);
-			flyLook.getPoint(this.coverProgress, this.look);
+			// Ease out of the close-up, retaining terminal velocity into the scan.
+			const t = this.coverProgress * this.coverProgress * (2 - this.coverProgress);
+			flyPosition.getPoint(t, this.position);
+			flyLook.getPoint(t, this.look);
 		} else {
 			const d = this.deskProgress;
-			this.position.set(THREE.MathUtils.lerp(0.05, 7.25, d), 4.3 + Math.sin(d * Math.PI) * 0.07, -1.55 - d * 0.15);
-			this.look.set(THREE.MathUtils.lerp(0.05, 7.25, d), 2.55, -4.05);
+			this.position.set(THREE.MathUtils.lerp(0.35, 8.2, d), 5.25, -0.25);
+			this.look.set(THREE.MathUtils.lerp(0.45, 8.3, d), 2.55, -4.1);
 		}
 		const fireEnter = ease((scroll - fire.top + height * 0.65) / (height * 0.65));
 		if (fireEnter > 0) {
-			this.position.lerp(this.target.set(7.55, 4.45, -1.7), fireEnter);
-			this.look.lerp(this.target.set(7.35, 2.75, -4), fireEnter);
+			this.position.lerp(this.target.set(8.5, 5.3, -0.35), fireEnter);
+			this.look.lerp(this.target.set(8.45, 2.75, -4), fireEnter);
 		}
 		// Procedural scenes share a stationary stage. Their animation belongs to time,
 		// pointer and the wipe, rather than an incidental moving 3D camera.
@@ -76,7 +77,7 @@ export class CameraJourney {
 			this.position.lerp(this.target.set(8.6, 4.5, -1.8), fieldEnter);
 			this.look.lerp(this.target.set(8.4, 3.45, -4), fieldEnter);
 		}
-		const whyEnter = ease((scroll - why.top + height * 0.75) / (height * 0.75));
+		const whyEnter = ease((scroll - why.top + height * 1.25) / (height * 1.15));
 		if (whyEnter > 0) {
 			const distance = width < 700 ? Math.max(5.4, 2 / (Math.tan(Math.PI / 10) * (width / height))) : 5.4;
 			this.position.lerp(this.target.set(EARTH_CENTER.x, EARTH_CENTER.y + 0.12, EARTH_CENTER.z + distance), whyEnter);
@@ -86,13 +87,13 @@ export class CameraJourney {
 		this.roll = reduced ? 0 : Math.sin(this.deskProgress * Math.PI) * -0.008;
 		const weight = (r: StoryRange) => ease((eyeLine - r.top + height * 0.15) / (height * 0.55)) * (1 - ease((eyeLine - (r.top + r.height - height * 0.25)) / (height * 0.65)));
 		this.fireLift = ease((scroll - alive.top + height * 0.72) / (height * 0.9));
-		const fireWeight = fireEnter * (1 - ease((this.fireLift - 0.94) / 0.06));
+		const fireWeight = fireEnter * (1 - ease((this.fireLift - 0.35) / 0.65));
 		const aliveWeight = ease((scroll - alive.top + height * 0.85) / (height * 0.5)) * (1 - ease((scroll - beyond.top + height * 0.35) / (height * 0.7)));
 		this.weights.set(fireWeight, aliveWeight, weight(beyond));
 		this.workPresence = ease((scroll - work.top + height * 0.55) / (height * 0.6)) * (1 - ease((scroll - why.top + height * 0.5) / (height * 0.8)));
 		this.contactPresence = ease((scroll - contact.top + height * 0.5) / (height * 0.8));
-		this.earthProgress = clamp01((scroll - why.top + height * 0.55) / Math.max(height, why.height));
-		this.earthPresence = ease((scroll - why.top + height * 0.55) / (height * 0.85)) * (1 - ease((scroll - contact.top + height * 0.3) / (height * 0.65)));
+		this.earthProgress = Math.max(0, (scroll - why.top + height * 1.25) / Math.max(height, why.height));
+		this.earthPresence = ease((scroll - why.top + height * 1.25) / (height * 1.5)) * (1 - ease((scroll - contact.top + height * 0.3) / (height * 0.8)));
 		if (reduced && this.phase === "desk") {
 			this.position.set(3.7, 7.2, -2.4);
 			this.look.set(3.5, 2.3, -4);

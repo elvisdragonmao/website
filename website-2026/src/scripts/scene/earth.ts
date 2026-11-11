@@ -64,8 +64,9 @@ export function createEarth() {
 		update(time: number, progress = 0, reduced = false, reveal = 1) {
 			globe.rotation.y = 2.6 + (reduced ? 0 : time * 0.13) + progress * 0.25;
 			const emergence = THREE.MathUtils.smoothstep(reveal, 0, 1);
-			material.opacity = emergence;
-			group.scale.setScalar(0.65 + emergence * 0.35);
+			material.opacity = Math.pow(emergence, 2.4);
+			// Nonzero derivative through the whole scroll, with a long, slowing tail.
+			group.scale.setScalar(0.58 + emergence * 0.42 + 0.48 * (1 - Math.exp(-progress * 1.65)) + progress * 0.028);
 			group.rotation.z = 0.12 + (1 - emergence) * -0.35;
 		},
 		dispose() {

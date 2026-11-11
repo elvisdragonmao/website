@@ -65,34 +65,30 @@ export function createAsciiSurface() {
         float fireMix=0.;
         vec3 fireColour=vec3(0.);
         if(uWeights.y>.001){
-          // A centred, breathing family of signed-distance contours. Scroll
-          // never pans/rotates this organism; touch deforms it locally instead.
+          // Circle SDF → a full-bleed, breathing contour field. Pointer gravity
+          // bends the distance function, rather than merely changing its colour.
+          vec2 pointer=(uPointer-.5)*vec2(aspect,1.);
           vec2 p=(uv-vec2(.5))*vec2(aspect,1.);
-          float radius=length(p),theta=atan(p.y,p.x);
-          float breath=1.+.075*sin(t*.83)+.022*sin(t*1.37+.6);
-          float petals=.045*cos(theta*6.+.4*sin(t*.29))+.009*cos(theta*9.-t*.19);
+          p-=pointer*.12;
           vec2 touch=(uv-uPointer)*vec2(aspect,1.);
+          float attraction=exp(-dot(touch,touch)*14.);
+          p-=touch*attraction*.62;
+          float breath=1.+.105*sin(t*.81)+.032*sin(t*1.31+.6);
+          p/=breath;
+          float radius=length(p),theta=atan(p.y,p.x)+t*.065;
+          float petals=.066*cos(theta*6.+.7*sin(t*.29))+.021*cos(theta*11.-t*.23);
           float age=max(0.,t-uImpulse.z);
-          float kick=sin(length((uv-uImpulse.xy)*vec2(aspect,1.))*43.-age*6.)*exp(-age*1.5);
-          float localTouch=exp(-length(touch)*11.);
-          float response=(localTouch*.018*sin(theta*3.-t*.7)+kick*.012)*smoothstep(.04,.16,radius);
-          float curve=radius/breath-.235-petals-response;
-          // Compact line support matters at 14px cells: exponential tails
-          // overlap into a filled torus. These bands leave genuine blank gaps.
-          float contours=(1.-smoothstep(.006,.023,abs(curve)))*.78;
-          for(int j=0;j<2;j++){
-            float k=float(j)*2.-1.;
-            float offset=k*.073+.004*sin(theta*(4.+float(j))+t*.31+k);
-            float line=1.-smoothstep(.004,.016,abs(curve-offset));
-            contours=max(contours,line*(.54+.045*sin(theta*3.+t*.22+k)));
-          }
-          float interference=pow(.5+.5*cos(curve*133.+sin(theta*3.+t*.23)*1.5),8.);
-          interference*=exp(-abs(curve)*12.)*.035;
-          float inner=(1.-smoothstep(.003,.012,abs(radius-.075-.006*sin(theta*5.-t*.4))))*.31;
-          float alive=max(contours+interference,inner);
-          alive*=1.-smoothstep(.36,.43,radius);
+          float kick=sin(length((uv-uImpulse.xy)*vec2(aspect,1.))*34.-age*5.)*exp(-age*1.4);
+          float curve=radius-.25-petals*(.65+.35*sin(radius*5.-t*.24));
+          curve+=.024*sin(theta*3.+radius*9.-t*.47)+attraction*.075+kick*.027;
+          float rings=.5+.5*cos(curve*48.-t*.6+sin(theta*4.-t*.21)*.65);
+          float contours=pow(rings,5.5);
+          float filaments=pow(.5+.5*cos(curve*102.+theta*.6+t*.38),16.)*.16;
+          float texture=.64+.26*sin(radius*13.-theta*2.+t*.32);
+          float alive=(contours*.76+filaments)*texture;
+          alive*=.82+.18*sin(theta*5.-t*.39);
           density=mix(density,alive,uWeights.y);
-          vec3 aliveColour=mix(vec3(.51,.77,.81),vec3(.84,.91,.84),.5+.5*sin(theta*2.+radius*14.-t*.17));
+          vec3 aliveColour=mix(vec3(.38,.67,.76),vec3(.85,.92,.72),.5+.5*sin(theta*2.+radius*8.-t*.24));
           colour=mix(colour,aliveColour,uWeights.y*.9);
         }
         if(uWeights.z>.001){
@@ -133,19 +129,16 @@ export function createAsciiSurface() {
           colour=mix(colour,vec3(.52,.67,.72),uContactPresence);
         }
         if(uWeights.x>.001 && uFireReveal>.001){
-          // The entrance remains floor-anchored. On exit, Lift carries the hot,
-          // dense floor UP as a wipe, revealing the centred flower below it.
+          // Lift climbs THROUGH the flame field. The bottom stays hot and
+          // populated while the expanding fire cross-dissolves into the SDF.
           float lift=clamp(uFireLift,0.,1.);
-          float floorY=lift*1.18;
-          vec2 fireUv=vec2(uv.x,(uv.y-floorY)/max(uFireReveal,.001));
+          float fireHeight=max(uFireReveal,.001)*(1.+lift*1.7);
+          vec2 fireUv=vec2(uv.x,uv.y/fireHeight);
           fireHeat=texture2D(uFireField,clamp(fireUv,0.,1.)).r;
           fireHeat*=step(0.,fireUv.y)*(1.-step(1.,fireUv.y));
           fireColour=flamePalette(fireHeat);
-          float edge=floorY+uFireReveal+.025*sin(uv.x*19.+t*.5)+.035*noise(vec2(uv.x*16.,t*.4));
-          float risingEdge=floorY+.016*sin(uv.x*21.+t*.7)*smoothstep(0.,.1,lift);
-          float uncovered=smoothstep(risingEdge-.018,risingEdge+.018,uv.y);
-          float floorMask=mix(1.,uncovered,step(.0001,lift));
-          fireMix=uWeights.x*floorMask*(1.-smoothstep(edge-.035,edge+.035,uv.y));
+          float edge=fireHeight+.025*sin(uv.x*19.+t*.5)+.035*noise(vec2(uv.x*16.,t*.4));
+          fireMix=uWeights.x*(1.-smoothstep(edge-.035,edge+.035,uv.y));
           density=mix(density,smoothstep(.015,.1,fireHeat),fireMix);
           colour=mix(colour,fireColour,fireMix);
         }

@@ -10,6 +10,7 @@ const coverLab = {
 					pattern: "/cover-lab",
 					entrypoint: new URL("./src/dev/pages/cover-lab.astro", import.meta.url)
 				});
+				injectRoute({ pattern: "/loading-lab", entrypoint: new URL("./src/dev/pages/loading-lab.astro", import.meta.url) });
 			}
 		}
 	}

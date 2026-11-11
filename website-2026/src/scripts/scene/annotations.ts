@@ -39,7 +39,7 @@ export class WorldAnnotations {
 			if (!rect) continue;
 			const enter = ease((scroll + height * 0.72 - range.top) / (height * 0.55));
 			const exit = 1 - ease((scroll - (range.top + range.height - height * 0.7)) / (height * 0.55));
-			const sectionVisibility = enter * exit * ease((scroll - range.top + height * 0.1) / (height * 0.25));
+			const sectionVisibility = enter * exit * ease((scroll - range.top + height * 0.42) / (height * 0.3));
 			if (!desk) {
 				label.style.opacity = String(sectionVisibility);
 				label.style.pointerEvents = sectionVisibility > 0.15 ? "auto" : "none";
@@ -68,7 +68,7 @@ export class WorldAnnotations {
 			const opacity = behind ? 0 : sectionVisibility * (desk ? mobileVisibility : 1);
 			const labelWidth = label.offsetWidth * scale;
 			const labelHeight = label.offsetHeight * scale;
-			let x = (ndc.x * 0.5 + 0.5) * width + 55 * scale;
+			let x = (ndc.x * 0.5 + 0.5) * width + (key === "developer" ? 95 : 55) * scale;
 			let y = (-ndc.y * 0.5 + 0.5) * height - 25 * scale - rect.top;
 			x = THREE.MathUtils.clamp(x, margin, Math.max(margin, width - labelWidth - margin));
 			y = THREE.MathUtils.clamp(y, width < 600 ? 105 : 80, Math.max(110, height - labelHeight - 50));

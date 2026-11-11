@@ -1,0 +1,93 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SceneLoader from "../../components/SceneLoader.astro";
+---
+
+<Layout title="Loading studies — EM">
+	<main class="page-main" id="main">
+		<header class="page-heading"><p>DEVELOPMENT / LOADING STUDIES</p><h1>A moment<br />for the dragon.</h1></header>
+		<div class="loader-studies">
+			<button data-loader-demo="bar"><pre>▖ [██████░░░░░░░░░░░░░░]</pre><strong>A / Boot bar</strong><p>Measured progress. One restless pixel.</p><span>[ preview ↵ ]</span></button>
+			<button data-loader-demo="orbit"><pre>   · █ ·
+ ·  E M  ·
+   · · ·</pre><strong>B / Orbit</strong><p>A square finding its way around EM.</p><span>[ preview ↵ ]</span></button>
+			<button data-loader-demo="signal">
+				<pre>   ××        ××
+··×··×······×··×··
+      ××  ××</pre><strong>C / Signal</strong><p>A small transmission before we begin.</p><span>[ preview ↵ ]</span>
+			</button>
+		</div>
+		<p>All three follow the same actual loading lifecycle. The demo takes 2.4 seconds.</p>
+		<a href="/">[ Back to the homepage ↗ ]</a>
+	</main>
+	<SceneLoader />
+</Layout>
+<style>
+	.loader-studies {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 40px;
+		margin: 40px 0 65px;
+	}
+	.loader-studies button {
+		font: inherit;
+		border: 0;
+		background: none;
+		color: inherit;
+		text-align: left;
+		cursor: pointer;
+		padding: 0;
+	}
+	.loader-studies pre {
+		font: 14px/1.5 monospace;
+		min-height: 100px;
+		color: #d6e77a;
+	}
+	.loader-studies strong {
+		font-weight: 400;
+	}
+	.loader-studies p {
+		font-size: 14px;
+		color: #a1ada8;
+		margin: 15px 0;
+	}
+	.loader-studies span {
+		font-size: 14px;
+		color: #7ac8d2;
+	}
+	@media (max-width: 700px) {
+		.loader-studies {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+<script>
+	import { SceneLoader, type LoaderVariant } from "../../scripts/scene/loader";
+	let current: SceneLoader | undefined;
+	let timer = 0;
+	function setup() {
+		document.querySelectorAll<HTMLButtonElement>("[data-loader-demo]").forEach(button => {
+			if (button.dataset.loaderBound) return;
+			button.dataset.loaderBound = "true";
+			button.addEventListener("click", () => {
+				current?.dispose();
+				clearTimeout(timer);
+				current = new SceneLoader(button.dataset.loaderDemo as LoaderVariant);
+				const start = performance.now();
+				const tick = () => {
+					const p = Math.min(1, (performance.now() - start) / 2400);
+					current?.setProgress(p, p < 0.5 ? "Preparing the glyphs…" : "Waking up the dragon…");
+					if (p < 1) timer = window.setTimeout(tick, 80);
+					else current?.finish();
+				};
+				tick();
+			});
+		});
+	}
+	document.addEventListener("astro:page-load", setup);
+	setup();
+	document.addEventListener("astro:before-swap", () => {
+		current?.dispose();
+		clearTimeout(timer);
+	});
+</script>

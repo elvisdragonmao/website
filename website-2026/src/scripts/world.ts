@@ -9,6 +9,7 @@ import { CursorGaze } from "./scene/cursor-gaze";
 import { createDesk } from "./scene/desk";
 import { createEarth } from "./scene/earth";
 import { CameraJourney, DESK_OFFSET, EARTH_CENTER, type StoryRange, ease } from "./scene/journey";
+import { SceneLoader } from "./scene/loader";
 import { StoryText } from "./scene/story-text";
 
 const lifetimes = import.meta.env.DEV
@@ -28,6 +29,7 @@ document.addEventListener("astro:page-load", mountWorld);
 mountWorld();
 
 async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Promise<void> {
+	const loader = new SceneLoader();
 	let frame = 0,
 		stopped = false,
 		observer: ResizeObserver | undefined;
@@ -53,6 +55,7 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 	try {
 		renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "high-performance" });
 	} catch {
+		loader.finish();
 		document.documentElement.dataset.artState = "fallback";
 		if (import.meta.env.DEV) dispatchEvent(new CustomEvent("em:cover-error"));
 		return;
@@ -138,6 +141,7 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 	const cleanup = () => {
 		if (stopped) return;
 		stopped = true;
+		loader.dispose();
 		cancelAnimationFrame(frame);
 		observer?.disconnect();
 		renderer.dispose();
@@ -157,7 +161,10 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 	};
 	signal.addEventListener("abort", cleanup, { once: true });
 	try {
-		const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(CHARACTER_MODEL_URL);
+		loader.setProgress(0.12);
+		const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(CHARACTER_MODEL_URL, event => {
+			if (event.total > 0) loader.setProgress(0.12 + (0.72 * event.loaded) / event.total);
+		});
 		if (signal.aborted) {
 			disposeObject(gltf.scene);
 			return;
@@ -199,11 +206,13 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 			gaze = new CursorGaze(head, eyes, hasGazeOrigin ? gazeOrigin : coverAnchor, gazeForward);
 		}
 		loaded = true;
+		loader.setProgress(0.92, "Finding the light…");
 		document.documentElement.classList.add("art-ready");
 		document.documentElement.dataset.artState = "ready";
 	} catch (error) {
 		if (signal.aborted) return;
 		console.warn("Dragon unavailable; showing the static cover.", error);
+		loader.finish();
 		document.documentElement.dataset.artState = "fallback";
 		if (import.meta.env.DEV) dispatchEvent(new CustomEvent("em:cover-error"));
 	}
@@ -234,10 +243,15 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 	const pointer = new THREE.Vector2(0.5, 0.5),
 		follow = new THREE.Vector2(0.5, 0.5),
 		headFollow = new THREE.Vector2(0.5, 0.5);
+	let lastPointer = performance.now();
+	const idlePointer = new THREE.Vector2(0.5, 0.5);
 	addEventListener(
 		"pointermove",
 		event => {
-			if (event.pointerType !== "touch") pointer.set(event.clientX / width, 1 - event.clientY / height);
+			if (event.pointerType !== "touch") {
+				pointer.set(event.clientX / width, 1 - event.clientY / height);
+				lastPointer = performance.now();
+			}
 		},
 		{ passive: true, signal }
 	);
@@ -373,16 +387,11 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		if (nextBlinkWeight !== blinkWeight) settingsRevision++;
 		blinkWeight = nextBlinkWeight;
 		averageFrame = averageFrame * 0.96 + dt * 1000 * 0.04;
-		const gazePointer = heldPointer ?? pointer;
+		const idle = reduced.matches ? 0 : ease((ms - lastPointer - 3000) / 2500);
+		idlePointer.copy(pointer).lerp(new THREE.Vector2(0.5 + Math.sin(time * 0.27) * 0.11 + Math.sin(time * 0.61) * 0.025, 0.5 + Math.sin(time * 0.33 + 0.7) * 0.065), idle);
+		const gazePointer = heldPointer ?? idlePointer;
 		follow.lerp(gazePointer, 1 - Math.exp(-dt * 8));
 		headFollow.lerp(gazePointer, 1 - Math.exp(-dt * coverSettings.followSpeed));
-		journey.frame(isLab ? 0 : scrollY, height, width, ranges, time, neutralPointer, reduced.matches);
-		const coverPresence = isLab ? 1 : 1 - ease(journey.coverProgress / 0.62);
-		ambient.color.copy(lightColors.ambient).lerp(neutralWhite, coverPresence);
-		ambient.groundColor.copy(lightColors.ground).lerp(neutralGround, coverPresence);
-		key.color.copy(lightColors.key).lerp(neutralWhite, coverPresence);
-		rim.color.copy(lightColors.rim).lerp(neutralWhite, coverPresence);
-		fill.color.copy(lightColors.fill).lerp(neutralWhite, coverPresence);
 		if (head) {
 			head.updateWorldMatrix(true, false);
 			framingAnchor.copy(coverLocalAnchor).applyMatrix4(head.matrixWorld);
@@ -392,9 +401,19 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		coverOffset.set(0, coverSettings.cameraHeight, coverSettings.distance);
 		coverOffset.applyAxisAngle(up, THREE.MathUtils.degToRad(coverSettings.cameraAngle + (reduced.matches ? 0 : (follow.x - 0.5) * 2 * coverSettings.cameraOrbit)));
 		coverPosition.copy(coverAnchor).add(coverOffset);
-		journey.position.lerp(coverPosition, coverPresence);
-		journey.look.lerp(coverTarget, coverPresence);
-		const deskZoom = isLab ? 1 : 1 + 0.13 * (1 - ease((scrollY - (ranges.find(r => r.name === "fire")?.top ?? Infinity) + height * 0.5) / height));
+		journey.setCoverStart(coverPosition, coverTarget);
+		journey.frame(isLab ? 0 : scrollY, height, width, ranges, time, neutralPointer, reduced.matches);
+		const coverPresence = isLab ? 1 : 1 - ease(journey.coverProgress / 0.78);
+		if (isLab) {
+			journey.position.copy(coverPosition);
+			journey.look.copy(coverTarget);
+		}
+		ambient.color.copy(lightColors.ambient).lerp(neutralWhite, coverPresence);
+		ambient.groundColor.copy(lightColors.ground).lerp(neutralGround, coverPresence);
+		key.color.copy(lightColors.key).lerp(neutralWhite, coverPresence);
+		rim.color.copy(lightColors.rim).lerp(neutralWhite, coverPresence);
+		fill.color.copy(lightColors.fill).lerp(neutralWhite, coverPresence);
+		const deskZoom = 1;
 		const zoom = THREE.MathUtils.lerp(deskZoom, coverSettings.zoom, coverPresence);
 		if (Math.abs(camera.zoom - zoom) > 0.0001) {
 			camera.zoom = zoom;
@@ -440,24 +459,27 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		camera.rotateZ(journey.roll);
 		camera.updateMatrixWorld();
 		const headPresence = isLab ? 1 : 1 - ease(journey.coverProgress / 0.78);
+		// Once leaving the cover, keep the rig's neutral anatomy instead of aiming
+		// the head at a camera flying over/behind its neck.
 		gaze?.update(camera, gazePointer, coverSettings, dt, headPresence, reduced.matches);
 		ears.forEach((ear, i) => rotateControl(ear, 0, 0, reduced.matches ? 0 : (headFollow.x - 0.5) * 0.045 + Math.sin(time * 0.65 + i) * 0.008));
 		for (const lid of lids)
 			for (const [key, index] of Object.entries(lid.morphTargetDictionary ?? {})) if (/blink/i.test(key) && lid.morphTargetInfluences) lid.morphTargetInfluences[index] = blinkWeight;
 		desk.animate(time, journey.deskProgress, reduced.matches);
 		desk.group.visible = !isLab && journey.coverProgress > 0.28 && scrollY < (ranges.find(r => r.name === "alive")?.top ?? 0);
-		const dragonFade = isLab || modelReview ? 1 : 1 - ease((journey.coverProgress - 0.25) / 0.42);
+		const dragonFade = isLab || modelReview ? 1 : 1 - ease((journey.coverProgress - 0.025) / 0.43);
 		if (dragon) {
 			dragon.visible = dragonFade > 0.001;
-			dragon.position.y = -0.45 * (1 - dragonFade);
+			dragon.position.y = -0.3 * (1 - dragonFade) + (reduced.matches ? 0 : Math.sin(time * 1.05) * 0.009 * dragonFade);
 			dragon.position.z = 0.18 * (1 - dragonFade);
+			dragon.rotation.z = reduced.matches ? 0 : Math.sin(time * 0.58) * 0.0025 * dragonFade;
 			for (const [material, rest] of dragonMaterials) {
 				const transparent = rest.transparent || dragonFade < 0.999;
 				if (material.transparent !== transparent) {
 					material.transparent = transparent;
 					material.needsUpdate = true;
 				}
-				material.opacity = rest.opacity * dragonFade;
+				material.opacity = rest.opacity * Math.pow(dragonFade, 2.2);
 				material.depthWrite = rest.depthWrite && dragonFade > 0.99;
 			}
 		}
@@ -505,6 +527,7 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 			renderer.render(art.scene, art.camera);
 		}
 		sceneState.paints++;
+		if (sceneState.paints === 1) loader.finish();
 	}
 	frame = requestAnimationFrame(render);
 	addEventListener("pagehide", cleanup, { once: true, signal });

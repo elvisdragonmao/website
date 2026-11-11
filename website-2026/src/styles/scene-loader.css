@@ -1,0 +1,51 @@
+.scene-loader {
+	display: none;
+	position: fixed;
+	inset: 0;
+	z-index: 9000;
+	place-items: center;
+	background: #080909;
+	color: #eeeee7;
+	font:
+		14px/1.8 "IBM Plex Mono",
+		monospace;
+	text-align: center;
+	pointer-events: auto;
+}
+html.home-loading .scene-loader {
+	display: grid;
+}
+.scene-loader-content {
+	padding: 24px;
+	max-width: 100%;
+}
+.scene-loader-signature,
+.scene-loader-footnote {
+	display: block;
+	color: #98a69f;
+	font-size: 12px;
+}
+.scene-loader-footnote {
+	margin-top: 34px;
+}
+.scene-loader pre {
+	font: inherit;
+	font-size: 14px;
+	line-height: 1.5;
+	white-space: pre;
+	color: #d6e77a;
+	min-height: 5em;
+	display: grid;
+	place-items: center;
+	letter-spacing: 0;
+	margin: 28px 0 14px;
+}
+.scene-loader [data-loader-label] {
+	font-size: 14px;
+	margin: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+	.scene-loader pre {
+		min-height: 2em;
+	}
+}

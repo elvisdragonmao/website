@@ -4,4 +4,6 @@ dist/
 .astro/
 .wrangler/
 assets/character/*.json
+assets/character/
+docs/
 public/models/

@@ -4,8 +4,10 @@ import Layout from "../layouts/Layout.astro";
 import Footer from "../components/Footer.astro";
 import Icon from "../components/Icon.astro";
 import WorkList from "../components/WorkList.astro";
+import SceneLoader from "../components/SceneLoader.astro";
 import headings from "../data/ascii-headings.json";
 import "../styles/home-story.css";
+import "../styles/home-motion.css";
 const ascii = (text: string) => {
 	const rows = text.split("\n");
 	return { rows, width: Math.max(...rows.map(row => row.length)) * 8.5 + 2, height: rows.length * 15 + 2 };
@@ -15,12 +17,17 @@ const ctaArt = ascii(headings.cta);
 const aboutArt = ascii(headings.about);
 const fireCopy = "People said front-end is dead.\nGuess I'm now a necromancer.";
 const aliveCopy = "I make things\nthat feel alive.";
-const exploringCopy = "Exploring new ways for people\nand technology to communicate.";
+const exploringCopy = "Explore new ways for people\nand technology to communicate.";
 const exploringSupport = "Through movement, touch, or even telepathy.";
 const whyCopy = "No matter what I do,\nI just hope to make this world\na little different.";
 ---
 
 <Layout home>
+	<script is:inline data-astro-rerun>
+		document.documentElement.classList.add("home-loading");
+		window.setTimeout(() => document.documentElement.classList.remove("home-loading"), 12000);
+	</script>
+	<SceneLoader />
 	<canvas id="world" aria-hidden="true"></canvas>
 	<img id="world-fallback" src={CHARACTER_POSTER_URL} alt="" aria-hidden="true" />
 	<main id="main">
@@ -64,7 +71,7 @@ const whyCopy = "No matter what I do,\nI just hope to make this world\na little 
 			</div>
 		</section>
 		<section id="beyond" class="scene scene-track scene-beyond" data-scene="beyond">
-			<h2 class="sr-only">Exploring new ways for people and technology to communicate.</h2>
+			<h2 class="sr-only">Explore new ways for people and technology to communicate.</h2>
 			<p class="sr-only">{exploringSupport}</p>
 			<div class="scene-viewport" data-story-layer="beyond">
 				<div class="cinematic-subtitle story-panel" data-world-label="beyond">
@@ -92,7 +99,7 @@ const whyCopy = "No matter what I do,\nI just hope to make this world\na little 
 						}
 					</svg>
 				</h2>
-				<p>Some of it runs every day.<br />Some of it starts with a question.</p>
+				<p>For people I'll never meet,<br />and people I'll never forget.</p>
 			</div>
 			<WorkList />
 			<a class="text-link work-all" href="/work/">Explore all work <Icon /></a>
@@ -114,9 +121,9 @@ const whyCopy = "No matter what I do,\nI just hope to make this world\na little 
 			<div class="contact-intro">
 				<h2 class="sr-only">Let's make it true.</h2>
 				<div class="contact-heading" data-story-layer="contact">
-					<p>Got sth wild in mind?</p>
+					<p class="sr-only">Got sth wild in mind?</p>
 					<div class="ascii-art contact-ascii">
-						<a href="mailto:info@elvismao.com" aria-label="Let's make it true. Email Elvis Mao.">
+						<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer" aria-label="Let's make it true. Email Elvis Mao.">
 							<svg viewBox={`0 0 ${ctaArt.width} ${ctaArt.height}`} aria-hidden="true" focusable="false">
 								{
 									ctaArt.rows.map((row, index) => (
@@ -128,7 +135,7 @@ const whyCopy = "No matter what I do,\nI just hope to make this world\na little 
 							</svg>
 						</a>
 					</div>
-					<a class="contact-email" href="mailto:info@elvismao.com">[ info@elvismao.com ↗ ]</a>
+					<a class="contact-email" href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer">[ info@elvismao.com ↗ ]</a>
 				</div>
 			</div>
 			<Footer newsletter />

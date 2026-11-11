@@ -1,22 +1,34 @@
-<div align=center>
+# elvismao.com
 
-# [elvismao.com](https://elvismao.com)
+The personal website of Elvis Mao / EM. The 2026 rebuild is being developed separately from the original site.
 
-My intro and web projects.
+| Directory                          | Purpose                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------- |
+| [`website-2026/`](./website-2026/) | Astro / TypeScript / Three.js rebuild, with an interactive ASCII homepage |
+| [`website-old/`](./website-old/)   | Archived original website and tools; not migrated into the rebuild        |
 
-<img width=500 src=src/assets/img/thumbnail.webp style=margin-bottom:2rem>
+## Work on the rebuild
 
-Thanks Awwwards for honoring a 17-year-old boy's site ❤️
+Use the pinned Corepack pnpm version from inside the project:
 
-<img src=src/assets/intro/awwwards.svg width=70px>
+```sh
+cd website-2026
+corepack pnpm install --frozen-lockfile
+corepack pnpm run dev
+```
 
-</div>
+Development runs at `http://127.0.0.1:4326/`. Development-only routes include `/cover-lab/` and `/loading-lab/`.
 
-## How did you made the home page?
+```sh
+corepack pnpm run format:check
+corepack pnpm run build
+corepack pnpm run deploy:check
+```
 
-The spinning avatar is made with **three.js** to turn STL module into ASCII art. If you like to check out the clean source code you can go to [elvisdragonmao/intro](https://github.com/elvisdragonmao/intro/tree/main). This is where everything begins.
+The workflow validates changes without automatically publishing them. See the [project README](./website-2026/README.md) for deployment and character setup.
 
-Feel free to steal the code and add you creativity inside, and I would like to see your result (: Consider [buying me a coffee](buymeacoffee.com/elvismao) to support my projects if it help.
+## Local working assets
 
-> [!NOTE]  
-> This site is now deployed on Cloudflare Pages instead of GitHub for optimization.
+Models, editable character sources, and `docs/` are intentionally excluded from Git while they are being organised. They are kept locally and backed up separately on the Desktop. Restore the character assets before running the complete interactive homepage; a fresh clone includes its static fallback.
+
+The original site's award history and implementation notes remain in its [archived README](./website-old/README.md).
