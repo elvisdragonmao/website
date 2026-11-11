@@ -18,5 +18,5 @@ The spinning avatar is made with **three.js** to turn STL module into ASCII art.
 
 Feel free to steal the code and add you creativity inside, and I would like to see your result (: Consider [buying me a coffee](buymeacoffee.com/elvismao) to support my projects if it help.
 
-> [!NOTE]  
+> [!NOTE]
 > This site is now deployed on Cloudflare Pages instead of GitHub for optimization.
