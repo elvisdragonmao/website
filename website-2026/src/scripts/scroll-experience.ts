@@ -63,13 +63,19 @@ export function setupScrollExperience(signal: AbortSignal): void {
 		last = scrollY;
 		const h = innerHeight;
 		if (work && gallery) {
+			const drifts: number[] = [];
 			cards.forEach((card, i) => {
 				const anchor = absoluteTop(card) - scrollY;
-				const drift = reduced.matches ? 0 : clamp((h * 0.6 - anchor) * [0.055, 0.092, 0.072, 0.108][i % 4]!, -85, 95);
+				const raw = (h * 0.6 - anchor) * [0.14, 0.24, 0.19, 0.28][i % 4]!;
+				const limit = raw < 0 ? 165 : 180;
+				const drift = reduced.matches ? 0 : limit * Math.tanh(raw / limit);
+				drifts.push(drift);
 				card.style.setProperty("--work-drift", `${drift.toFixed(2)}px`);
 			});
 			const offset = reduced.matches ? 0 : clamp((h * 0.7 - work.getBoundingClientRect().top) * 0.065, -45, 80);
 			work.style.setProperty("--work-heading-drift", `${offset.toFixed(2)}px`);
+			const lastDrift = Math.max(0, ...drifts.slice(-2));
+			work.style.setProperty("--work-link-drift", `${(lastDrift * ease(lastDrift / 40)).toFixed(2)}px`);
 		}
 		if (footer) {
 			const box = footer.getBoundingClientRect();

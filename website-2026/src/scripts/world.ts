@@ -79,6 +79,12 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 	const neutralWhite = new THREE.Color(0xffffff),
 		neutralGround = new THREE.Color(0x161616);
 	const camera = new THREE.PerspectiveCamera(36, 1, 0.05, 80);
+	const portraitCamera = camera.clone();
+	const portraitFlight = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(0.6, 5.9, 1.9), new THREE.Vector3(0, 6.7, 0.6), new THREE.Vector3(0, 6.65, -2));
+	const portraitLook = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(0.3, 4.95, 0.1), new THREE.Vector3(0, 5, -1), new THREE.Vector3(0.4, 4, -4));
+	const portraitGoal = new THREE.Vector3(),
+		portraitLookGoal = new THREE.Vector3();
+	let portraitPresence = 1;
 	const art = createAsciiSurface(),
 		desk = createDesk(),
 		journey = new CameraJourney(),
@@ -99,7 +105,6 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		ears: THREE.Object3D[] = [],
 		lids: THREE.Mesh[] = [];
 	const restQuaternions = new Map<THREE.Object3D, THREE.Quaternion>();
-	const dragonMaterials = new Map<THREE.Material, { opacity: number; transparent: boolean; depthWrite: boolean }>();
 	const parentRotation = new THREE.Quaternion(),
 		deltaRotation = new THREE.Quaternion(),
 		localDelta = new THREE.Quaternion();
@@ -193,10 +198,6 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		dragon.traverse(o => {
 			const m = o as THREE.Mesh;
 			if (m.isMesh && m.morphTargetDictionary && Object.keys(m.morphTargetDictionary).some(k => /blink/i.test(k))) lids.push(m);
-			if (m.isMesh)
-				for (const material of Array.isArray(m.material) ? m.material : [m.material]) {
-					if (!dragonMaterials.has(material)) dragonMaterials.set(material, { opacity: material.opacity, transparent: material.transparent, depthWrite: material.depthWrite });
-				}
 		});
 		for (const o of [head, ...eyes, ...ears]) if (o) restQuaternions.set(o, o.quaternion.clone());
 		if (head) {
@@ -229,6 +230,8 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		art.resize(width, height, largeGrain);
 		camera.aspect = width / height;
 		camera.updateProjectionMatrix();
+		portraitCamera.aspect = width / height;
+		portraitCamera.updateProjectionMatrix();
 		ranges = isLab
 			? ["cover", "desk", "fire", "alive", "beyond", "why"].map((name, i) => ({ name, top: i * height * 3, height: height * 3 }))
 			: sections.map(section => ({ name: section.dataset.scene ?? "", top: section.getBoundingClientRect().top + scrollY, height: section.offsetHeight }));
@@ -244,7 +247,9 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		follow = new THREE.Vector2(0.5, 0.5),
 		headFollow = new THREE.Vector2(0.5, 0.5);
 	let lastPointer = performance.now();
-	const idlePointer = new THREE.Vector2(0.5, 0.5);
+	const idlePointer = new THREE.Vector2(0.5, 0.5),
+		idleTarget = new THREE.Vector2(0.5, 0.5);
+	let nextIdleLook = 0;
 	addEventListener(
 		"pointermove",
 		event => {
@@ -324,7 +329,9 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		(window as unknown as { __EM_ART__: unknown }).__EM_ART__ = {
 			sceneState,
 			renderer,
-			camera,
+			get camera() {
+				return portraitPresence > 0.5 ? portraitCamera : camera;
+			},
 			getModel: () => dragon,
 			getDesk: () => desk,
 			getEarth: () => earth,
@@ -349,8 +356,14 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 				blinkMeshes: lids.length,
 				blinkWeight,
 				blinkReview,
-				camera: camera.position.toArray(),
-				look: lookFollow.toArray(),
+				camera: (portraitPresence > 0.5 ? portraitCamera : camera).position.toArray(),
+				deskCamera: camera.position.toArray(),
+				deskZoom: camera.zoom,
+				portraitZoom: portraitCamera.zoom,
+				portraitCamera: portraitCamera.position.toArray(),
+				portraitPresence,
+				idleTarget: idleTarget.toArray(),
+				look: (portraitPresence > 0.5 ? portraitLookGoal : lookFollow).toArray(),
 				framingAnchor: framingAnchor.toArray(),
 				deskProgress: journey.deskProgress,
 				fireLift: journey.fireLift,
@@ -388,9 +401,13 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		blinkWeight = nextBlinkWeight;
 		averageFrame = averageFrame * 0.96 + dt * 1000 * 0.04;
 		const idle = reduced.matches ? 0 : ease((ms - lastPointer - 3000) / 2500);
-		idlePointer.copy(pointer).lerp(new THREE.Vector2(0.5 + Math.sin(time * 0.27) * 0.11 + Math.sin(time * 0.61) * 0.025, 0.5 + Math.sin(time * 0.33 + 0.7) * 0.065), idle);
+		if (idle > 0.05 && time >= nextIdleLook) {
+			idleTarget.set(0.07 + Math.random() * 0.86, 0.1 + Math.random() * 0.8);
+			nextIdleLook = time + 2.5 + Math.random() * 2.8;
+		}
+		idlePointer.copy(pointer).lerp(idleTarget, idle);
 		const gazePointer = heldPointer ?? idlePointer;
-		follow.lerp(gazePointer, 1 - Math.exp(-dt * 8));
+		follow.lerp(heldPointer ?? pointer, 1 - Math.exp(-dt * 8));
 		headFollow.lerp(gazePointer, 1 - Math.exp(-dt * coverSettings.followSpeed));
 		if (head) {
 			head.updateWorldMatrix(true, false);
@@ -401,7 +418,6 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		coverOffset.set(0, coverSettings.cameraHeight, coverSettings.distance);
 		coverOffset.applyAxisAngle(up, THREE.MathUtils.degToRad(coverSettings.cameraAngle + (reduced.matches ? 0 : (follow.x - 0.5) * 2 * coverSettings.cameraOrbit)));
 		coverPosition.copy(coverAnchor).add(coverOffset);
-		journey.setCoverStart(coverPosition, coverTarget);
 		journey.frame(isLab ? 0 : scrollY, height, width, ranges, time, neutralPointer, reduced.matches);
 		const coverPresence = isLab ? 1 : 1 - ease(journey.coverProgress / 0.78);
 		if (isLab) {
@@ -413,12 +429,25 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		key.color.copy(lightColors.key).lerp(neutralWhite, coverPresence);
 		rim.color.copy(lightColors.rim).lerp(neutralWhite, coverPresence);
 		fill.color.copy(lightColors.fill).lerp(neutralWhite, coverPresence);
-		const deskZoom = 1;
-		const zoom = THREE.MathUtils.lerp(deskZoom, coverSettings.zoom, coverPresence);
-		if (Math.abs(camera.zoom - zoom) > 0.0001) {
-			camera.zoom = zoom;
-			camera.updateProjectionMatrix();
+		if (portraitCamera.zoom !== coverSettings.zoom) {
+			portraitCamera.zoom = coverSettings.zoom;
+			portraitCamera.updateProjectionMatrix();
 		}
+		portraitPresence = isLab || modelReview ? 1 : 1 - ease((journey.coverProgress - 0.18) / 0.7);
+		portraitFlight.v0.copy(coverPosition);
+		portraitLook.v0.copy(coverTarget);
+		const flight = isLab ? 0 : ease(journey.coverProgress);
+		portraitFlight.getPoint(flight, portraitGoal);
+		portraitLook.getPoint(flight, portraitLookGoal);
+		if (modelReview) {
+			portraitGoal.set(3.2, 4.2, 5.3);
+			portraitLookGoal.set(0, 3.8, 0);
+		}
+		portraitCamera.position.copy(portraitGoal);
+		portraitCamera.lookAt(portraitLookGoal);
+		portraitCamera.updateMatrixWorld();
+		art.uniforms.uPortraitPresence.value = loaded ? portraitPresence : 0;
+
 		native = forceNative || (coverPresence > 0.05 && coverSettings.view === "colour");
 		const name = journey.phase,
 			changed = name !== lastScene;
@@ -458,31 +487,22 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		camera.lookAt(lookFollow);
 		camera.rotateZ(journey.roll);
 		camera.updateMatrixWorld();
-		const headPresence = isLab ? 1 : 1 - ease(journey.coverProgress / 0.78);
-		// Once leaving the cover, keep the rig's neutral anatomy instead of aiming
-		// the head at a camera flying over/behind its neck.
-		gaze?.update(camera, gazePointer, coverSettings, dt, headPresence, reduced.matches);
+		// The dragon stays planted in front of the desk. Freeze its gaze while
+		// the portrait camera flies over the crown, retaining coherent anatomy.
+		if (isLab || journey.coverProgress < 0.025) gaze?.update(portraitCamera, gazePointer, coverSettings, dt, 1, reduced.matches);
+
 		ears.forEach((ear, i) => rotateControl(ear, 0, 0, reduced.matches ? 0 : (headFollow.x - 0.5) * 0.045 + Math.sin(time * 0.65 + i) * 0.008));
 		for (const lid of lids)
 			for (const [key, index] of Object.entries(lid.morphTargetDictionary ?? {})) if (/blink/i.test(key) && lid.morphTargetInfluences) lid.morphTargetInfluences[index] = blinkWeight;
 		desk.animate(time, journey.deskProgress, reduced.matches);
 		desk.group.visible = !isLab && journey.coverProgress > 0.28 && scrollY < (ranges.find(r => r.name === "alive")?.top ?? 0);
-		const dragonFade = isLab || modelReview ? 1 : 1 - ease((journey.coverProgress - 0.025) / 0.43);
 		if (dragon) {
-			dragon.visible = dragonFade > 0.001;
-			dragon.position.y = -0.3 * (1 - dragonFade) + (reduced.matches ? 0 : Math.sin(time * 1.05) * 0.009 * dragonFade);
-			dragon.position.z = 0.18 * (1 - dragonFade);
-			dragon.rotation.z = reduced.matches ? 0 : Math.sin(time * 0.58) * 0.0025 * dragonFade;
-			for (const [material, rest] of dragonMaterials) {
-				const transparent = rest.transparent || dragonFade < 0.999;
-				if (material.transparent !== transparent) {
-					material.transparent = transparent;
-					material.needsUpdate = true;
-				}
-				material.opacity = rest.opacity * Math.pow(dragonFade, 2.2);
-				material.depthWrite = rest.depthWrite && dragonFade > 0.99;
-			}
+			dragon.visible = portraitPresence > 0.001;
+			dragon.position.y = reduced.matches ? 0 : Math.sin(time * 1.05) * 0.009;
+			dragon.position.z = 0;
+			dragon.rotation.z = reduced.matches ? 0 : Math.sin(time * 0.58) * 0.0025;
 		}
+
 		earth.group.visible = !isLab && journey.earthPresence > 0.001;
 		earth.update(time, journey.earthProgress, reduced.matches, journey.earthPresence);
 		if (reduced.matches) art.fire.warmUp(time, 1);
@@ -514,18 +534,38 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 			const rect = narrativePanel.getBoundingClientRect();
 			art.uniforms.uLabelFocus.value.set((rect.left + rect.width / 2) / width, 1 - (rect.top + rect.height / 2) / height, (rect.width * 0.55) / width, (rect.height * 0.62) / height);
 		}
-		const subjectsVisible = Boolean(dragon?.visible || desk.group.visible || earth.group.visible);
-		if (native || subjectsVisible || hadSubjects || changed) {
+		const deskVisible = desk.group.visible,
+			earthVisible = earth.group.visible;
+		const portraitVisible = Boolean(dragon?.visible);
+		sceneCalls = 0;
+		sceneTriangles = 0;
+		// Composite complete opaque renders, rather than turning layered fur,
+		// eyes and facial meshes transparent and breaking their depth sorting.
+		if (portraitVisible) {
+			desk.group.visible = false;
+			earth.group.visible = false;
+			renderer.setRenderTarget(native ? null : art.portraitSource);
+			renderer.render(scene, portraitCamera);
+			sceneCalls += renderer.info.render.calls;
+			sceneTriangles += renderer.info.render.triangles;
+		}
+		desk.group.visible = deskVisible;
+		earth.group.visible = earthVisible;
+		if (dragon) dragon.visible = false;
+		const subjectsVisible = deskVisible || earthVisible;
+		if ((native && !portraitVisible) || (!native && (subjectsVisible || hadSubjects || changed || sceneState.paints === 0))) {
 			renderer.setRenderTarget(native ? null : art.source);
 			renderer.render(scene, camera);
-			sceneCalls = renderer.info.render.calls;
-			sceneTriangles = renderer.info.render.triangles;
+			sceneCalls += renderer.info.render.calls;
+			sceneTriangles += renderer.info.render.triangles;
 		}
+		if (dragon) dragon.visible = portraitVisible;
 		hadSubjects = subjectsVisible;
 		if (!native) {
 			renderer.setRenderTarget(null);
 			renderer.render(art.scene, art.camera);
 		}
+
 		sceneState.paints++;
 		if (sceneState.paints === 1) loader.finish();
 	}

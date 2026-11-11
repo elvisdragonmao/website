@@ -66,6 +66,11 @@ export class StoryText {
 			const range = ranges.find(item => item.name === layer.name);
 			if (!enabled || !range) {
 				this.setVisible(layer, true, 1);
+				layer.element.style.setProperty("--research-link-reveal", "1");
+				for (const link of layer.links) {
+					link.style.removeProperty("pointer-events");
+					link.tabIndex = 0;
+				}
 				for (const line of layer.lines) this.write(line, line.source);
 				continue;
 			}
@@ -76,11 +81,15 @@ export class StoryText {
 			const exitStart = contact ? range.top + height * 0.6 : why && contactRange ? contactRange.top + height * 0.6 : range.top + range.height - height * 0.64;
 			const exitProgress = ease((scroll - exitStart) / (height * (contact || why ? 0.4 : 0.36)));
 			const exit = 1 - exitProgress;
-			let offset = layer.name === "beyond" ? -height * 0.18 * exitProgress : 0;
+			let offset = layer.name === "beyond" ? -height * 0.34 * clamp((scroll - range.top + height * 0.12) / Math.max(height, range.height * 0.9)) : 0;
 			if (why && contactRange) offset = -height * 0.21 * ease((scroll - contactRange.top + height * 0.36) / (height * 0.7)) - height * 0.08 * exitProgress;
 			if (contact) offset = -height * 0.08 * exitProgress;
 			layer.element.style.setProperty("--story-offset-y", `${offset.toFixed(2)}px`);
-			if (contact) layer.element.style.setProperty("--contact-reveal", ease((scroll - range.top + height * 0.18) / (height * 0.52)).toFixed(3));
+			if (contact) {
+				const reveal = ease((scroll - range.top + height * 0.28) / (height * 0.56));
+				layer.element.style.setProperty("--contact-reveal", reveal.toFixed(3));
+				layer.element.style.setProperty("--contact-rise", `${(height * (0.15 * (1 - reveal) - 0.1 * ease((scroll - range.top) / (height * 0.7)))).toFixed(2)}px`);
+			}
 			const opacity = enter * exit;
 			this.setVisible(layer, opacity > 0.002, opacity);
 			// The intro clips fixed content as the ordinary footer enters; clipped links
@@ -88,6 +97,14 @@ export class StoryText {
 			if (contact) for (const link of layer.links) link.tabIndex = opacity > 0.1 && scroll - range.top < height * 0.95 ? 0 : -1;
 			if (opacity <= 0.002) continue;
 			const progress = clamp((scroll - range.top + height * 0.2) / Math.max(height * 0.7, range.height * 0.48));
+			if (layer.name === "beyond") {
+				const linkReveal = ease((progress - 0.2) / 0.34);
+				layer.element.style.setProperty("--research-link-reveal", linkReveal.toFixed(3));
+				for (const link of layer.links) {
+					link.style.pointerEvents = linkReveal > 0.15 ? "auto" : "none";
+					link.tabIndex = linkReveal > 0.15 ? 0 : -1;
+				}
+			}
 			for (const line of layer.lines) {
 				const reveal = ease((progress - line.delay) / 0.67);
 				this.write(line, this.decode(line.source, reveal, tick));
@@ -153,6 +170,9 @@ export class StoryText {
 			layer.element.style.removeProperty("--story-opacity");
 			layer.element.style.removeProperty("--contact-reveal");
 			layer.element.style.removeProperty("--story-offset-y");
+			layer.element.style.removeProperty("--research-link-reveal");
+			layer.element.style.removeProperty("--contact-rise");
+			for (const link of layer.links) link.style.removeProperty("pointer-events");
 			for (const link of layer.links) link.removeAttribute("tabindex");
 			for (const line of layer.lines) this.write(line, line.source);
 		}

@@ -54,6 +54,12 @@
 .home-page .contact-section .newsletter-caption {
 	color: #a1ada8;
 }
+.home-page .contact-section .footer-note {
+	padding-top: 18px;
+}
+.home-page [data-story-layer="beyond"] .annotation-link {
+	opacity: var(--research-link-reveal, 1);
+}
 .home-page .next-page {
 	width: min(1160px, calc(100% - 48px));
 	margin-inline: auto;
@@ -104,10 +110,11 @@
 	}
 	html.art-ready.story-text-ready .home-page .contact-heading .contact-ascii {
 		top: 50%;
-		transform: translate(-50%, -50%);
+		transform: translate(-50%, calc(-50% + var(--contact-rise, 0px)));
 	}
 	html.art-ready.story-text-ready .home-page .contact-heading .contact-email {
 		top: calc(50% + clamp(66px, 8vw, 130px));
+		transform: translate(-50%, var(--contact-rise, 0px));
 	}
 	html.art-ready.story-text-ready .home-page .contact-intro {
 		min-height: 130svh;
@@ -120,8 +127,47 @@
 		translate: 0 var(--work-drift, 0px);
 		will-change: translate;
 	}
+	.home-page .work-box-gallery {
+		row-gap: clamp(220px, 20vw, 280px);
+	}
 	.home-page .work-box-gallery > .work-box:nth-child(even) {
 		translate: 0 calc(var(--work-drift, 0px) + 22px);
+	}
+	.home-page .ascii-work > .work-all {
+		translate: 0 var(--work-link-drift, 0px);
+		will-change: translate;
+		margin-top: 86px;
+	}
+	.work-box[data-work-animated] {
+		opacity: 0;
+		transition: opacity 720ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.work-box[data-work-animated] :is(.work-box-front, .work-box-geometry) {
+		transform: translateY(44px);
+		transition: transform 850ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.work-box[data-work-visible="true"] {
+		opacity: 1;
+	}
+	.work-box[data-work-visible="true"] :is(.work-box-front, .work-box-geometry) {
+		transform: translateY(0);
+	}
+	.work-box[data-work-visible="false"] {
+		transition-duration: 0ms;
+	}
+	.work-box[data-work-visible="false"] :is(.work-box-front, .work-box-geometry) {
+		transition-duration: 0ms;
+	}
+	.work-box[data-work-animated] .work-box-geometry text {
+		opacity: 0;
+		transition: opacity 300ms;
+		transition-delay: var(--glyph-row-delay, 0ms);
+	}
+	.work-box[data-work-visible="true"] .work-box-geometry text {
+		opacity: 1;
+	}
+	.work-box[data-work-visible="false"] .work-box-geometry text {
+		transition: none;
 	}
 	.home-page .contact-section .footer-main,
 	.home-page .contact-section .footer-fine {

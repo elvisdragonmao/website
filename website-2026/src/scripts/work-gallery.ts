@@ -48,6 +48,7 @@ function drawOutline(card: HTMLElement) {
 		text.setAttribute("x", "0");
 		text.setAttribute("y", String(y * 16 + 12));
 		text.setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:space", "preserve");
+		text.style.setProperty("--glyph-row-delay", `${y * 9}ms`);
 		text.textContent = row.join("");
 		fragment.append(text);
 	});
@@ -67,18 +68,19 @@ function mountGallery() {
 	const cleanups: Array<() => void> = [];
 	const cards = galleries.flatMap(gallery => [...gallery.querySelectorAll<HTMLAnchorElement>(".work-box")]);
 	const resize = new ResizeObserver(entries => entries.forEach(entry => drawOutline(entry.target as HTMLElement)));
-	const revealers = new Map<Element, () => void>();
+	const revealers = new Map<Element, { enter: () => void; exit: () => void }>();
 	const observer = new IntersectionObserver(
 		entries => {
-			for (const entry of entries)
-				if (entry.isIntersecting) {
-					observer.unobserve(entry.target);
-					revealers.get(entry.target)?.();
-				}
+			for (const entry of entries) {
+				if (entry.isIntersecting && entry.intersectionRatio > 0.05) revealers.get(entry.target)?.enter();
+				else if (!entry.isIntersecting) revealers.get(entry.target)?.exit();
+			}
 		},
-		{ threshold: 0.18 }
+		{ threshold: [0, 0.06, 0.18] }
 	);
 	for (const card of cards) {
+		card.dataset.workAnimated = "true";
+		card.dataset.workVisible = "false";
 		drawOutline(card);
 		resize.observe(card);
 		const wrapper = card.querySelector<HTMLElement>("[data-work-image]");
@@ -157,10 +159,20 @@ function mountGallery() {
 			};
 			tick(start);
 		};
+		const enter = () => {
+			if (card.dataset.workVisible === "true") return;
+			card.dataset.workVisible = "true";
+			void replay();
+		};
+		const exit = () => {
+			generation++;
+			stop();
+			card.dataset.workVisible = "false";
+		};
 		card.addEventListener(
 			"pointerenter",
 			() => {
-				observer.unobserve(card);
+				card.dataset.workVisible = "true";
 				void replay();
 			},
 			{ signal }
@@ -168,16 +180,18 @@ function mountGallery() {
 		card.addEventListener(
 			"focus",
 			() => {
-				observer.unobserve(card);
+				card.dataset.workVisible = "true";
 				void replay();
 			},
 			{ signal }
 		);
-		revealers.set(card, () => void replay());
+		revealers.set(card, { enter, exit });
 		observer.observe(card);
 		cleanups.push(() => {
 			generation++;
 			stop();
+			delete card.dataset.workAnimated;
+			delete card.dataset.workVisible;
 		});
 	}
 	disposeGallery = () => {

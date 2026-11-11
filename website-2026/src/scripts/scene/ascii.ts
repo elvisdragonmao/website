@@ -4,10 +4,13 @@ import { createDoomFire } from "./doom-fire";
 /** A coloured glyph surface shared by the character, desktop and mathematical fields. */
 export function createAsciiSurface() {
 	const source = new THREE.WebGLRenderTarget(800, 600, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter });
+	const portraitSource = source.clone();
 	const atlas = createAtlas();
 	const fire = createDoomFire();
 	const uniforms = {
 		uImage: { value: source.texture },
+		uPortrait: { value: portraitSource.texture },
+		uPortraitPresence: { value: 0 },
 		uAtlas: { value: atlas },
 		uFireField: { value: fire.texture },
 		uFireReveal: { value: 1 },
@@ -34,11 +37,11 @@ export function createAsciiSurface() {
 		fragmentShader: `
       precision highp float;
       varying vec2 vUv;
-      uniform sampler2D uImage,uAtlas,uFireField;
+      uniform sampler2D uImage,uPortrait,uAtlas,uFireField;
       uniform vec2 uGrid,uPointer,uFieldCenter;
       uniform vec3 uWeights,uImpulse;
       uniform vec4 uLabelFocus;
-      uniform float uTime,uStory,uBrightness,uFireReveal,uFireLift,uWorkPresence,uContactPresence;
+      uniform float uTime,uStory,uBrightness,uFireReveal,uFireLift,uWorkPresence,uContactPresence,uPortraitPresence;
       float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
       float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
       vec3 flamePalette(float h){
@@ -53,6 +56,7 @@ export function createAsciiSurface() {
         vec2 cell=floor(vUv*uGrid),uv=(cell+.5)/uGrid;
         float aspect=uGrid.x/uGrid.y*.64;
         vec3 raw=texture2D(uImage,uv).rgb;
+        if(uPortraitPresence>.0001)raw=mix(raw,texture2D(uPortrait,uv).rgb,uPortraitPresence);
         float brightness=dot(raw,vec3(.2126,.7152,.0722));
         // Perceptual density keeps the blue face legible without turning the
         // dark scene into a carpet of dots; highlights become broad strokes.
@@ -73,7 +77,7 @@ export function createAsciiSurface() {
           vec2 touch=(uv-uPointer)*vec2(aspect,1.);
           float attraction=exp(-dot(touch,touch)*14.);
           p-=touch*attraction*.62;
-          float breath=1.+.105*sin(t*.81)+.032*sin(t*1.31+.6);
+          float breath=1.+.2*sin(t*1.24)+.055*sin(t*1.93+.6);
           p/=breath;
           float radius=length(p),theta=atan(p.y,p.x)+t*.065;
           float petals=.066*cos(theta*6.+.7*sin(t*.29))+.021*cos(theta*11.-t*.23);
@@ -162,6 +166,7 @@ export function createAsciiSurface() {
 	const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 	return {
 		source,
+		portraitSource,
 		fire,
 		uniforms,
 		scene,
@@ -171,9 +176,11 @@ export function createAsciiSurface() {
 			uniforms.uGrid.value.set(Math.ceil(width / cell), Math.ceil(height / (cell * 1.5)));
 			fire.resize(uniforms.uGrid.value.x, uniforms.uGrid.value.y);
 			source.setSize(Math.round(width * 0.65), Math.round(height * 0.65));
+			portraitSource.setSize(Math.round(width * 0.65), Math.round(height * 0.65));
 		},
 		dispose() {
 			source.dispose();
+			portraitSource.dispose();
 			atlas.dispose();
 			fire.dispose();
 			material.dispose();

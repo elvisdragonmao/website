@@ -13,8 +13,8 @@ export const ease = (n: number) => {
 export const DESK_OFFSET = new THREE.Vector3(4.25, 0, -2.7);
 export const EARTH_CENTER = new THREE.Vector3(8.9, 3.6, -4.1);
 // The flyover is a short change of scene, ending at the first workstation.
-const flyPosition = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(0.7, 5.45, 2.55), new THREE.Vector3(-0.5, 5.25, -0.25), new THREE.Vector3(0.35, 5.25, -0.25));
-const flyLook = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(0.4, 4.35, -0.4), new THREE.Vector3(-0.4, 2.55, -4.1), new THREE.Vector3(0.45, 2.55, -4.1));
+const flyPosition = new THREE.CubicBezierCurve3(new THREE.Vector3(-1.2, 5.25, 1.9), new THREE.Vector3(-1.05, 5.25, 0.8), new THREE.Vector3(-0.5, 5.25, -0.25), new THREE.Vector3(0.35, 5.25, -0.25));
+const flyLook = new THREE.CubicBezierCurve3(new THREE.Vector3(-1.1, 2.55, -4.1), new THREE.Vector3(-0.95, 2.55, -4.1), new THREE.Vector3(-0.4, 2.55, -4.1), new THREE.Vector3(0.45, 2.55, -4.1));
 export class CameraJourney {
 	position = new THREE.Vector3();
 	look = new THREE.Vector3();
@@ -31,10 +31,6 @@ export class CameraJourney {
 	earthPresence = 0;
 	earthProgress = 0;
 	private target = new THREE.Vector3();
-	setCoverStart(position: THREE.Vector3, look: THREE.Vector3): void {
-		flyPosition.v0.copy(position);
-		flyLook.v0.copy(look);
-	}
 	frame(scroll: number, height: number, width: number, ranges: StoryRange[], _time: number, _pointer: THREE.Vector2, reduced: boolean): void {
 		const range = (name: string) => ranges.find(r => r.name === name) ?? { name, top: 0, height };
 		const desk = range("desk"),
@@ -51,10 +47,14 @@ export class CameraJourney {
 		const deskStart = height * 0.68;
 		const deskEnd = desk.top + desk.height - height * 0.75;
 		// Match the cubic's outgoing tangent to the scan's velocity in scroll units.
-		flyPosition.v2.x = 0.35 - (7.85 * deskStart) / (3 * Math.max(height, deskEnd - deskStart));
+		flyPosition.v2.x = 0.35 - (7.45 * deskStart) / (3 * Math.max(height, deskEnd - deskStart));
 		flyLook.v2.x = flyPosition.v2.x + 0.1;
 		this.coverProgress = clamp01(scroll / deskStart);
-		this.deskProgress = clamp01((scroll - deskStart) / Math.max(height, deskEnd - deskStart));
+		const scanTime = Math.max(0, (scroll - deskStart) / Math.max(height, deskEnd - deskStart));
+		// Approach the MIDI setup asymptotically: still moving under the fire,
+		// without walking past the instrument or stopping at a hard endpoint.
+		const scan = scanTime < 0.84 ? scanTime : 0.84 + 0.16 * (1 - Math.exp(-(scanTime - 0.84) / 0.16));
+		this.deskProgress = clamp01(scan);
 		if (scroll < deskStart) {
 			// Ease out of the close-up, retaining terminal velocity into the scan.
 			const t = this.coverProgress * this.coverProgress * (2 - this.coverProgress);
@@ -62,14 +62,10 @@ export class CameraJourney {
 			flyLook.getPoint(t, this.look);
 		} else {
 			const d = this.deskProgress;
-			this.position.set(THREE.MathUtils.lerp(0.35, 8.2, d), 5.25, -0.25);
-			this.look.set(THREE.MathUtils.lerp(0.45, 8.3, d), 2.55, -4.1);
+			this.position.set(THREE.MathUtils.lerp(0.35, 7.8, d), 5.25, -0.25);
+			this.look.set(THREE.MathUtils.lerp(0.45, 7.9, d), 2.55, -4.1);
 		}
 		const fireEnter = ease((scroll - fire.top + height * 0.65) / (height * 0.65));
-		if (fireEnter > 0) {
-			this.position.lerp(this.target.set(8.5, 5.3, -0.35), fireEnter);
-			this.look.lerp(this.target.set(8.45, 2.75, -4), fireEnter);
-		}
 		// Procedural scenes share a stationary stage. Their animation belongs to time,
 		// pointer and the wipe, rather than an incidental moving 3D camera.
 		const fieldEnter = ease((scroll - alive.top + height * 0.8) / (height * 0.8));
@@ -92,7 +88,7 @@ export class CameraJourney {
 		this.weights.set(fireWeight, aliveWeight, weight(beyond));
 		this.workPresence = ease((scroll - work.top + height * 0.55) / (height * 0.6)) * (1 - ease((scroll - why.top + height * 0.5) / (height * 0.8)));
 		this.contactPresence = ease((scroll - contact.top + height * 0.5) / (height * 0.8));
-		this.earthProgress = Math.max(0, (scroll - why.top + height * 1.25) / Math.max(height, why.height));
+		this.earthProgress = Math.max(0, (scroll - why.top + height * 0.4) / Math.max(height, why.height));
 		this.earthPresence = ease((scroll - why.top + height * 1.25) / (height * 1.5)) * (1 - ease((scroll - contact.top + height * 0.3) / (height * 0.8)));
 		if (reduced && this.phase === "desk") {
 			this.position.set(3.7, 7.2, -2.4);
