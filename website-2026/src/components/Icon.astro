@@ -1,0 +1,16 @@
+---
+import arrow from "@phosphor-icons/core/assets/regular/arrow-up-right.svg?raw";
+import arrowLeft from "@phosphor-icons/core/assets/regular/arrow-left.svg?raw";
+import envelope from "@phosphor-icons/core/assets/regular/envelope-simple.svg?raw";
+import github from "@phosphor-icons/core/assets/regular/github-logo.svg?raw";
+import telegram from "@phosphor-icons/core/assets/regular/telegram-logo.svg?raw";
+import instagram from "@phosphor-icons/core/assets/regular/instagram-logo.svg?raw";
+interface Props {
+	name?: string;
+	class?: string;
+}
+const { name = "arrow", class: className = "" } = Astro.props;
+const icons: Record<string, string> = { arrow, arrowLeft, envelope, github, telegram, instagram };
+---
+
+<span class:list={["icon", className]} aria-hidden="true" set:html={icons[name] ?? arrow} />

@@ -1,0 +1,14 @@
+---
+const path = Astro.url.pathname;
+const home = path === "/";
+---
+
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+	<a class="wordmark" href={home ? "#cover" : "/"} aria-label="Elvis Mao, home">Elvis Mao<span class="nav-period">.</span></a>
+	<nav aria-label="Main navigation">
+		<a href="/work/" aria-current={path.startsWith("/work") ? "page" : undefined}>Work</a>
+		<a href="/about/" aria-current={path === "/about/" ? "page" : undefined}>About</a>
+		<a href="https://emtech.cc/">Blog<span class="external-mark" aria-hidden="true">↗</span></a>
+	</nav>
+</header>

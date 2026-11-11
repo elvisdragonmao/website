@@ -1,0 +1,28 @@
+{
+	"name": "website",
+	"type": "module",
+	"scripts": {
+		"astro": "astro",
+		"build": "astro build",
+		"dev": "astro dev",
+		"format": "prettier --write .",
+		"lint": "prettier --check .",
+		"prepare": "husky",
+		"preview": "astro preview"
+	},
+	"dependencies": {
+		"@astrojs/sitemap": "^3.7.1",
+		"astro": "^6.0.5",
+		"astro-i18n-aut": "^0.7.3",
+		"html2canvas": "^1.4.1",
+		"three": "^0.133.0"
+	},
+	"devDependencies": {
+		"husky": "^9.1.7",
+		"prettier": "^3.8.1",
+		"prettier-plugin-astro": "^0.14.1",
+		"prettier-plugin-organize-imports": "^4.3.0",
+		"prettier-plugin-packagejson": "^3.0.2"
+	},
+	"packageManager": "pnpm@12.18.0+sha512.9d7882d5dc82147ecfc4e062aa34834e0ad0296710a1837a1115ae012127d36b7109e321ac1598a1dd0a65597681b1e99917e12ed0d749eae91187943363beb3"
+}

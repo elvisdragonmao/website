@@ -1,0 +1,151 @@
+---
+import { CHARACTER_POSTER_URL } from "../../data/character";
+import Layout from "../../layouts/Layout.astro";
+import { COVER_LIMITS, DEFAULT_COVER } from "../../scripts/scene/cover-settings";
+import "../styles/cover-lab.css";
+
+type NumericKey = keyof typeof COVER_LIMITS;
+const advanced: { key: NumericKey; label: string; step: number; unit?: string }[] = [
+	{ key: "distance", label: "鏡頭距離", step: 0.01 },
+	{ key: "cameraHeight", label: "鏡頭高度", step: 0.01 },
+	{ key: "lookHeight", label: "視線中心高度", step: 0.01 },
+	{ key: "cameraAngle", label: "鏡頭起始方向", step: 0.5, unit: "°" },
+	{ key: "headTurn", label: "頭部起始方向", step: 0.5, unit: "°" },
+	{ key: "cameraOrbit", label: "鏡頭左右反應", step: 0.5, unit: "°" },
+	{ key: "headYaw", label: "頭部追蹤幅度", step: 0.5, unit: "°" },
+	{ key: "headPitch", label: "頭部俯仰", step: 0.5, unit: "°" },
+	{ key: "eyeYaw", label: "眼睛左右反應", step: 0.5, unit: "°" },
+	{ key: "followSpeed", label: "跟隨速度", step: 0.1 },
+	{ key: "asciiCellSize", label: "字元大小", step: 1, unit: "px" }
+];
+---
+
+<Layout home title="封面調整 — Elvis Mao" description="調整龍頭的大小、角度與滑鼠反應，預覽後再套用到首頁。">
+	<div class="cover-lab-root">
+		<canvas id="world" data-cover-lab aria-hidden="true"></canvas>
+		<img id="world-fallback" src={CHARACTER_POSTER_URL} alt="" aria-hidden="true" />
+		<main id="main" class="cover-lab-world" aria-label="首頁封面預覽">
+			<section id="cover" class="scene scene-cover" data-scene="cover">
+				<div class="cover-copy"><h1 data-cover-label><span>Hey there! This is EM.</span></h1></div>
+			</section>
+		</main>
+
+		<details class="cover-lab-panel" data-cover-panel lang="zh-Hant" open>
+			<summary class="lab-panel-summary">
+				<span class="lab-panel-title">封面調整</span>
+				<span class="lab-panel-open-label">調整參數</span>
+				<span class="lab-summary-zoom" data-cover-zoom-label>{DEFAULT_COVER.zoom.toFixed(2)}×</span>
+				<span class="lab-panel-disclosure" aria-hidden="true"></span>
+			</summary>
+			<div class="lab-panel-content">
+				<p class="lab-model-status" data-cover-status role="status" aria-live="polite">正在準備預覽…</p>
+				<p class="lab-hint">保留模型原本的造形、材質與貼圖。</p>
+
+				<section class="lab-control lab-zoom" aria-label="龍頭大小">
+					<div class="lab-control-heading">
+						<label for="cover-zoom-range">龍頭大小</label>
+						<span class="lab-number-wrap">
+							<input
+								id="cover-zoom-number"
+								type="number"
+								min={COVER_LIMITS.zoom[0]}
+								max={COVER_LIMITS.zoom[1]}
+								step="0.01"
+								value={DEFAULT_COVER.zoom}
+								data-cover-number="zoom"
+								aria-label="龍頭大小數值"
+								inputmode="decimal"
+							/><span aria-hidden="true">×</span>
+						</span>
+					</div>
+					<input id="cover-zoom-range" type="range" min={COVER_LIMITS.zoom[0]} max={COVER_LIMITS.zoom[1]} step="0.01" value={DEFAULT_COVER.zoom} data-cover-range="zoom" />
+					<div class="lab-range-caption"><span>小一點</span><span>更靠近</span></div>
+				</section>
+
+				<section class="lab-view-section" aria-label="顯示方式">
+					<span class="lab-field-title">顯示方式</span>
+					<div class="lab-segmented" role="group" aria-label="顯示方式">
+						<button type="button" data-cover-view="ascii" aria-pressed={DEFAULT_COVER.view === "ascii" ? "true" : "false"}>ASCII</button>
+						<button type="button" data-cover-view="colour" aria-pressed={DEFAULT_COVER.view === "colour" ? "true" : "false"}>原模型</button>
+					</div>
+				</section>
+
+				<section class="lab-pose-section" aria-label="測試游標位置">
+					<span class="lab-field-title">測試游標位置</span>
+					<div class="lab-pose-buttons" role="group" aria-label="測試游標位置">
+						<button type="button" data-cover-pose="live" aria-pressed="true">跟隨滑鼠</button>
+						<button type="button" data-cover-pose="center" aria-pressed="false">中央</button>
+						<button type="button" data-cover-pose="left" aria-pressed="false">游標左側</button>
+						<button type="button" data-cover-pose="right" aria-pressed="false">游標右側</button>
+					</div>
+					<p class="lab-hint">固定位置後可繼續調整；按「跟隨滑鼠」恢復。</p>
+				</section>
+
+				<div class="lab-blink-row">
+					<label><input type="checkbox" data-cover-autoblink checked={DEFAULT_COVER.autoBlink} disabled />自動眨眼</label>
+					<button type="button" data-cover-blink disabled>眨一下</button>
+				</div>
+				<p class="lab-hint" data-cover-blink-note>預覽準備好後，會顯示可用的表情。</p>
+
+				<details class="lab-advanced">
+					<summary>角度與反應</summary>
+					<p class="lab-hint">左右反應設為負值，便會反方向跟隨。</p>
+					{
+						advanced.map(field => (
+							<div class="lab-control" data-cover-field={field.key}>
+								<div class="lab-control-heading">
+									<label for={`cover-${field.key}-range`}>{field.label}</label>
+									<span class="lab-number-wrap">
+										<input
+											id={`cover-${field.key}-number`}
+											type="number"
+											min={COVER_LIMITS[field.key][0]}
+											max={COVER_LIMITS[field.key][1]}
+											step={field.step}
+											value={DEFAULT_COVER[field.key]}
+											data-cover-number={field.key}
+											aria-label={`${field.label}數值`}
+											inputmode="decimal"
+										/>
+										{field.unit && <span aria-hidden="true">{field.unit}</span>}
+									</span>
+								</div>
+								<input
+									id={`cover-${field.key}-range`}
+									type="range"
+									min={COVER_LIMITS[field.key][0]}
+									max={COVER_LIMITS[field.key][1]}
+									step={field.step}
+									value={DEFAULT_COVER[field.key]}
+									data-cover-range={field.key}
+								/>
+							</div>
+						))
+					}
+					<p class="lab-hint" data-cover-eye-note hidden></p>
+				</details>
+
+				<div class="lab-apply-section">
+					<button class="lab-apply" type="button" data-cover-apply>套用到首頁</button>
+					<div class="lab-secondary-actions"><button type="button" data-cover-reset>還原預設</button><a href="/" data-cover-home>查看首頁 ↗</a></div>
+					<p class="lab-hint">即時預覽；按「套用」才會儲存在這個瀏覽器。</p>
+				</div>
+
+				<details class="lab-export">
+					<summary>複製與分享</summary>
+					<div class="lab-export-actions"><button type="button" data-cover-copy>複製 JSON</button><button type="button" data-cover-share>複製分享網址</button></div>
+					<label class="lab-export-label" for="cover-values">目前設定</label>
+					<textarea id="cover-values" data-cover-values readonly spellcheck="false" rows="7" aria-label="目前封面設定 JSON"></textarea>
+					<div data-cover-share-row hidden>
+						<label class="lab-export-label" for="cover-share-url">分享網址</label><input id="cover-share-url" data-cover-share-url readonly type="text" aria-label="分享網址" />
+					</div>
+				</details>
+				<output class="lab-action-status" data-cover-action-status role="status" aria-live="polite"></output>
+			</div>
+		</details>
+	</div>
+</Layout>
+<script>
+	import "../../scripts/world";
+	import "../scripts/cover-lab";
+</script>

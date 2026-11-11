@@ -1,0 +1,50 @@
+name: Website 2026
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "website-2026/**"
+      - ".github/workflows/website-2026.yml"
+  pull_request:
+    paths:
+      - "website-2026/**"
+      - ".github/workflows/website-2026.yml"
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: website-2026
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.15.0
+
+      - name: Set up Corepack
+        run: |
+          npm install --global corepack@0.36.0
+          corepack enable
+
+      - name: Install dependencies
+        run: corepack pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: corepack pnpm run format:check
+
+      - name: Build Astro site
+        run: corepack pnpm run build
+
+      - name: Validate Cloudflare deployment bundle
+        run: corepack pnpm exec wrangler deploy --dry-run --outdir .wrangler/deploy
+        env:
+          WRANGLER_SEND_METRICS: "false"

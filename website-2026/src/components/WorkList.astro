@@ -1,0 +1,74 @@
+---
+import Icon from "./Icon.astro";
+import { projects } from "../data/projects";
+import "../styles/work-gallery.css";
+interface Props {
+	full?: boolean;
+}
+const { full = false } = Astro.props;
+// A readable, server-rendered glyph frame remains in place before JS measures the grid.
+const cols = 58,
+	rows = 35,
+	depth = 3;
+const grid = Array.from({ length: rows }, () => Array<string>(cols).fill(" "));
+const put = (x: number, y: number, glyph: string) => {
+	if (grid[y]?.[x] !== undefined) grid[y]![x] = glyph;
+};
+for (let x = depth + 1; x < cols - 1; x++) put(x, 0, "─");
+for (let x = 1; x < cols - depth - 1; x++) {
+	put(x, depth, "═");
+	put(x, rows - 1, "═");
+}
+for (let y = depth + 1; y < rows - 1; y++) {
+	put(0, y, "║");
+	put(cols - depth - 1, y, "║");
+}
+for (let y = 1; y < rows - depth - 1; y++) put(cols - 1, y, "│");
+for (let x = cols - depth; x < cols - 1; x++) for (let y = depth + 1; y < rows - depth; y++) put(x, y, "░");
+for (let d = 1; d < depth; d++) {
+	put(depth - d, d, "╱");
+	put(cols - 1 - d, d, "╱");
+	put(cols - 1 - d, rows - depth - 1 + d, "╱");
+}
+put(depth, 0, "┌");
+put(cols - 1, 0, "┐");
+put(0, depth, "╔");
+put(cols - depth - 1, depth, "╗");
+put(0, rows - 1, "╚");
+put(cols - depth - 1, rows - 1, "╝");
+put(cols - 1, rows - depth - 1, "┘");
+const frame = grid.map(row => row.join(""));
+---
+
+<div class:list={["project-gallery", "work-box-gallery", { "project-gallery-full": full }]} data-work-gallery>
+	{
+		projects.map(project => (
+			<a class="project-box work-box" href={`/work/${project.slug}/`} data-project={project.slug}>
+				<svg class="work-box-geometry" viewBox={`0 0 ${cols * 8} ${rows * 16}`} preserveAspectRatio="none" aria-hidden="true" focusable="false" data-box-outline>
+					{frame.map((row, y) => (
+						<text x="0" y={y * 16 + 12} xml:space="preserve">
+							{row}
+						</text>
+					))}
+				</svg>
+				<div class="work-box-front">
+					<div class="project-box-media work-box-media" data-work-image>
+						<img src={project.image} alt={project.imageAlt} width="1440" height="1000" loading="lazy" />
+					</div>
+					<div class="project-box-copy work-box-copy">
+						<span class="project-box-type">{project.card.type}</span>
+						<h3>
+							{project.name}
+							<Icon />
+						</h3>
+						<p>{project.card.summary}</p>
+						<span class="project-box-metric">{project.card.metric}</span>
+					</div>
+				</div>
+			</a>
+		))
+	}
+</div>
+<script>
+	import "../scripts/work-gallery";
+</script>

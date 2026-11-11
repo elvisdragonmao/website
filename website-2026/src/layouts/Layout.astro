@@ -1,0 +1,51 @@
+---
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "../styles/global.css";
+import "../styles/pages.css";
+import Nav from "../components/Nav.astro";
+import { CHARACTER_POSTER_URL } from "../data/character";
+import { ClientRouter } from "astro:transitions";
+import "../styles/transitions.css";
+interface Props {
+	title?: string;
+	description?: string;
+	home?: boolean;
+}
+const {
+	title = "Elvis Mao — Developer, Designer & HCI Researcher",
+	description = "Interactive websites, open-source services, and human–computer interaction. Also a blue dragon.",
+	home = false
+} = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const shareImageUrl = new URL(CHARACTER_POSTER_URL, Astro.site ?? Astro.url.origin);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#080808" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalUrl.href} />
+		<meta property="og:image" content={shareImageUrl.href} />
+		<meta property="og:image:alt" content="EM’s dragon character" />
+		<link rel="canonical" href={canonicalUrl.href} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)" />
+		<title>{title}</title>
+		<ClientRouter fallback="swap" />
+	</head>
+	<body class:list={[home ? "home-page" : "inner-page"]} data-art={home ? "story" : undefined}>
+		<Nav />
+		<slot />
+		<canvas id="route-pixels" transition:persist="route-pixels" aria-hidden="true"></canvas>
+	</body>
+</html>
+<script>
+	import "../scripts/page-experience";
+</script>

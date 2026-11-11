@@ -1,0 +1,36 @@
+#route-pixels {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	pointer-events: none;
+	image-rendering: pixelated;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none !important;
+	mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+	display: none;
+}
+html[data-nav-tone="light"] .site-nav {
+	--accent: #1a7784;
+	color: #142021;
+}
+html[data-nav-tone="light"] .site-nav .wordmark,
+html[data-nav-tone="light"] .site-nav nav a {
+	background: #eeeee7;
+	color: #142021;
+}
+html[data-nav-tone="light"] .site-nav nav a:hover,
+html[data-nav-tone="light"] .site-nav nav a[aria-current="page"] {
+	color: #1a7784;
+}
+@media (max-width: 700px) {
+	html[data-nav-tone="light"] .site-nav {
+		background: #eeeee7;
+		border-color: #c9d2d0;
+	}
+}

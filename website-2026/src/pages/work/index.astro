@@ -1,0 +1,18 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import WorkList from "../../components/WorkList.astro";
+---
+
+<Layout title="Selected Work — Elvis Mao" description="Websites, open-source services, creative experiments, and human–computer interaction research by Elvis Mao.">
+	<main id="main" class="page-main work-page">
+		<header class="page-heading">
+			<p class="eyebrow">SELECTED WORK · 01—04</p><h1>Things I've made.<br />Questions I'm<br />still working on<span class="accent">.</span></h1><p class="page-intro">
+				Websites, open-source services, and research prototypes.<br />Some run every day. Some exist to find out what could happen next.
+			</p>
+		</header>
+		<div class="work-index-note"><span>INTERFACES / SYSTEMS / WRITING / RESEARCH</span><span>AN ONGOING COLLECTION</span></div>
+		<WorkList full />
+	</main>
+	<Footer compact />
+</Layout>

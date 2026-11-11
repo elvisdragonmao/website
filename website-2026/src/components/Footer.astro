@@ -1,0 +1,25 @@
+---
+import Icon from "./Icon.astro";
+import Newsletter from "./Newsletter.astro";
+interface Props {
+	compact?: boolean;
+	newsletter?: boolean;
+}
+const { compact = false, newsletter = false } = Astro.props;
+---
+
+<footer class:list={["site-footer", { compact, "has-newsletter": newsletter }]}>
+	<div class="footer-main">
+		<div class="footer-note">
+			<a class="footer-name" href="/">Elvis Mao.</a><p>Curiosity, in progress.</p><a class="footer-studio" href="https://linyao.tw/">For commissioned work,<br />visit LinYao Studio <Icon /></a>
+		</div>
+		<nav class="footer-socials" aria-label="Find Elvis Mao">
+			<a href="mailto:info@elvismao.com"><Icon name="envelope" />Email</a>
+			<a href="https://github.com/elvisdragonmao"><Icon name="github" />GitHub</a>
+			<a href="https://t.me/elvisdragonmao"><Icon name="telegram" />Telegram</a>
+			<a href="https://www.instagram.com/elvisdragonmao/"><Icon name="instagram" />Instagram</a>
+		</nav>
+		{newsletter && <Newsletter />}
+	</div>
+	<div class="footer-fine"><span>© {new Date().getFullYear()} Elvis Mao</span><a href="/colophon/">Colophon & model credits</a><span>Made with a little too much curiosity.</span></div>
+</footer>

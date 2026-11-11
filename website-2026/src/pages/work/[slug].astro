@@ -1,0 +1,86 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import Icon from "../../components/Icon.astro";
+import { projects } from "../../data/projects";
+import type { Project } from "../../data/projects";
+export function getStaticPaths() {
+	return projects.map(project => ({ params: { slug: project.slug }, props: { project } }));
+}
+interface Props {
+	project: Project;
+}
+const { project } = Astro.props;
+const next = projects[(projects.findIndex(item => item.slug === project.slug) + 1) % projects.length];
+---
+
+<Layout title={`${project.name} — Elvis Mao`} description={project.introduction}>
+	<main id="main" class="page-main project-page">
+		<header class="page-heading project-heading">
+			<a class="back-link" href="/work/"><Icon name="arrowLeft" /> All work</a><p class="eyebrow">{project.type}</p><h1>
+				{
+					project.headline.split("\n").map((line, i) => (
+						<>
+							{i > 0 && <br />}
+							{line}
+						</>
+					))
+				}
+			</h1><p class="page-intro">{project.introduction}</p><div class="project-meta">
+				<div><span>PROJECT</span><p>{project.name}</p></div><div><span>MY ROLE</span><p>{project.role}</p></div><div><span>STATUS</span><p>{project.status}</p></div>
+			</div>{
+				project.external && (
+					<a class="text-link" href={project.external}>
+						{project.externalLabel} <Icon />
+					</a>
+				)
+			}
+		</header>
+		<figure class="project-hero">
+			<img src={project.image} alt={project.imageAlt} width="1440" height="1000" fetchpriority="high" />{
+				project.slug === "omniobserve" && <figcaption>Concept overview of the interaction mechanism.</figcaption>
+			}
+		</figure>
+		{
+			project.metric && (
+				<div class="project-stat">
+					<>
+						<span>{project.metric}</span>
+						<p>{project.metricLabel}</p>
+					</>
+				</div>
+			)
+		}
+		<div class="case-sections">
+			{
+				project.sections.map((section, i) => (
+					<section>
+						<>
+							<span class="eyebrow">
+								0{i + 1} / {section.label}
+							</span>
+							<div>
+								<h2>{section.title}</h2>
+								{section.paragraphs.map(paragraph => (
+									<p>{paragraph}</p>
+								))}
+							</div>
+						</>
+					</section>
+				))
+			}
+		</div>
+		{
+			project.credits && (
+				<div class="project-credits">
+					<>
+						<span class="eyebrow">CREDITS</span>
+						<p>{project.credits}</p>
+					</>
+				</div>
+			)
+		}
+		<a class="next-project" href={`/work/${next.slug}/`}><span class="eyebrow">NEXT PROJECT</span><span>{next.name}<Icon /></span></a>
+	</main>
+	<Footer compact />
+</Layout>

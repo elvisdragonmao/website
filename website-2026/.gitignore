@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.playwright-cli/
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+*.tsbuildinfo
+__pycache__/
+*.py[cod]
+*.blend1
+*.blend2
+
+.wrangler/

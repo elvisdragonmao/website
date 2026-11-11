@@ -1,0 +1,26 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<section class="newsletter-panel" aria-labelledby="newsletter-title">
+	<h3 id="newsletter-title">Subscribe to <br />my newsletter.</h3>
+	<form
+		id="newsletter-form"
+		data-newsletter
+		action="https://docs.google.com/forms/d/e/1FAIpQLSeITLO_J8DsxypUmCL8Ubd4n_2WpiFI5hCnmtUY-TrKYys2Iw/formResponse"
+		method="post"
+		target="_blank"
+		data-astro-reload
+	>
+		<label class="sr-only" for="newsletter-email">Your email address</label>
+		<div class="newsletter-input-row">
+			<input id="newsletter-email" name="entry.1272945868" type="email" autocomplete="email" placeholder="Your email" required aria-describedby="newsletter-hint newsletter-status" />
+			<button type="submit" aria-label="Subscribe to the newsletter"><Icon /></button>
+		</div>
+		<input type="hidden" name="entry.488472312" value="elvismao.com" />
+		<input type="hidden" name="entry.1137316312" value="" />
+		<p id="newsletter-hint" class="newsletter-hint">Confirmation opens in a new tab.</p>
+		<output id="newsletter-status" data-status role="status" aria-live="polite"></output>
+	</form>
+	<p class="newsletter-caption">hmmm — observations, experiments, and things I've been making.</p>
+</section>

@@ -1,0 +1,161 @@
+---
+import { CHARACTER_POSTER_URL } from "../data/character";
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+import Icon from "../components/Icon.astro";
+import WorkList from "../components/WorkList.astro";
+import headings from "../data/ascii-headings.json";
+import "../styles/home-story.css";
+const ascii = (text: string) => {
+	const rows = text.split("\n");
+	return { rows, width: Math.max(...rows.map(row => row.length)) * 8.5 + 2, height: rows.length * 15 + 2 };
+};
+const workArt = ascii(headings.work);
+const ctaArt = ascii(headings.cta);
+const aboutArt = ascii(headings.about);
+const fireCopy = "People said front-end is dead.\nGuess I'm now a necromancer.";
+const aliveCopy = "I make things\nthat feel alive.";
+const exploringCopy = "Exploring new ways for people\nand technology to communicate.";
+const exploringSupport = "Through movement, touch, or even telepathy.";
+const whyCopy = "No matter what I do,\nI just hope to make this world\na little different.";
+---
+
+<Layout home>
+	<canvas id="world" aria-hidden="true"></canvas>
+	<img id="world-fallback" src={CHARACTER_POSTER_URL} alt="" aria-hidden="true" />
+	<main id="main">
+		<section id="cover" class="scene scene-cover" data-scene="cover" aria-label="Introduction">
+			<div class="cover-copy"><h1 data-cover-label><span>Hey there! This is EM.</span></h1></div>
+		</section>
+		<section id="desk" class="scene scene-track scene-desk" data-scene="desk" aria-label="A few ways to make things">
+			<div class="scene-viewport">
+				<div class="world-label role-label" data-anchor="developer" data-role="developer" style="--label-x:31%;--label-y:51%;--label-rotation:-3deg">
+					<span class="label-pin" aria-hidden="true"></span><span class="label-leader" aria-hidden="true"></span>
+					<h2>A Developer.</h2>
+				</div>
+				<div class="world-label role-label" data-anchor="designer" data-role="designer" style="--label-x:62%;--label-y:39%;--label-rotation:3deg">
+					<span class="label-pin" aria-hidden="true"></span><span class="label-leader" aria-hidden="true"></span>
+					<h2>Designer.</h2>
+				</div>
+				<div class="world-label role-label" data-anchor="researcher" data-role="researcher" style="--label-x:56%;--label-y:72%;--label-rotation:-2deg">
+					<span class="label-pin" aria-hidden="true"></span><span class="label-leader" aria-hidden="true"></span>
+					<h2>HCI Researcher.</h2>
+				</div>
+				<div class="world-label role-label" data-anchor="dragon" data-role="dragon" style="--label-x:30%;--label-y:29%;--label-rotation:2deg">
+					<span class="label-pin" aria-hidden="true"></span><span class="label-leader" aria-hidden="true"></span>
+					<h2>and a music derg.</h2>
+				</div>
+			</div>
+		</section>
+		<section id="fire" class="scene scene-track scene-fire" data-scene="fire">
+			<h2 class="sr-only">{fireCopy}</h2>
+			<div class="scene-viewport" data-story-layer="fire">
+				<div class="cinematic-subtitle story-panel" data-world-label="fire">
+					<div class="story-type story-heading" data-story-type aria-hidden="true"><span class="story-reserve">{fireCopy}</span><span class="story-output" data-story-output>{fireCopy}</span></div>
+				</div>
+			</div>
+		</section>
+		<section id="alive" class="scene scene-track scene-alive" data-scene="alive">
+			<h2 class="sr-only">{aliveCopy}</h2>
+			<div class="scene-viewport" data-story-layer="alive">
+				<div class="cinematic-subtitle story-panel" data-world-label="alive">
+					<div class="story-type story-heading" data-story-type aria-hidden="true"><span class="story-reserve">{aliveCopy}</span><span class="story-output" data-story-output>{aliveCopy}</span></div>
+				</div>
+			</div>
+		</section>
+		<section id="beyond" class="scene scene-track scene-beyond" data-scene="beyond">
+			<h2 class="sr-only">Exploring new ways for people and technology to communicate.</h2>
+			<p class="sr-only">{exploringSupport}</p>
+			<div class="scene-viewport" data-story-layer="beyond">
+				<div class="cinematic-subtitle story-panel" data-world-label="beyond">
+					<div class="story-type story-heading" data-story-type aria-hidden="true">
+						<span class="story-reserve">{exploringCopy}</span><span class="story-output" data-story-output>{exploringCopy}</span>
+					</div>
+					<p class="story-type annotation-support" data-story-type data-story-delay="0.2" aria-hidden="true">
+						<span class="story-reserve">{exploringSupport}</span><span class="story-output" data-story-output>{exploringSupport}</span>
+					</p>
+					<a class="annotation-link" href="/about/#research">What I'm exploring <Icon /></a>
+				</div>
+			</div>
+		</section>
+		<section id="work" class="work-section ascii-work" data-scene="work">
+			<div class="section-heading work-heading">
+				<h2 class="ascii-headline ascii-art">
+					<span class="sr-only">Meanwhile, I make stuff.</span>
+					<svg viewBox={`0 0 ${workArt.width} ${workArt.height}`} aria-hidden="true" focusable="false">
+						{
+							workArt.rows.map((row, index) => (
+								<text x="1" y={14 + index * 15} xml:space="preserve">
+									{row}
+								</text>
+							))
+						}
+					</svg>
+				</h2>
+				<p>Some of it runs every day.<br />Some of it starts with a question.</p>
+			</div>
+			<WorkList />
+			<a class="text-link work-all" href="/work/">Explore all work <Icon /></a>
+		</section>
+		<section id="why" class="scene scene-track scene-why" data-scene="why">
+			<h2 class="sr-only">{whyCopy}</h2>
+			<div class="scene-viewport" data-story-layer="why">
+				<div class="earth-message story-panel" data-world-label="why" data-earth-label>
+					<div class="story-scoreboard" aria-hidden="true">
+						<div class="story-scoreboard-original">
+							<div class="story-type story-heading" data-story-type><span class="story-reserve">{whyCopy}</span><span class="story-output" data-story-output>{whyCopy}</span></div>
+						</div>
+						<div class="story-scoreboard-next">Got sth wild in mind?</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section id="contact" class="contact-section content-surface" data-scene="contact">
+			<div class="contact-intro">
+				<h2 class="sr-only">Let's make it true.</h2>
+				<div class="contact-heading" data-story-layer="contact">
+					<p>Got sth wild in mind?</p>
+					<div class="ascii-art contact-ascii">
+						<a href="mailto:info@elvismao.com" aria-label="Let's make it true. Email Elvis Mao.">
+							<svg viewBox={`0 0 ${ctaArt.width} ${ctaArt.height}`} aria-hidden="true" focusable="false">
+								{
+									ctaArt.rows.map((row, index) => (
+										<text x="1" y={14 + index * 15} xml:space="preserve">
+											{row}
+										</text>
+									))
+								}
+							</svg>
+						</a>
+					</div>
+					<a class="contact-email" href="mailto:info@elvismao.com">[ info@elvismao.com ↗ ]</a>
+				</div>
+			</div>
+			<Footer newsletter />
+		</section>
+		<a class="next-page" data-next-page href="/about/">
+			<span class="next-page-caption">Keep scrolling<br />to learn more.</span>
+			<div class="next-page-destination">
+				<h2 class="ascii-art next-page-ascii">
+					<span class="sr-only">About me</span><svg viewBox={`0 0 ${aboutArt.width} ${aboutArt.height}`} aria-hidden="true" focusable="false">
+						{
+							aboutArt.rows.map((row, index) => (
+								<text x="1" y={14 + index * 15} xml:space="preserve">
+									{row}
+								</text>
+							))
+						}
+					</svg>
+				</h2><span class="next-page-action">
+					Next page<span class="next-page-progress">
+						<span data-next-progress role="progressbar" aria-label="Progress to About page" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></span>
+					</span><Icon />
+				</span>
+			</div>
+			<span class="next-page-crosses" aria-hidden="true"><span>+</span><span>+</span><span>+</span><span>+</span><span>+</span></span>
+		</a>
+	</main>
+</Layout>
+<script>
+	import "../scripts/world";
+</script>
