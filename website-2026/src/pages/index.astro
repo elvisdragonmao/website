@@ -13,6 +13,9 @@ const ascii = (text: string) => {
 	return { rows, width: Math.max(...rows.map(row => row.length)) * 8.5 + 2, height: rows.length * 15 + 2 };
 };
 const workArt = ascii(headings.work);
+// Split between the comma and "I", preserving the original glyphs and their scale.
+const mobileWorkArt = [ascii(workArt.rows.map(row => row.slice(0, 79)).join("\n")), ascii(workArt.rows.map(row => row.slice(79)).join("\n"))];
+const mobileWorkWidth = Math.max(...mobileWorkArt.map(art => art.width));
 const ctaArt = ascii(headings.cta);
 const aboutArt = ascii(headings.about);
 const fireCopy = "People said front-end is dead.\nGuess I'm now a necromancer.";
@@ -89,7 +92,7 @@ const whyCopy = "No matter what I do,\nI just hope to make this world\na little 
 			<div class="section-heading work-heading">
 				<h2 class="ascii-headline ascii-art">
 					<span class="sr-only">Meanwhile, I make stuff.</span>
-					<svg viewBox={`0 0 ${workArt.width} ${workArt.height}`} aria-hidden="true" focusable="false">
+					<svg class="work-title-wide" viewBox={`0 0 ${workArt.width} ${workArt.height}`} aria-hidden="true" focusable="false">
 						{
 							workArt.rows.map((row, index) => (
 								<text x="1" y={14 + index * 15} xml:space="preserve">
@@ -98,6 +101,19 @@ const whyCopy = "No matter what I do,\nI just hope to make this world\na little 
 							))
 						}
 					</svg>
+					<span class="work-title-stacked" aria-hidden="true">
+						{
+							mobileWorkArt.map(art => (
+								<svg viewBox={`0 0 ${art.width} ${art.height}`} style={`width:${(art.width / mobileWorkWidth) * 100}%`} focusable="false">
+									{art.rows.map((row, index) => (
+										<text x="1" y={14 + index * 15} xml:space="preserve">
+											{row}
+										</text>
+									))}
+								</svg>
+							))
+						}
+					</span>
 				</h2>
 				<p>For people I'll never meet,<br />and people I'll never forget.</p>
 			</div>
