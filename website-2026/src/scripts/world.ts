@@ -250,13 +250,14 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 	const idlePointer = new THREE.Vector2(0.5, 0.5),
 		idleTarget = new THREE.Vector2(0.5, 0.5);
 	let nextIdleLook = 0;
+	const updatePointer = (event: PointerEvent): void => {
+		pointer.set(event.clientX / width, 1 - event.clientY / height);
+		lastPointer = performance.now();
+	};
 	addEventListener(
 		"pointermove",
 		event => {
-			if (event.pointerType !== "touch") {
-				pointer.set(event.clientX / width, 1 - event.clientY / height);
-				lastPointer = performance.now();
-			}
+			if (event.pointerType !== "touch") updatePointer(event);
 		},
 		{ passive: true, signal }
 	);
@@ -294,6 +295,8 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 	addEventListener(
 		"pointerdown",
 		event => {
+			// Touch has no hover: a tap becomes the same gaze target as a mouse move.
+			updatePointer(event);
 			art.uniforms.uImpulse.value.set(event.clientX / width, 1 - event.clientY / height, time);
 		},
 		{ passive: true, signal }
@@ -430,8 +433,10 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		key.color.copy(lightColors.key).lerp(neutralWhite, coverPresence);
 		rim.color.copy(lightColors.rim).lerp(neutralWhite, coverPresence);
 		fill.color.copy(lightColors.fill).lerp(neutralWhite, coverPresence);
-		if (portraitCamera.zoom !== coverSettings.zoom) {
-			portraitCamera.zoom = coverSettings.zoom;
+		// Keep the approved desktop close-up; fit the face across a portrait screen.
+		const portraitZoom = coverSettings.zoom * (width <= 760 ? Math.min(1, (width / height) * 0.7) : 1);
+		if (portraitCamera.zoom !== portraitZoom) {
+			portraitCamera.zoom = portraitZoom;
 			portraitCamera.updateProjectionMatrix();
 		}
 		portraitPresence = isLab || modelReview ? 1 : 1 - ease((journey.coverProgress - 0.18) / 0.7);
