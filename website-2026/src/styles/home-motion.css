@@ -187,6 +187,22 @@
 		will-change: opacity;
 	}
 }
+@media (max-width: 760px) {
+	.home-page .ascii-work .work-heading {
+		gap: 22px;
+		margin-bottom: 44px;
+	}
+	.home-page .work-box-gallery {
+		row-gap: 32px;
+	}
+	.home-page .work-box-gallery > .work-box:nth-child(n) {
+		translate: none;
+		will-change: auto;
+	}
+	.home-page .ascii-work > .work-all {
+		margin-top: 40px;
+	}
+}
 @media (max-width: 700px) {
 	.home-page .next-page-destination {
 		flex-wrap: wrap;

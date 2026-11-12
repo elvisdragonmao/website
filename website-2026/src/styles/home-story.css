@@ -306,10 +306,6 @@
 		max-width: 31ch;
 		margin-inline: auto;
 	}
-	.home-page .ascii-work .work-heading {
-		gap: 24px;
-		margin-bottom: 48px;
-	}
 	.home-page .contact-section .footer-main {
 		grid-template-columns: 1fr;
 	}

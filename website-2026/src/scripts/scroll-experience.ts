@@ -16,6 +16,7 @@ const ease = (v: number) => {
 export function setupScrollExperience(signal: AbortSignal): void {
 	if (!document.body.classList.contains("home-page")) return;
 	const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+	const singleColumn = matchMedia("(max-width: 760px)");
 	const next = document.querySelector<HTMLElement>("[data-next-page]");
 	const heading = next?.querySelector<HTMLElement>(".next-page-ascii");
 	let lenis: Lenis;
@@ -56,23 +57,35 @@ export function setupScrollExperience(signal: AbortSignal): void {
 		return top;
 	};
 	let frame = 0,
-		last = -1;
+		last = -1,
+		lastWidth = -1,
+		lastHeight = -1,
+		lastReduced = reduced.matches;
 	const paint = () => {
 		frame = requestAnimationFrame(paint);
-		if (last === scrollY) return;
+		if (last === scrollY && lastWidth === innerWidth && lastHeight === innerHeight && lastReduced === reduced.matches) return;
 		last = scrollY;
+		lastWidth = innerWidth;
+		lastHeight = innerHeight;
+		lastReduced = reduced.matches;
 		const h = innerHeight;
 		if (work && gallery) {
+			// Single-column cards share normal document flow; differential drift
+			// belongs to the staggered desktop composition and its larger gutters.
+			const parallax = !reduced.matches && !singleColumn.matches;
 			const drifts: number[] = [];
 			cards.forEach((card, i) => {
-				const anchor = absoluteTop(card) - scrollY;
-				const raw = (h * 0.6 - anchor) * [0.14, 0.24, 0.19, 0.28][i % 4]!;
-				const limit = raw < 0 ? 165 : 180;
-				const drift = reduced.matches ? 0 : limit * Math.tanh(raw / limit);
+				let drift = 0;
+				if (parallax) {
+					const anchor = absoluteTop(card) - scrollY;
+					const raw = (h * 0.6 - anchor) * [0.14, 0.24, 0.19, 0.28][i % 4]!;
+					const limit = raw < 0 ? 165 : 180;
+					drift = limit * Math.tanh(raw / limit);
+				}
 				drifts.push(drift);
 				card.style.setProperty("--work-drift", `${drift.toFixed(2)}px`);
 			});
-			const offset = reduced.matches ? 0 : clamp((h * 0.7 - work.getBoundingClientRect().top) * 0.065, -45, 80);
+			const offset = parallax ? clamp((h * 0.7 - work.getBoundingClientRect().top) * 0.065, -45, 80) : 0;
 			work.style.setProperty("--work-heading-drift", `${offset.toFixed(2)}px`);
 			const lastDrift = Math.max(0, ...drifts.slice(-2));
 			work.style.setProperty("--work-link-drift", `${(lastDrift * ease(lastDrift / 40)).toFixed(2)}px`);
