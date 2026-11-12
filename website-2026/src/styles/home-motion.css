@@ -103,6 +103,9 @@
 	html.art-ready .home-page .scene-desk {
 		--track-height: 225svh;
 	}
+	html.art-ready .home-page .scene-alive {
+		--track-height: 110svh;
+	}
 	html.art-ready .home-page .scene-why {
 		--track-height: 185svh;
 	}
