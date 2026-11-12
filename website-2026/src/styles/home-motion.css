@@ -179,9 +179,8 @@
 	}
 	.home-page .contact-section .footer-main,
 	.home-page .contact-section .footer-fine {
-		transform: translate3d(0, var(--footer-drift, 0px), 0);
 		opacity: var(--footer-opacity, 1);
-		will-change: transform, opacity;
+		will-change: opacity;
 	}
 }
 @media (max-width: 700px) {

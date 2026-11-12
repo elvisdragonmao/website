@@ -79,8 +79,6 @@ export function setupScrollExperience(signal: AbortSignal): void {
 		}
 		if (footer) {
 			const box = footer.getBoundingClientRect();
-			const progress = ease((h - box.top) / (h * 1.2));
-			footer.style.setProperty("--footer-drift", `${reduced.matches ? 0 : -progress * 52}px`);
 			footer.style.setProperty("--footer-opacity", String(reduced.matches ? 1 : 1 - 0.85 * ease((h * 0.88 - box.bottom) / (h * 0.34))));
 		}
 	};
