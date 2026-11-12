@@ -47,9 +47,13 @@
 	color: #7ac8d2;
 }
 .home-page .contact-section .newsletter-input-row input {
+	padding-block: 4px;
 	outline: 0;
 	border: 0;
 	box-shadow: none;
+}
+.home-page .contact-section .newsletter-input-row {
+	margin-bottom: 32px;
 }
 .home-page .contact-section .newsletter-caption {
 	color: #a1ada8;
