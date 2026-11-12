@@ -86,12 +86,10 @@ export class WorldAnnotations {
 		}
 	}
 
-	updateCover(pointer: THREE.Vector2, progress: number, reduced: boolean): void {
+	updateCover(_pointer: THREE.Vector2, progress: number, reduced: boolean): void {
 		if (!this.cover || reduced) return;
 		const visibility = 1 - ease((progress - 0.12) / 0.3);
-		const x = (pointer.x - 0.5) * -15,
-			y = (pointer.y - 0.5) * 7;
 		this.cover.style.opacity = visibility.toFixed(3);
-		this.cover.style.transform = `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0) rotate(${((pointer.x - 0.5) * -1.3).toFixed(2)}deg)`;
+		this.cover.style.removeProperty("transform");
 	}
 }

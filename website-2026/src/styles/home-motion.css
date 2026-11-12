@@ -95,6 +95,11 @@
 	flex-wrap: wrap;
 }
 @media (prefers-reduced-motion: no-preference) {
+	html.art-ready .home-page .cover-copy {
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+	}
 	html.art-ready .home-page .scene-desk {
 		--track-height: 225svh;
 	}
