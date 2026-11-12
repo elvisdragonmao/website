@@ -28,9 +28,12 @@ export class WorldAnnotations {
 		this.focusOpacity = 0;
 		if (reduced) return;
 		const margin = width < 600 ? 22 : 36;
-		const closestAnchor = Object.entries(anchors).sort(
-			(a, b) => Math.abs(a[1].getWorldPosition(new THREE.Vector3()).x - camera.position.x) - Math.abs(b[1].getWorldPosition(new THREE.Vector3()).x - camera.position.x)
-		)[0]?.[0];
+		const anchorDistances = Object.entries(anchors).map(([key, anchor]) => ({ key, distance: Math.abs(anchor.getWorldPosition(this.point).x - camera.position.x) }));
+		const closest = anchorDistances.reduce<(typeof anchorDistances)[number] | undefined>((nearest, anchor) => (!nearest || anchor.distance < nearest.distance ? anchor : nearest), undefined);
+		const closestAnchor = closest?.key;
+		// Blend focus across neighboring stations instead of switching it in one frame.
+		const mobileWeights = new Map(anchorDistances.map(({ key, distance }) => [key, Math.exp(-2.8 * (distance - (closest?.distance ?? 0)))]));
+		const totalWeight = [...mobileWeights.values()].reduce((sum, weight) => sum + weight, 0) || 1;
 		for (const label of this.labels) {
 			const key = label.dataset.anchor ?? label.dataset.worldLabel ?? "";
 			const desk = Boolean(label.dataset.anchor);
@@ -68,7 +71,8 @@ export class WorldAnnotations {
 			const ndc = this.projected;
 			const onScreen = (1 - ease((Math.abs(ndc.x) - 0.78) / 0.42)) * (1 - ease((Math.abs(ndc.y) - 0.9) / 0.5));
 			const behind = ndc.z > 1 || ndc.z < -1;
-			const mobileVisibility = width < 700 && desk ? (key === closestAnchor ? 1 : onScreen * 0.18) : onScreen;
+			const emphasis = (mobileWeights.get(key) ?? 0) / totalWeight;
+			const mobileVisibility = width < 700 && desk ? onScreen * 0.18 + (1 - onScreen * 0.18) * emphasis : onScreen;
 			const opacity = behind ? 0 : sectionVisibility * (desk ? mobileVisibility : 1);
 			const labelWidth = label.offsetWidth * scale;
 			const labelHeight = label.offsetHeight * scale;
