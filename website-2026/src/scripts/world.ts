@@ -207,7 +207,7 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 			gaze = new CursorGaze(head, eyes, hasGazeOrigin ? gazeOrigin : coverAnchor, gazeForward);
 		}
 		loaded = true;
-		loader.setProgress(0.92, "Finding the light…");
+		loader.setProgress(0.92);
 		document.documentElement.classList.add("art-ready");
 		document.documentElement.dataset.artState = "ready";
 	} catch (error) {

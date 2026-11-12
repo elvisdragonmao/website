@@ -76,7 +76,7 @@ import SceneLoader from "../../components/SceneLoader.astro";
 				const start = performance.now();
 				const tick = () => {
 					const p = Math.min(1, (performance.now() - start) / 2400);
-					current?.setProgress(p, p < 0.5 ? "Preparing the glyphs…" : "Waking up the dragon…");
+					current?.setProgress(p);
 					if (p < 1) timer = window.setTimeout(tick, 80);
 					else current?.finish();
 				};

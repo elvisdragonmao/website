@@ -19,15 +19,6 @@ html.home-loading .scene-loader {
 	padding: 24px;
 	max-width: 100%;
 }
-.scene-loader-signature,
-.scene-loader-footnote {
-	display: block;
-	color: #98a69f;
-	font-size: 12px;
-}
-.scene-loader-footnote {
-	margin-top: 34px;
-}
 .scene-loader pre {
 	font: inherit;
 	font-size: 14px;
@@ -38,7 +29,7 @@ html.home-loading .scene-loader {
 	display: grid;
 	place-items: center;
 	letter-spacing: 0;
-	margin: 28px 0 14px;
+	margin: 0 0 14px;
 }
 .scene-loader [data-loader-label] {
 	font-size: 14px;

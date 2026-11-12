@@ -9,7 +9,6 @@ export class SceneLoader {
 	private frame = 0;
 	private progress = 0.06;
 	private finished = false;
-	private label = "Preparing the glyphs…";
 	private animation: Animation | undefined;
 	private variant: LoaderVariant;
 	constructor(variant?: LoaderVariant) {
@@ -30,16 +29,13 @@ export class SceneLoader {
 		// A slow or failed asset must never trap the reader behind a loading screen.
 		this.timeout = window.setTimeout(() => this.finish(), 12000);
 	}
-	setProgress(progress: number, label = "Waking up the dragon…"): void {
+	setProgress(progress: number): void {
 		if (this.finished) return;
 		this.progress = Math.max(this.progress, Math.min(1, progress));
-		this.label = label;
 		this.draw();
 	}
 	private draw(): void {
 		const art = this.root?.querySelector<HTMLElement>("[data-loader-art]");
-		const label = this.root?.querySelector<HTMLElement>("[data-loader-label]");
-		if (label && label.textContent !== this.label) label.textContent = this.label;
 		if (!art) return;
 		const n = Math.floor(this.progress * 20);
 		if (this.variant === "bar") art.textContent = `${["▖", "▘", "▝", "▗"][this.frame % 4]}  [${"█".repeat(n)}${"░".repeat(20 - n)}]`;
@@ -71,7 +67,7 @@ export class SceneLoader {
 	}
 	finish(): void {
 		if (this.finished) return;
-		this.setProgress(1, "Hey there.");
+		this.setProgress(1);
 		this.finished = true;
 		clearTimeout(this.timeout);
 		clearInterval(this.interval);
