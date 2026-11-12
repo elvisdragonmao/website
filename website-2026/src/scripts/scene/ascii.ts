@@ -27,7 +27,10 @@ export function createAsciiSurface() {
 		uFieldCenter: { value: new THREE.Vector2(0.5, 0.5) },
 		// Retained for callers from V3; the V4 flame never reads a movable origin.
 		uFireOrigin: { value: new THREE.Vector2(0.7, 0.2) },
-		uLabelFocus: { value: new THREE.Vector4(-1, -1, 0, 0) }
+		uLabelFocus: { value: new THREE.Vector4(-1, -1, 0, 0) },
+		uLabelOpacity: { value: 0 },
+		uNarrativeFocus: { value: Array.from({ length: 5 }, () => new THREE.Vector4(-1, -1, 0, 0)) },
+		uNarrativeOpacity: { value: new Float32Array(5) }
 	};
 	const material = new THREE.ShaderMaterial({
 		uniforms,
@@ -41,6 +44,8 @@ export function createAsciiSurface() {
       uniform vec2 uGrid,uPointer,uFieldCenter;
       uniform vec3 uWeights,uImpulse;
       uniform vec4 uLabelFocus;
+      uniform vec4 uNarrativeFocus[5];
+      uniform float uLabelOpacity,uNarrativeOpacity[5];
       uniform float uTime,uStory,uBrightness,uFireReveal,uFireLift,uWorkPresence,uContactPresence,uPortraitPresence;
       float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
       float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
@@ -153,7 +158,12 @@ export function createAsciiSurface() {
         float vignette=1.-smoothstep(.4,1.1,length((uv-.5)*vec2(.8,1.)));
         vec2 delta=abs(uv-uLabelFocus.xy)-uLabelFocus.zw;
         float protectedArea=1.-smoothstep(-.02,.065,max(delta.x,delta.y));
-        float protection=mix(1.,.34,protectedArea);
+        float protection=1.-.66*protectedArea*uLabelOpacity;
+        for(int j=0;j<5;j++){
+          vec2 delta=abs(uv-uNarrativeFocus[j].xy)-uNarrativeFocus[j].zw;
+          float area=1.-smoothstep(-.02,.065,max(delta.x,delta.y));
+          protection*=1.-.66*area*uNarrativeOpacity[j];
+        }
         // Keep the hot floor translucent: the subject is tongues of digit-fire,
         // rather than a solid white rectangle occupying the lower screen.
         vec3 fireGlow=fireColour*fireHeat*.075*fireMix;

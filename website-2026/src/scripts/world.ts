@@ -370,7 +370,8 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 				earthPresence: journey.earthPresence,
 				workPresence: journey.workPresence,
 				contactPresence: journey.contactPresence,
-				fieldCenter: art.uniforms.uFieldCenter.value.toArray()
+				fieldCenter: art.uniforms.uFieldCenter.value.toArray(),
+				narrativeProtection: Array.from(art.uniforms.uNarrativeOpacity.value)
 			})
 		};
 	if (import.meta.env.DEV && loaded) dispatchEvent(new CustomEvent("em:cover-ready", { detail: { ...coverSettings, canBlink: lids.length > 0 } }));
@@ -526,13 +527,18 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		annotations.update(camera, desk.anchors, ranges, isLab ? 0 : scrollY, width, height, time, reduced.matches, journey.deskProgress);
 		annotations.updateCover(follow, journey.coverProgress, reduced.matches);
 		art.uniforms.uLabelFocus.value.copy(annotations.focus);
-		const narrativePanel = narrativePanels.find(panel => {
+		art.uniforms.uLabelOpacity.value = annotations.focusOpacity;
+		// Each subtitle keeps its own mask through overlapping transitions. No
+		// visibility threshold may cut off a still-fading gradient background.
+		art.uniforms.uNarrativeOpacity.value.fill(0);
+		for (const [index, panel] of narrativePanels.entries()) {
+			if (index >= 5) break;
 			const layer = panel.closest<HTMLElement>("[data-story-layer]");
-			return layer?.dataset.storyActive === "true" && Number(layer.style.getPropertyValue("--story-opacity")) > 0.35;
-		});
-		if (narrativePanel) {
-			const rect = narrativePanel.getBoundingClientRect();
-			art.uniforms.uLabelFocus.value.set((rect.left + rect.width / 2) / width, 1 - (rect.top + rect.height / 2) / height, (rect.width * 0.55) / width, (rect.height * 0.62) / height);
+			const opacity = Number(layer?.style.getPropertyValue("--story-opacity") || 0);
+			if (opacity <= 0) continue;
+			const rect = panel.getBoundingClientRect();
+			art.uniforms.uNarrativeFocus.value[index].set((rect.left + rect.width / 2) / width, 1 - (rect.top + rect.height / 2) / height, (rect.width * 0.55) / width, (rect.height * 0.62) / height);
+			art.uniforms.uNarrativeOpacity.value[index] = opacity;
 		}
 		const deskVisible = desk.group.visible,
 			earthVisible = earth.group.visible;

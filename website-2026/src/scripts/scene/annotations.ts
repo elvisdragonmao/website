@@ -8,6 +8,7 @@ export class WorldAnnotations {
 	private point = new THREE.Vector3();
 	private projected = new THREE.Vector3();
 	focus = new THREE.Vector4(-1, -1, 0, 0);
+	focusOpacity = 0;
 	constructor() {
 		for (const label of this.labels) label.style.removeProperty("opacity");
 	}
@@ -24,6 +25,7 @@ export class WorldAnnotations {
 		deskProgress: number
 	): void {
 		this.focus.set(-1, -1, 0, 0);
+		this.focusOpacity = 0;
 		if (reduced) return;
 		const margin = width < 600 ? 22 : 36;
 		const closestAnchor = Object.entries(anchors).sort(
@@ -44,8 +46,10 @@ export class WorldAnnotations {
 				label.style.opacity = String(sectionVisibility);
 				label.style.pointerEvents = sectionVisibility > 0.15 ? "auto" : "none";
 				const actual = label.getBoundingClientRect();
-				if (sectionVisibility > 0.4)
+				if (sectionVisibility > 0) {
 					this.focus.set((actual.left + actual.width / 2) / width, 1 - (actual.top + actual.height / 2) / height, (actual.width * 0.52) / width, (actual.height * 0.54) / height);
+					this.focusOpacity = sectionVisibility;
+				}
 				continue;
 			}
 
@@ -80,8 +84,9 @@ export class WorldAnnotations {
 			label.style.setProperty("--label-rotation", `${angle.toFixed(2)}deg`);
 			label.style.setProperty("--leader-length", `${THREE.MathUtils.clamp(42 * scale, 24, 54).toFixed(1)}px`);
 			label.style.pointerEvents = opacity > 0.15 ? "auto" : "none";
-			if (opacity > 0.45 && (!desk || key === closestAnchor)) {
+			if (opacity > 0 && (!desk || key === closestAnchor)) {
 				this.focus.set((x + labelWidth * 0.5) / width, 1 - (y + labelHeight * 0.5 + rect.top) / height, (labelWidth * 0.5) / width, (labelHeight * 0.5) / height);
+				this.focusOpacity = opacity;
 			}
 		}
 	}

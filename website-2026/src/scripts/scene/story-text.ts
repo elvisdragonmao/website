@@ -91,18 +91,18 @@ export class StoryText {
 				layer.element.style.setProperty("--contact-rise", `${(height * (0.15 * (1 - reveal) - 0.1 * ease((scroll - range.top) / (height * 0.7)))).toFixed(2)}px`);
 			}
 			const opacity = enter * exit;
-			this.setVisible(layer, opacity > 0.002, opacity);
+			this.setVisible(layer, opacity > 0, opacity);
 			// The intro clips fixed content as the ordinary footer enters; clipped links
 			// must leave the tab order even while the decorative text finishes fading.
 			if (contact) for (const link of layer.links) link.tabIndex = opacity > 0.1 && scroll - range.top < height * 0.95 ? 0 : -1;
-			if (opacity <= 0.002) continue;
+			if (opacity === 0) continue;
 			const progress = clamp((scroll - range.top + height * 0.2) / Math.max(height * 0.7, range.height * 0.48));
 			if (layer.name === "beyond") {
 				const linkReveal = ease((progress - 0.2) / 0.34);
 				layer.element.style.setProperty("--research-link-reveal", linkReveal.toFixed(3));
 				for (const link of layer.links) {
-					link.style.pointerEvents = linkReveal > 0.15 ? "auto" : "none";
-					link.tabIndex = linkReveal > 0.15 ? 0 : -1;
+					link.style.pointerEvents = linkReveal * opacity > 0.15 ? "auto" : "none";
+					link.tabIndex = linkReveal * opacity > 0.15 ? 0 : -1;
 				}
 			}
 			for (const line of layer.lines) {
@@ -130,7 +130,7 @@ export class StoryText {
 			layer.element.dataset.storyActive = String(visible);
 			for (const link of layer.links) link.tabIndex = visible ? 0 : -1;
 		}
-		const value = opacity.toFixed(3);
+		const value = opacity.toFixed(5);
 		if (value !== layer.lastOpacity) {
 			layer.element.style.setProperty("--story-opacity", value);
 			layer.lastOpacity = value;
