@@ -4,6 +4,8 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 	const reticle = field?.querySelector<HTMLPreElement>("[data-people-reticle]");
 	const status = field?.querySelector<HTMLOutputElement>("[data-people-status]");
 	if (!field || !reticle) return;
+	const label = (key: "colorPerson" | "coloredPerson" | "coloredStatus", params: Record<string, number>) =>
+		(field.dataset[key] ?? "").replace(/\{(\w+)\}/g, (_, name: string) => String(params[name] ?? ""));
 	const burst = document.createElement("canvas");
 	burst.className = "people-burst";
 	burst.setAttribute("aria-hidden", "true");
@@ -35,7 +37,7 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 	const countColors = () => {
 		const count = people.filter(p => p.colored).length;
 		field.dataset.coloredCount = String(count);
-		if (status) status.textContent = `${count} of ${people.length} people in color.`;
+		if (status) status.textContent = label("coloredStatus", { count, total: people.length });
 	};
 	const drawReticle = (now = performance.now()) => {
 		const cols = Math.max(10, Math.floor(width / 6)),
@@ -84,7 +86,7 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 					person.cycle = cycle;
 					person.colored = false;
 					delete person.button.dataset.colored;
-					person.button.setAttribute("aria-label", `Color person ${i + 1}`);
+					person.button.setAttribute("aria-label", label("colorPerson", { number: i + 1 }));
 					recycled = true;
 				}
 				person.x = (unwrapped % travel) - 20;
@@ -185,7 +187,7 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 			if (person) {
 				person.colored = true;
 				person.button.dataset.colored = "true";
-				person.button.setAttribute("aria-label", `Person ${Number(person.button.dataset.walker) + 1}, in color`);
+				person.button.setAttribute("aria-label", label("coloredPerson", { number: Number(person.button.dataset.walker) + 1 }));
 				if (event.detail === 0) {
 					aim.x = person.x / width;
 					aim.y = person.y / height;

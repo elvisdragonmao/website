@@ -3,6 +3,8 @@ export function startAboutType(root: HTMLElement, signal: AbortSignal): void {
 	const card = root.querySelector<HTMLElement>(".facet-motto");
 	const canvas = card?.querySelector<HTMLCanvasElement>("[data-motto-type]");
 	if (!card || !canvas) return;
+	const lines = [...card.querySelectorAll(".motto-copy span")].map(span => span.textContent ?? "");
+	if (lines.length !== 3) return;
 	const context = canvas.getContext("2d");
 	if (!context) return;
 	const reduced = matchMedia("(prefers-reduced-motion: reduce)");
@@ -29,17 +31,17 @@ export function startAboutType(root: HTMLElement, signal: AbortSignal): void {
 		c.textAlign = "center";
 		c.textBaseline = "middle";
 		c.fillStyle = "#dedbcc";
-		c.font = `italic 500 ${Math.min(22, w / 8)}px "IBM Plex Mono"`;
-		c.fillText("Because It's", w * 0.5, h * 0.23);
-		c.font = `italic 500 ${Math.min(76, w / 4.6)}px "IBM Plex Mono"`;
+		c.font = `italic 500 ${Math.min(22, w / 8)}px "IBM Plex Mono", sans-serif`;
+		c.fillText(lines[0]!, w * 0.5, h * 0.23);
+		c.font = `italic 500 ${Math.min(76, w / 4.6)}px "IBM Plex Mono", sans-serif`;
 		c.lineWidth = 0.8;
 		c.strokeStyle = "#91cbd680";
-		c.strokeText("Absurd,", w * 0.5 + 4, h * 0.51 + 5);
+		c.strokeText(lines[1]!, w * 0.5 + 4, h * 0.51 + 5);
 		c.fillStyle = "#e4e1d5";
-		c.fillText("Absurd,", w * 0.5, h * 0.51);
-		c.font = `italic 500 ${Math.min(30, w / 6.8)}px "IBM Plex Mono"`;
+		c.fillText(lines[1]!, w * 0.5, h * 0.51);
+		c.font = `italic 500 ${Math.min(30, w / 6.8)}px "IBM Plex Mono", sans-serif`;
 		c.fillStyle = "#cedbd4";
-		c.fillText("I Believe.", w * 0.5, h * 0.79);
+		c.fillText(lines[2]!, w * 0.5, h * 0.79);
 		paint(reduced.matches ? 0 : performance.now() / 1000);
 	};
 	const paint = (t: number) => {
