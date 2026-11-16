@@ -1,4 +1,5 @@
 import { startAboutArt } from "./about-art";
+import { startAboutPortrait } from "./about-portrait";
 
 function setupTalks(root: HTMLElement, signal: AbortSignal): void {
 	const monitor = root.querySelector<HTMLElement>("[data-talks-monitor]");
@@ -91,6 +92,7 @@ function mountAbout(): void {
 	const { signal } = activeAbout;
 	root.dataset.aboutMounted = "true";
 	startAboutArt(root, signal);
+	startAboutPortrait(root, signal);
 	setupTalks(root, signal);
 	signal.addEventListener(
 		"abort",

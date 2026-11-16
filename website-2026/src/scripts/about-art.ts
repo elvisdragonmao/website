@@ -1,4 +1,4 @@
-type Kind = "portrait" | "touch" | "paws" | "code" | "music" | "hardware" | "camera" | "broadcast";
+type Kind = "touch" | "paws" | "code" | "music" | "hardware" | "camera" | "broadcast";
 type Artwork = {
 	element: HTMLElement;
 	output: HTMLPreElement;
@@ -8,7 +8,6 @@ type Artwork = {
 	columns: number;
 	rows: number;
 	pointer: { x: number; y: number };
-	portrait?: Float32Array;
 };
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 
@@ -21,18 +20,18 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 	let lastPaint = -Infinity;
 	const resize = (art: Artwork) => {
 		const bounds = art.element.getBoundingClientRect();
-		art.columns = art.kind === "portrait" ? 88 : clamp(Math.floor(bounds.width / 6), 24, 82);
-		art.rows = art.kind === "portrait" ? 47 : clamp(Math.floor(bounds.height / 11.2), 10, 24);
+		art.columns = clamp(Math.floor(bounds.width / 6), 24, 82);
+		art.rows = clamp(Math.floor(bounds.height / 11.2), 10, 24);
 		art.canvas.width = art.columns * 2;
 		art.canvas.height = art.rows * 2;
-		const size = Math.min(bounds.width / (art.columns * 0.6), bounds.height / (art.rows * (art.kind === "portrait" ? 1.02 : 1.12)), art.kind === "portrait" ? 7.5 : 10);
+		const size = Math.min(bounds.width / (art.columns * 0.6), bounds.height / (art.rows * 1.12), 10);
 		art.output.style.fontSize = `${size.toFixed(2)}px`;
-		art.output.style.lineHeight = art.kind === "portrait" ? "1.02" : "1.12";
+		art.output.style.lineHeight = "1.12";
 	};
 	const render = (art: Artwork, time: number) => {
 		const { context: ctx, canvas, columns, rows, kind, pointer } = art;
 		let pixels: Uint8ClampedArray | undefined;
-		if (kind !== "portrait" && kind !== "touch") {
+		if (kind !== "touch") {
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.scale(canvas.width / 480, canvas.height / 270);
@@ -183,15 +182,13 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 			}
 			pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 		}
-		if (kind === "portrait" && !art.portrait) return;
-		const ramp = kind === "portrait" ? " .,:;irsXA253hMHGS#9B&@" : " .:+*#@";
+		const ramp = " .:+*#@";
 		const output: string[] = [];
 		for (let y = 0; y < rows; y++) {
 			let row = "";
 			for (let x = 0; x < columns; x++) {
 				let value = 0;
-				if (kind === "portrait") value = art.portrait![y * columns + x]! * (1 + Math.sin(time * 0.65) * 0.018);
-				else if (kind === "touch") {
+				if (kind === "touch") {
 					const px = (x / columns - 0.5) * 2 - pointer.x * 0.17;
 					const py = (y / rows - 0.5) * 2 - pointer.y * 0.17;
 					const a = Math.atan2(py, px),
@@ -247,27 +244,7 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 			},
 			{ passive: true, signal }
 		);
-		if (art.kind === "portrait" && element.dataset.artSrc) {
-			const image = new Image();
-			image.src = element.dataset.artSrc;
-			void image
-				.decode()
-				.then(() => {
-					if (signal.aborted) return;
-					const source = document.createElement("canvas");
-					source.width = 88;
-					source.height = 47;
-					const ctx = source.getContext("2d", { willReadFrequently: true });
-					if (!ctx) return;
-					ctx.drawImage(image, 260, 0, 1100, 1000, 0, 0, 88, 47);
-					const pixels = ctx.getImageData(0, 0, 88, 47).data;
-					art.portrait = Float32Array.from({ length: 88 * 47 }, (_, i) => clamp(((pixels[i * 4]! * 0.2126 + pixels[i * 4 + 1]! * 0.7152 + pixels[i * 4 + 2]! * 0.0722) / 255 - 0.11) / 0.89, 0, 1));
-					render(art, 0);
-				})
-				.catch(() => {
-					/* The server-rendered glyph portrait remains available. */
-				});
-		} else render(art, 0);
+		render(art, 0);
 	}
 	const observer = new IntersectionObserver(
 		entries => {

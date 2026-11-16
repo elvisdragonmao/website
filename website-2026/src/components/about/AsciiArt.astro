@@ -1,5 +1,5 @@
 ---
-import { CHARACTER_POSTER_URL } from "../../data/character";
+import head from "../../assets/about/head.webp";
 interface Props {
 	kind: "portrait" | "touch" | "paws" | "code" | "music" | "hardware" | "camera" | "broadcast";
 }
@@ -22,6 +22,17 @@ const fallback = {
 }[kind];
 ---
 
-<div class:list={["about-art", `about-art-${kind}`]} data-about-art={kind} data-art-src={kind === "portrait" ? CHARACTER_POSTER_URL : undefined} aria-hidden="true">
-	<pre data-art-output>{fallback}</pre>
+<div class:list={["about-art", `about-art-${kind}`]} data-about-art={kind} aria-hidden="true">
+	{
+		kind === "portrait" ? (
+			<>
+				<>
+					<img class="portrait-source" src={head.src} width={head.width} height={head.height} alt="" decoding="async" />
+					<canvas data-portrait-output />
+				</>
+			</>
+		) : (
+			<pre data-art-output>{fallback}</pre>
+		)
+	}
 </div>
