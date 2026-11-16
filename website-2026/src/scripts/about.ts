@@ -9,6 +9,75 @@ function setupTalks(root: HTMLElement, signal: AbortSignal): void {
 	const viewport = monitor?.querySelector<HTMLElement>(".talks-table-scroll");
 	if (!monitor || !search || !viewport) return;
 	const rows = [...monitor.querySelectorAll<HTMLTableRowElement>("[data-talks-row]")];
+	const rowStops = () => {
+		const visible = rows.filter(row => !row.hidden);
+		const first = visible[0]?.getBoundingClientRect().top ?? 0;
+		const max = Math.max(0, viewport.scrollHeight - viewport.clientHeight);
+		return [...new Set([0, ...visible.map(row => Math.min(max, Math.max(0, row.getBoundingClientRect().top - first))), max])].sort((a, b) => a - b);
+	};
+	const stepRows = (direction: number) => {
+		const stops = rowStops(),
+			current = viewport.scrollTop;
+		const target = direction > 0 ? stops.find(stop => stop > current + 0.5) : stops.findLast(stop => stop < current - 0.5);
+		if (target === undefined) return false;
+		viewport.scrollTop = target;
+		return true;
+	};
+	let lastWheel = -Infinity,
+		wheelDistance = 0,
+		touchY = 0,
+		touchDistance = 0;
+	viewport.addEventListener(
+		"wheel",
+		event => {
+			if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || !event.deltaY) return;
+			const max = viewport.scrollHeight - viewport.clientHeight;
+			if ((event.deltaY < 0 && viewport.scrollTop <= 0) || (event.deltaY > 0 && viewport.scrollTop >= max - 0.5)) return;
+			event.preventDefault();
+			if (Math.sign(wheelDistance) !== Math.sign(event.deltaY)) wheelDistance = 0;
+			wheelDistance += event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientHeight : 1);
+			if (Math.abs(wheelDistance) >= 12 && performance.now() - lastWheel >= 45) {
+				stepRows(Math.sign(wheelDistance));
+				wheelDistance = 0;
+				lastWheel = performance.now();
+			}
+		},
+		{ signal, passive: false }
+	);
+	viewport.addEventListener(
+		"touchstart",
+		event => {
+			touchY = event.touches[0]?.clientY ?? 0;
+			touchDistance = 0;
+		},
+		{ signal, passive: true }
+	);
+	viewport.addEventListener(
+		"touchmove",
+		event => {
+			const y = event.touches[0]?.clientY ?? touchY,
+				delta = touchY - y;
+			touchY = y;
+			const max = viewport.scrollHeight - viewport.clientHeight;
+			if ((delta < 0 && viewport.scrollTop <= 0) || (delta > 0 && viewport.scrollTop >= max - 0.5)) return;
+			event.preventDefault();
+			touchDistance += delta;
+			if (Math.abs(touchDistance) >= 18) {
+				stepRows(Math.sign(touchDistance));
+				touchDistance = 0;
+			}
+		},
+		{ signal, passive: false }
+	);
+	viewport.addEventListener(
+		"scroll",
+		() => {
+			const current = viewport.scrollTop;
+			const nearest = rowStops().reduce((best, stop) => (Math.abs(stop - current) < Math.abs(best - current) ? stop : best), 0);
+			if (Math.abs(current - nearest) > 0.5) viewport.scrollTop = nearest;
+		},
+		{ signal, passive: true }
+	);
 	const buttons = [...monitor.querySelectorAll<HTMLButtonElement>("[data-talks-year]")];
 	const searchText = new Map(rows.map(row => [row, row.textContent?.toLocaleLowerCase() ?? ""]));
 	let year: string | null = null;

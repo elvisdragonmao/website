@@ -329,7 +329,7 @@
 	padding: 30px 24px 22px;
 }
 .about-page .about-workspace > .about-statement {
-	padding: 44px 24px 24px;
+	padding: 54px 24px 36px;
 }
 .about-page .about-workspace .about-statement p {
 	line-height: 1.6;
@@ -397,9 +397,62 @@
 		padding: 27px 10px 12px;
 	}
 	.about-page .about-workspace > .about-statement {
-		padding: 40px 20px 22px;
+		padding: 50px 20px 32px;
 	}
 	.about-page .about-contact > h2 {
 		font-size: 12px;
 	}
+}
+
+.about-page .about-experience-list {
+	overflow-x: auto;
+	scrollbar-width: thin;
+	scrollbar-color: #55766c transparent;
+	padding-bottom: 3px;
+}
+.about-page .about-experience-list li {
+	display: flex;
+	align-items: baseline;
+	min-width: max-content;
+	gap: 18px;
+	padding: 4px 0 4px 24px;
+	white-space: nowrap;
+}
+.about-page .about-experience-list .experience-years {
+	flex: 0 0 17ch;
+	width: 17ch;
+	padding: 0;
+	text-align: left;
+}
+.about-page .about-experience-list .experience-role {
+	display: inline;
+	color: #d6ded7;
+	font-size: 12px;
+	padding: 0;
+	margin: 0;
+}
+.about-page .about-experience-list .experience-organization {
+	display: inline;
+	color: #8e9d92;
+	font-size: 12px;
+}
+.about-page .talks-count {
+	display: block;
+	flex-shrink: 0;
+	padding: 0 0 0 6px;
+	line-height: 17px;
+	font-size: 10px;
+}
+.about-page .talks-keybar {
+	margin-top: 0;
+	gap: 0;
+}
+.about-page .talks-table-scroll {
+	scroll-behavior: auto;
+	overscroll-behavior: auto;
+}
+
+.about-page .about-experience-list :is(.experience-role, .experience-organization, .experience-years) {
+	font-size: 14px;
+	line-height: 1.6;
 }

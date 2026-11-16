@@ -59,8 +59,8 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 		if (kind === "music") {
 			drawSoft(art.images[0]!, width * 0.28, height * 0.03, width * 0.84, height * 1.15, 1.05, true, true);
 			drawSoft(art.images[1]!, -width * 0.22, height * 0.13, width * 1.16, height * 0.93, 1.06, true);
-		} else if (kind === "debate") drawSoft(art.images[0]!, -width * 0.04, -height * 0.03, width * 1.08, height * 1.1, 1.1, true);
-		else drawSoft(art.images[0]!, 0, 0, width, height);
+		} else if (kind === "debate") drawSoft(art.images[0]!, width * 0.07, height * 0.02, width * 0.86, height * 0.84, 1, false, true);
+		else drawSoft(art.images[0]!, 0, -height * 0.18, width, height * 1.42, 1, false, true);
 		if (kind === "music" || kind === "debate") {
 			ctx.globalCompositeOperation = "destination-in";
 			const dissolve = ctx.createLinearGradient(0, 0, 0, height);

@@ -2,7 +2,7 @@
 .about-page[data-about-theme] {
 	--panel-bg: #080909;
 	--panel-ink: #739f9b;
-	padding-top: 78px;
+	padding-top: 28px;
 }
 :where(.about-page[data-about-theme]) .about-hero {
 	margin-bottom: 48px;
@@ -307,7 +307,7 @@
 }
 @media (max-width: 700px) {
 	.about-page[data-about-theme] {
-		padding-top: 96px;
+		padding-top: 88px;
 	}
 	:where(.about-page[data-about-theme]) .about-hero {
 		margin-bottom: 34px;

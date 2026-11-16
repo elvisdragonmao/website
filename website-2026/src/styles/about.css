@@ -5,7 +5,7 @@
 	width: 100%;
 	max-width: 1720px;
 	margin-inline: auto;
-	padding: 108px var(--margin) 100px var(--content-left);
+	padding: 108px var(--margin) 12px var(--content-left);
 	font-size: 14px;
 	line-height: 1.85;
 }
@@ -510,7 +510,7 @@
 }
 @media (max-width: 700px) {
 	.about-page {
-		padding: 124px 22px 70px;
+		padding: 92px 22px 12px;
 	}
 	.about-hero {
 		grid-template-columns: 1fr;

@@ -26,6 +26,7 @@ const years = [...new Set(talks.map(talk => talk.year))];
 			</div>
 			<label class="talks-search">
 				<Icon name="search" /><input type="search" aria-label="Search talks and teaching" data-talks-search autocomplete="off" spellcheck="false" />
+				<output class="talks-count" data-talks-count aria-live="polite">{talks.length} / {talks.length}</output>
 			</label>
 		</div>
 		<div class="talks-table-scroll" tabindex="0" role="region" aria-labelledby="talks-title">
@@ -44,7 +45,6 @@ const years = [...new Set(talks.map(talk => talk.year))];
 				</tbody>
 			</table>
 		</div>
-		<output class="talks-count" data-talks-count aria-live="polite">{talks.length} / {talks.length}</output>
 		<div class="talks-keybar" role="group" aria-label="Teaching monitor shortcuts">
 			{
 				years.map((year, i) => (

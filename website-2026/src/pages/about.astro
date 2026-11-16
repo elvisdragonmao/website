@@ -33,7 +33,7 @@ import "../styles/about-people.css";
 			<section class="about-facet tui-panel facet-touch">
 				<div>
 					<h2>Touch, I need something more.</h2>
-					<p>Exploring new ways for people and technology to connect. Through movement, touch, and interfaces that go beyond the screen.</p>
+					<p>HCI researcher exploring new ways for people and technology to connect. Through movement, touch, and interfaces that go beyond the screen.</p>
 					<a class="about-link" href="#research">Explore my research ↗</a>
 				</div>
 				<AsciiArt kind="touch" />
@@ -41,7 +41,7 @@ import "../styles/about-people.css";
 			<section class="about-facet tui-panel facet-furry">
 				<ImageArt kind="furry" />
 				<h2>Eww! Furry!</h2>
-				<p>I'm a furry. I love this wonderfully creative and welcoming community.</p>
+				<p>I'm a <a href="https://emtech.cc/p/furry-intro/" target="_blank" rel="noopener noreferrer">furry</a>. I love this wonderfully creative and welcoming community.</p>
 			</section>
 			<section class="about-facet tui-panel facet-stack">
 				<AsciiArt kind="code" />
@@ -55,11 +55,14 @@ import "../styles/about-people.css";
 				<p>Creator of <strong>emfont</strong>, an open-source CJK webfont service.</p>
 				<p class="about-font-metric">1.2M+ requests/day.</p>
 				<a class="about-link" href="https://font.emtech.cc/" target="_blank" rel="noopener noreferrer">emfont ↗</a>
+				<a class="about-link source-github" href="https://github.com/elvisdragonmao/emfont" target="_blank" rel="noopener noreferrer">View on GitHub ↗</a>
 			</section>
 			<section class="about-facet tui-panel facet-music">
 				<ImageArt kind="music" />
 				<h2>EDM / Hip-Hop</h2>
-				<p>Porter Robinson, Skrillex, Kendrick Lamar, and a lot more.</p>
+				<div class="facet-caption">
+					<p>Porter Robinson, Skrillex, Kendrick Lamar, and a lot more.</p><a class="about-link" href="https://www.last.fm/user/elvisdragonmao" target="_blank" rel="noopener noreferrer">Last.fm ↗</a>
+				</div>
 			</section>
 			<section class="about-facet tui-panel facet-hardware">
 				<AsciiArt kind="hardware" />
@@ -105,11 +108,11 @@ import "../styles/about-people.css";
 					{
 						experiences.map(item => (
 							<li>
-								<div class="experience-node">
-									{item.organization && <span class="experience-organization">{item.organization}</span>}
-									<span class="experience-role">{item.role}</span>
-								</div>
 								<span class="experience-years">{item.years}</span>
+								<span class="experience-role">
+									{item.role}
+									{item.organization && <span class="experience-organization"> — {item.organization}</span>}
+								</span>
 							</li>
 						))
 					}
