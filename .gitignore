@@ -22,3 +22,6 @@ research/
 *.STL
 *.vrm
 *.unitypackage
+
+# Local project review includes private repository metadata and personal drafts.
+tools/project-review/.local/

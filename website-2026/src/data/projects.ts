@@ -151,7 +151,7 @@ export const projects: Project[] = [
 	},
 	{
 		slug: "omniobserve",
-		card: { type: "Human–AI interaction research", summary: "Exploring what goes unsaid in online meetings.", metric: "Collaborative research · HAIX Lab" },
+		card: { type: "Human–AI interaction research", summary: "Exploring what goes unsaid in online meetings.", metric: "TAICHI 2026 Poster · HAIX Lab" },
 		name: "OmniObserve",
 		type: "HUMAN–AI INTERACTION RESEARCH",
 		headline: "What\ngoes unsaid?",
