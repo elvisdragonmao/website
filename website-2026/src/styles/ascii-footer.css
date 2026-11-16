@@ -64,9 +64,6 @@
 	content: "+ ";
 	color: #899c94;
 }
-.ascii-footer .footer-socials a::after {
-	content: " ↗";
-}
 .ascii-footer .newsletter-panel {
 	container-type: inline-size;
 	grid-column: auto;

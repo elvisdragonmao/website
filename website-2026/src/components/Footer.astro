@@ -18,16 +18,18 @@ const { compact = false, newsletter = false, ascii = false } = Astro.props;
 			</a>
 		</div>
 		<nav class="footer-socials" aria-label="Find Elvis Mao">
-			<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer"><Icon name="envelope" />Email</a>
-			<a href="https://github.com/elvisdragonmao" target="_blank" rel="noopener noreferrer"><Icon name="github" />GitHub</a>
-			<a href="https://t.me/elvisdragonmao" target="_blank" rel="noopener noreferrer"><Icon name="telegram" />Telegram</a>
-			<a href="https://www.instagram.com/elvisdragonmao/" target="_blank" rel="noopener noreferrer"><Icon name="instagram" />Instagram</a>
+			<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer"><Icon name="envelope" />Email<span class="link-arrow" aria-hidden="true">↗</span></a>
+			<a href="https://github.com/elvisdragonmao" target="_blank" rel="noopener noreferrer"><Icon name="github" />GitHub<span class="link-arrow" aria-hidden="true">↗</span></a>
+			<a href="https://t.me/elvisdragonmao" target="_blank" rel="noopener noreferrer"><Icon name="telegram" />Telegram<span class="link-arrow" aria-hidden="true">↗</span></a>
+			<a href="https://www.instagram.com/elvisdragonmao/" target="_blank" rel="noopener noreferrer"><Icon name="instagram" />Instagram<span class="link-arrow" aria-hidden="true">↗</span></a>
 		</nav>
 		{newsletter && <Newsletter />}
 	</div>
 	<div class="footer-fine">
 		<span>© {new Date().getFullYear()} Elvis Dragon Mao</span><div class="footer-meta">
-			<a href="https://github.com/elvisdragonmao/website" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/colophon/">Credits ↗</a>
+			<a href="https://github.com/elvisdragonmao/website" target="_blank" rel="noopener noreferrer">GitHub <span class="link-arrow" aria-hidden="true">↗</span></a><a href="/colophon/">
+				Credits <span class="link-arrow" aria-hidden="true">↗</span>
+			</a>
 		</div>
 	</div>
 </footer>

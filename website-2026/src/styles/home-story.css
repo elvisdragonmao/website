@@ -435,9 +435,6 @@
 	position: absolute;
 	inset: auto 0 -16px;
 }
-.home-page .contact-section .footer-socials a::after {
-	content: " ↗";
-}
 .home-page .contact-section .newsletter-input-row button {
 	background: transparent;
 	color: #7ac8d2;

@@ -51,9 +51,7 @@ a {
 }
 a:is(:hover, :focus-visible) {
 	color: var(--cyan);
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-decoration-color: currentColor;
+	text-decoration: none;
 }
 ::selection {
 	background: var(--accent);
@@ -1238,4 +1236,44 @@ main {
 html:not(.art-ready) .world-label > .label-pin,
 html:not(.art-ready) .world-label > .label-leader {
 	display: none;
+}
+
+/* Text links grow an underline; card links reserve the treatment for their title. */
+a:not(.project-box):not(.next-page),
+.link-underline {
+	background-image: linear-gradient(currentColor, currentColor);
+	background-size: 0% 1px;
+	background-position: 0 100%;
+	background-repeat: no-repeat;
+	transition:
+		color 160ms ease,
+		background-size 280ms cubic-bezier(0.2, 0.7, 0.25, 1);
+}
+a:not(.project-box):not(.next-page):is(:hover, :focus-visible),
+a:is(:hover, :focus-visible) .link-underline {
+	background-size: 100% 1px;
+}
+a.project-box:is(:hover, :focus-visible) {
+	text-decoration: none;
+}
+.link-arrow,
+.icon-arrow {
+	display: inline-block;
+	transform-origin: 50% 55%;
+	transition: transform 280ms cubic-bezier(0.2, 0.7, 0.25, 1);
+}
+a:is(:hover, :focus-visible) :is(.link-arrow, .icon-arrow) {
+	transform: rotate(10deg);
+}
+.about-link,
+.footer-studio {
+	width: fit-content;
+}
+@media (prefers-reduced-motion: reduce) {
+	a,
+	.link-underline,
+	.link-arrow,
+	.icon-arrow {
+		transition: none !important;
+	}
 }
