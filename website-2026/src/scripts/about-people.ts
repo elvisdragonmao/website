@@ -43,10 +43,10 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 		const cx = Math.round(aim.x * (cols - 1)),
 			cy = Math.round(aim.y * (rows - 1));
 		const age = now - fireAt,
-			active = age >= 0 && age < 1050;
-		const progress = reduced.matches ? 1 : Math.min(1, age / 550);
+			active = age >= 0 && age < 800;
+		const progress = reduced.matches ? 1 : Math.min(1, age / 300);
 		const reach = Math.max(aim.x * width, (1 - aim.x) * width, aim.y * height, (1 - aim.y) * height) * progress;
-		const fade = age < 800 ? 1 : Math.max(0, (1050 - age) / 250);
+		const fade = age < 550 ? 1 : Math.max(0, (800 - age) / 250);
 		const warm = hit ? [255, 177, 160] : [156, 239, 255];
 		const rowsHtml = Array.from({ length: rows }, (_, y) =>
 			Array.from({ length: cols }, (_, x) => {
@@ -128,7 +128,7 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 			lastPaint = ms;
 			draw(reduced.matches ? 0 : (ms - start) / 1000);
 		}
-		if (ms - fireAt < 1050) {
+		if (ms - fireAt < 800) {
 			paintShot(ms);
 			drawReticle(ms);
 		}
@@ -207,7 +207,7 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 				delete field.dataset.flash;
 				delete field.dataset.chargeProgress;
 				drawReticle();
-			}, 1070);
+			}, 820);
 		},
 		{ signal }
 	);
