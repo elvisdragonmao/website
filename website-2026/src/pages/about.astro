@@ -37,7 +37,7 @@ import "../styles/about-apps.css";
 			<ImageArt kind="portrait" />
 		</header>
 
-		<div class="about-facets">
+		<div class="about-facets about-workspace">
 			<section class="about-facet tui-panel facet-touch">
 				<div>
 					<h2>Touch, I need something more.</h2>
@@ -92,102 +92,102 @@ import "../styles/about-apps.css";
 				<h2>Behind the Screens.</h2>
 				<p>I do PA and live broadcasting for event I love.</p>
 			</section>
+
+			<section class="about-statement terminal-window tui-panel" data-typing-terminal>
+				<div class="terminal-window-controls" aria-hidden="true"><i></i><i></i><i></i></div>
+				<p>
+					<span class="terminal-line"><span class="terminal-source">When I learned to truly love myself,</span></span>
+					<span class="terminal-line"><span class="terminal-source">I stopped chasing grand futures.</span></span>
+					<span class="terminal-line"><span class="terminal-source">I simply do what I love, my way, at my own rhythm.</span></span>
+				</p>
+			</section>
+
+			<section class="about-section tui-panel about-experience" aria-labelledby="experience-title">
+				<div class="about-section-heading">
+					<h2 id="experience-title">Experience</h2>
+					<a class="about-link" href="https://resume.elvismao.com/" target="_blank" rel="noopener noreferrer">Full CV ↗</a>
+				</div>
+				<ol class="about-experience-list">
+					{
+						experiences.map(item => (
+							<li>
+								<div class="experience-node">
+									{item.organization && <span class="experience-organization">{item.organization}</span>}
+									<span class="experience-role">{item.role}</span>
+								</div>
+								<span class="experience-years">{item.years}</span>
+							</li>
+						))
+					}
+				</ol>
+			</section>
+
+			<section id="research" class="about-section tui-panel about-research" aria-labelledby="research-title">
+				<h2 id="research-title">Selected Research</h2>
+				<p class="research-interests">{researchInterests}</p>
+				<article class="research-publication">
+					<h3><a href="/work/omniobserve/">OmniObserve: Revealing Hidden Consensus in Online Meetings</a></h3>
+					<p>Shih-Kai Hong, Ethel Yu-Tsen Hsiao, Yi-Jie Chen, Jason Zhi-Jun Chang, <strong>Elvis Dragon Mao</strong>, and Grace Yu-Chun Yen.</p>
+					<p class="research-venue">TAICHI 2026 · Poster</p>
+				</article>
+				<div class="research-current">
+					<h3>Current Research</h3>
+					<ul>
+						<li>AI Assistance for Police Workflows (ft. Hsinchu Criminal Investigation Corps)</li>
+						<li>Fursuit Identity Retrieval and Recognition from 2D Images</li>
+					</ul>
+				</div>
+			</section>
+
+			<TalksMonitor />
+
+			<section class="about-section tui-panel about-awards" aria-labelledby="awards-title">
+				<h2 id="awards-title">Honors &amp; Awards</h2>
+				<div class="awards-groups">
+					{
+						awards.map(group => (
+							<details class="awards-year" open>
+								<summary>
+									{group.year}
+									<span class="award-count">{group.items.length}</span>
+								</summary>
+								<ul>
+									{group.items.map(item => (
+										<li>
+											<strong>{item.title}</strong>
+											{item.context && (
+												<span>
+													{" "}
+													— {item.context}
+													{"project" in item && (
+														<>
+															{" "}
+															<em>{item.project}</em>
+														</>
+													)}
+												</span>
+											)}
+										</li>
+									))}
+								</ul>
+							</details>
+						))
+					}
+					<details class="awards-year" open>
+						<summary>Other Web Design Awards<span class="award-count">{otherRecognition.length}</span></summary>
+						<ul>{otherRecognition.map(item => <li>{item}</li>)}</ul>
+					</details>
+				</div>
+			</section>
+
+			<section class="about-contact about-section tui-panel" aria-labelledby="contact-title">
+				<h2 id="contact-title">What's up bro!</h2>
+				<p class="contact-verse">--2 Samuel 20:9</p>
+				<p>Feel free to reach out for research, commission, or just to say hi!</p>
+				<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer">[info@elvismao.com]</a>
+			</section>
+			<Footer newsletter ascii />
 		</div>
-
-		<section class="about-statement terminal-window tui-panel" data-typing-terminal>
-			<div class="terminal-window-controls" aria-hidden="true"><i></i><i></i><i></i></div>
-			<p>
-				<span class="terminal-line"><span class="terminal-source">When I learned to truly love myself,</span></span>
-				<span class="terminal-line"><span class="terminal-source">I stopped chasing grand futures.</span></span>
-				<span class="terminal-line"><span class="terminal-source">I simply do what I love, my way, at my own rhythm.</span></span>
-			</p>
-		</section>
-
-		<section class="about-section tui-panel about-experience" aria-labelledby="experience-title">
-			<div class="about-section-heading">
-				<h2 id="experience-title">Experience</h2>
-				<a class="about-link" href="https://resume.elvismao.com/" target="_blank" rel="noopener noreferrer">Full CV ↗</a>
-			</div>
-			<ol class="about-experience-list">
-				{
-					experiences.map(item => (
-						<li>
-							<div class="experience-node">
-								{item.organization && <span class="experience-organization">{item.organization}</span>}
-								<span class="experience-role">{item.role}</span>
-							</div>
-							<span class="experience-years">{item.years}</span>
-						</li>
-					))
-				}
-			</ol>
-		</section>
-
-		<section id="research" class="about-section tui-panel about-research" aria-labelledby="research-title">
-			<h2 id="research-title">Selected Research</h2>
-			<p class="research-interests">{researchInterests}</p>
-			<article class="research-publication">
-				<h3><a href="/work/omniobserve/">OmniObserve: Revealing Hidden Consensus in Online Meetings</a></h3>
-				<p>Shih-Kai Hong, Ethel Yu-Tsen Hsiao, Yi-Jie Chen, Jason Zhi-Jun Chang, <strong>Elvis Dragon Mao</strong>, and Grace Yu-Chun Yen.</p>
-				<p class="research-venue">TAICHI 2026 · Poster</p>
-			</article>
-			<div class="research-current">
-				<h3>Current Research</h3>
-				<ul>
-					<li>AI Assistance for Police Workflows (ft. Hsinchu Criminal Investigation Corps)</li>
-					<li>Fursuit Identity Retrieval and Recognition from 2D Images</li>
-				</ul>
-			</div>
-		</section>
-
-		<TalksMonitor />
-
-		<section class="about-section tui-panel about-awards" aria-labelledby="awards-title">
-			<h2 id="awards-title">Honors &amp; Awards</h2>
-			<div class="awards-groups">
-				{
-					awards.map(group => (
-						<details class="awards-year" open>
-							<summary>
-								{group.year}
-								<span class="award-count">{group.items.length}</span>
-							</summary>
-							<ul>
-								{group.items.map(item => (
-									<li>
-										<strong>{item.title}</strong>
-										{item.context && (
-											<span>
-												{" "}
-												— {item.context}
-												{"project" in item && (
-													<>
-														{" "}
-														<em>{item.project}</em>
-													</>
-												)}
-											</span>
-										)}
-									</li>
-								))}
-							</ul>
-						</details>
-					))
-				}
-				<details class="awards-year" open>
-					<summary>Other Recognition<span class="award-count">{otherRecognition.length}</span></summary>
-					<ul>{otherRecognition.map(item => <li>{item}</li>)}</ul>
-				</details>
-			</div>
-		</section>
-
-		<section class="about-contact" aria-labelledby="contact-title">
-			<h2 id="contact-title">What's up bro!</h2>
-			<p class="contact-verse">--2 Samuel 20:9</p>
-			<p>Feel free to reach out for research, commission, or just to say hi!</p>
-			<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer">info@elvismao.com</a>
-		</section>
-		<Footer newsletter ascii />
 	</main>
 </Layout>
 

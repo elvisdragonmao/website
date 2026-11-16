@@ -5,6 +5,7 @@ const years = [...new Set(talks.map(talk => talk.year))];
 ---
 
 <section class="about-section talks-section tui-panel" aria-labelledby="talks-title" data-talks-monitor>
+	<h2 id="talks-title" class="talks-app-title">Talks &amp; Teaching</h2>
 	<div class="talks-console">
 		<div class="talks-controls">
 			<div class="talks-years" role="group" aria-label="Filter by year">
@@ -27,7 +28,6 @@ const years = [...new Set(talks.map(talk => talk.year))];
 				<Icon name="search" /><input type="search" aria-label="Search talks and teaching" data-talks-search autocomplete="off" spellcheck="false" />
 			</label>
 		</div>
-		<h2 id="talks-title" class="talks-app-title">Talks &amp; Teaching</h2>
 		<div class="talks-table-scroll" tabindex="0" role="region" aria-labelledby="talks-title">
 			<table aria-labelledby="talks-title">
 				<thead><tr><th scope="col" class="talk-year">Year</th><th scope="col">Talk / Course</th><th scope="col">Venue</th></tr></thead>

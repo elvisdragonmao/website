@@ -2,7 +2,8 @@
 .about-page .about-experience-list li {
 	grid-template-columns: minmax(0, 1fr) 17ch;
 	align-items: start;
-	padding: 10px 0 14px 25px;
+	padding: 3px 0 6px 25px;
+	line-height: 1.45;
 	gap: 16px;
 }
 .about-page :is(.about-experience, .about-research, .about-awards) {
@@ -28,7 +29,7 @@
 .experience-organization + .experience-role {
 	position: relative;
 	padding-left: 26px;
-	margin-top: 5px;
+	margin-top: 0;
 	font-size: 12px;
 }
 .experience-organization + .experience-role::before {
@@ -51,14 +52,14 @@
 }
 .about-page .research-interests {
 	color: #8c9c92;
-	margin-bottom: 28px;
-	padding-bottom: 22px;
+	margin-bottom: 5px;
+	padding-bottom: 10px;
 	border-bottom: 1px dashed #263d31;
 }
 .about-page .research-publication {
 	position: relative;
 	border-left: 0;
-	padding: 0 0 22px 26px;
+	padding: 0 0 14px 26px;
 }
 .research-publication::before {
 	content: "├─";
@@ -69,13 +70,13 @@
 }
 .about-page .research-publication h3 {
 	font-size: 16px;
-	line-height: 1.8;
-	margin-bottom: 10px;
+	line-height: 1.45;
+	margin-bottom: 3px;
 	color: #d6e77a;
 }
 .about-page .research-publication p {
 	font-size: 12px;
-	line-height: 1.9;
+	line-height: 1.45;
 }
 .about-page .research-venue {
 	display: inline-block;
@@ -97,23 +98,24 @@
 .about-page .research-current h3 {
 	font-size: 14px;
 	color: #7ac8d2;
-	margin-bottom: 12px;
+	margin-bottom: 5px;
 }
 .about-page .research-current ul {
-	gap: 8px;
+	gap: 3px;
 }
 .about-page .research-current li {
 	font-size: 12px;
 }
 .about-page .awards-groups {
-	gap: 18px 32px;
+	gap: 12px 32px;
 }
 .awards-year {
 	min-width: 0;
 }
 .awards-year summary {
 	position: relative;
-	padding: 6px 0 6px 22px;
+	padding: 2px 0 2px 22px;
+	line-height: 1.45;
 	color: #7ac8d2;
 	font-size: 14px;
 	cursor: pointer;
@@ -149,11 +151,12 @@
 	display: grid;
 	gap: 0;
 	padding-left: 5px;
-	margin-top: 8px;
+	margin-top: 3px;
 }
 .awards-year li {
 	position: relative;
-	padding: 6px 0 10px 23px;
+	padding: 2px 0 5px 23px;
+	line-height: 1.45;
 	border-left: 1px solid #263d31;
 	font-size: 12px;
 }
@@ -171,7 +174,7 @@
 	content: "└─";
 }
 .awards-year li strong {
-	display: block;
+	display: inline;
 	color: #c7d2c9;
 }
 .about-page .awards-year:last-child ul {
@@ -180,10 +183,12 @@
 }
 .about-page .talks-controls {
 	grid-template-columns: 1fr minmax(140px, 0.55fr);
-	gap: 22px;
+	gap: 18px;
+	margin-bottom: 8px;
+	line-height: 1.2;
 }
 .about-page .talks-years {
-	gap: 3px 20px;
+	gap: 0 20px;
 }
 .about-page .talks-years button {
 	padding-block: 0;
@@ -197,9 +202,7 @@
 	width: 13ch;
 }
 .about-page .talks-app-title {
-	background: transparent;
 	color: #d6e77a;
-	padding: 0 8px 12px;
 }
 .about-page .talks-table-scroll {
 	max-height: 380px;
@@ -236,7 +239,8 @@
 	text-align: right;
 	font-size: 11px;
 	color: #8e9d92;
-	padding: 6px 8px 0;
+	padding: 2px 8px 0;
+	line-height: 16px;
 	font-variant-numeric: tabular-nums;
 }
 .talks-keybar button {
@@ -259,7 +263,7 @@
 @media (max-width: 1100px) {
 	.about-page .talks-controls {
 		grid-template-columns: 1fr;
-		gap: 12px;
+		gap: 6px;
 	}
 }
 @media (max-width: 700px) {
@@ -278,7 +282,7 @@
 	}
 	.about-page .awards-groups {
 		grid-template-columns: 1fr;
-		gap: 16px;
+		gap: 6px;
 	}
 	.about-page .awards-year:last-child ul {
 		grid-template-columns: 1fr;
@@ -304,5 +308,98 @@
 	}
 	.about-page .talks-keybar button {
 		justify-content: flex-start;
+	}
+}
+
+/* One grid owns every inter-section gap; panels no longer carry external margins. */
+.about-page .about-workspace {
+	gap: 24px;
+}
+.about-page .about-workspace > :not(.about-facet) {
+	grid-column: 1 / -1;
+	min-width: 0;
+}
+.about-page .about-workspace > :is(.about-section, .about-statement) {
+	margin: 0;
+}
+.about-page .about-hero {
+	margin-bottom: 24px;
+}
+.about-page .about-workspace > .about-section {
+	padding: 30px 24px 22px;
+}
+.about-page .about-workspace > .about-statement {
+	padding: 44px 24px 24px;
+}
+.about-page .about-workspace .about-statement p {
+	line-height: 1.6;
+	font-size: clamp(16px, 1.45vw, 21px);
+}
+.about-page .terminal-line + .terminal-line {
+	margin-top: 7px;
+}
+.about-page .about-workspace > .talks-section {
+	padding: 28px 14px 14px;
+}
+.about-page .talks-controls {
+	margin: 0 6px 8px;
+}
+.about-page .talks-years button {
+	line-height: 17px;
+}
+.about-page .talks-search {
+	line-height: 17px;
+}
+.about-page .talks-search input {
+	padding: 2px 0;
+}
+.about-page .talks-keybar {
+	margin-top: 3px;
+}
+.about-page .talks-keybar button {
+	line-height: 16px;
+}
+.about-page .research-venue {
+	margin-top: 5px;
+}
+.about-page .research-interests {
+	line-height: 1.6;
+	margin-bottom: 12px;
+}
+.about-page .research-current li {
+	line-height: 1.45;
+}
+.about-page .awards-year ul {
+	line-height: 1.45;
+}
+.about-page .about-contact > h2 {
+	font-size: 14px;
+	line-height: 24px;
+}
+.about-page .about-contact > p {
+	font-size: 13px;
+	line-height: 1.6;
+}
+.about-page .about-contact .contact-verse {
+	margin: 0 0 10px;
+	font-size: 12px;
+}
+.about-page .about-contact > a {
+	font-size: 14px;
+	margin-top: 12px;
+	letter-spacing: 0;
+}
+@media (max-width: 700px) {
+	.about-page .about-workspace > .about-section {
+		padding: 29px 20px 20px;
+	}
+	.about-page .about-workspace > .talks-section {
+		padding: 27px 10px 12px;
+	}
+	.about-page .about-workspace > .about-statement {
+		padding: 40px 20px 22px;
+	}
+	.about-page .about-contact > h2 {
+		font-size: 12px;
 	}
 }

@@ -66,11 +66,4 @@ export const awards = [
 	{ year: "2023", items: [{ title: "iThome Ironman", context: "Cool Without Libraries: Fun with CSS & JS Effects" }] }
 ];
 
-export const otherRecognition = [
-	"iThome Ironman 2024 — Watch Closely, GitHub Actions — I'll Only Demonstrate Once",
-	"CSSREELS — Featured",
-	"CSS Light — Featured of the Day",
-	"TopDesignKing — King of the Day",
-	"Top CSS Gallery",
-	"Web Guru Award — Guru of the Day"
-];
+export const otherRecognition = ["CSSREELS — Featured", "CSS Light — Featured of the Day", "TopDesignKing — King of the Day", "Top CSS Gallery", "Web Guru Award — Guru of the Day"];
