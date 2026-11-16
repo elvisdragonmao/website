@@ -1,13 +1,22 @@
-interface Credit {
+import { getCreditsCopy } from "../i18n/credits";
+import type { Locale } from "../i18n/index";
+
+export interface Credit {
 	name: string;
 	href?: string;
 	detail?: string;
 	license?: { name: string; href: string };
 }
 
-export const creditSections: { title: string; entries: Credit[] }[] = [
-	{ title: "Design / Develop by", entries: [{ name: "Elvis Dragon Mao" }] },
+interface CreditSection {
+	id: keyof ReturnType<typeof getCreditsCopy>["sections"];
+	title: string;
+	entries: Credit[];
+}
+export const creditSections: CreditSection[] = [
+	{ id: "design", title: "Design / Develop by", entries: [{ name: "Elvis Dragon Mao" }] },
 	{
+		id: "libraries",
 		title: "Libraries",
 		entries: [
 			{ name: "Astro", href: "https://astro.build/", detail: "MIT" },
@@ -16,6 +25,7 @@ export const creditSections: { title: string; entries: Credit[] }[] = [
 		]
 	},
 	{
+		id: "typeface",
 		title: "Typeface",
 		entries: [
 			{ name: "IBM Plex Mono", href: "https://github.com/IBM/plex", detail: "IBM · SIL Open Font License 1.1" },
@@ -23,6 +33,7 @@ export const creditSections: { title: string; entries: Credit[] }[] = [
 		]
 	},
 	{
+		id: "icons",
 		title: "Icons & Logos",
 		entries: [
 			{ name: "Phosphor Icons", href: "https://phosphoricons.com/", detail: "MIT" },
@@ -30,6 +41,7 @@ export const creditSections: { title: string; entries: Credit[] }[] = [
 		]
 	},
 	{
+		id: "model",
 		title: "Character Model",
 		entries: [
 			{
@@ -41,6 +53,7 @@ export const creditSections: { title: string; entries: Credit[] }[] = [
 		]
 	},
 	{
+		id: "artwork",
 		title: "Photography & Artwork",
 		entries: [
 			{ name: "諾比", detail: "Profile illustration" },
@@ -55,8 +68,9 @@ export const creditSections: { title: string; entries: Credit[] }[] = [
 			{ name: "Donald Trump", detail: "Photo by Doug Mills / The New York Times via AP, Pool" }
 		]
 	},
-	{ title: "Map Data", entries: [{ name: "Natural Earth", href: "https://www.naturalearthdata.com/", detail: "Public domain · simplified for the ASCII globe" }] },
+	{ id: "map", title: "Map Data", entries: [{ name: "Natural Earth", href: "https://www.naturalearthdata.com/", detail: "Public domain · simplified for the ASCII globe" }] },
 	{
+		id: "inspiration",
 		title: "Visual Inspiration",
 		entries: [
 			{ name: "ASCII Play — Andreas Gysin", href: "https://play.ertdfgcvb.xyz/" },
@@ -67,6 +81,7 @@ export const creditSections: { title: string; entries: Credit[] }[] = [
 		]
 	},
 	{
+		id: "tools",
 		title: "Tools",
 		entries: [
 			{ name: "Blender", href: "https://www.blender.org/" },
@@ -79,3 +94,23 @@ export const creditSections: { title: string; entries: Credit[] }[] = [
 		]
 	}
 ];
+
+/** Keep attribution identities, license names and source URLs identical in every locale. */
+export function getCreditSections(locale: Locale): CreditSection[] {
+	const copy = getCreditsCopy(locale);
+	const details: Record<string, string> = {
+		"Simple Icons": copy.details.simpleIcons,
+		"novabeast — joshuasteinhoff6": copy.details.novabeast,
+		諾比: copy.details.profile,
+		"Daisuke Chen": copy.details.furry,
+		"Kendrick Lamar — Raph_PH": copy.details.kendrick,
+		"Porter Robinson": copy.details.porter,
+		"Donald Trump": copy.details.trump,
+		"Natural Earth": copy.details.map
+	};
+	return creditSections.map(section => ({
+		...section,
+		title: copy.sections[section.id],
+		entries: section.entries.map(entry => ({ ...entry, detail: details[entry.name] ?? entry.detail }))
+	}));
+}

@@ -25,8 +25,8 @@ function startCredits(root: HTMLElement, signal: AbortSignal): void {
 	let lastStatic = -Infinity;
 	let frame = 0;
 	const updateButton = () => {
-		button.textContent = userPaused ? "[play]" : "[pause]";
-		button.setAttribute("aria-label", userPaused ? "Play automatic credits" : "Pause automatic credits");
+		button.textContent = userPaused ? root.dataset.play! : root.dataset.pause!;
+		button.setAttribute("aria-label", userPaused ? root.dataset.playLabel! : root.dataset.pauseLabel!);
 		button.setAttribute("aria-pressed", String(userPaused));
 	};
 	const tick = (time: number) => {

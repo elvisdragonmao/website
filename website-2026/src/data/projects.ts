@@ -2,6 +2,11 @@ import emfontCover from "../assets/projects/emfont/cover.webp";
 import emtechCover from "../assets/projects/emtech/cover.webp";
 import omniobserveCover from "../assets/projects/omniobserve/cover.svg";
 import sitconCover from "../assets/projects/sitcon-2026/cover.webp";
+import type { Locale } from "../i18n/index";
+import { projectTranslations } from "../i18n/projects";
+
+export const projectSlugs = ["emfont", "emtech", "sitcon-2026", "omniobserve"] as const;
+export type ProjectSlug = (typeof projectSlugs)[number];
 
 export interface ProjectSection {
 	label: string;
@@ -9,7 +14,7 @@ export interface ProjectSection {
 	paragraphs: string[];
 }
 export interface Project {
-	slug: string;
+	slug: ProjectSlug;
 	name: string;
 	type: string;
 	headline: string;
@@ -189,3 +194,9 @@ export const projects: Project[] = [
 		credits: "Shih-Kai Hong, Ethel Yu-Tsen Hsiao, Yi-Jie Chen, Jason Zhi-Jun Chang, Elvis Dragon Mao, and Grace Yu-Chun Yen."
 	}
 ];
+
+/** Assets, project identities and URLs are shared; only the presentation copy varies. */
+export function getProjects(locale: Locale): Project[] {
+	if (locale === "en") return projects;
+	return projects.map(project => ({ ...project, ...projectTranslations[locale][project.slug] }));
+}

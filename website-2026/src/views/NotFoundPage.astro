@@ -1,0 +1,30 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Icon from "../components/Icon.astro";
+import { getLocale, localizePath, type Locale } from "../i18n/index";
+interface Props {
+	locale?: Locale;
+}
+const { locale = getLocale(Astro.url.pathname) } = Astro.props;
+const translations = {
+	en: {
+		title: "A Wrong Turn",
+		eyebrow: "404 / UNCHARTED TERRITORY",
+		headline: ["Even dragons", "take a wrong turn."],
+		description: "This page isn't here. There are still a few interesting places to go.",
+		back: "Back to Elvis Mao"
+	},
+	"zh-Hant": { title: "走錯路了", eyebrow: "404 / 未知領域", headline: ["就算是龍，", "也會走錯路。"], description: "這個頁面不在這裡。不過，還有幾個有趣的地方可以去。", back: "回到 Elvis Mao 首頁" },
+	"zh-Hans": { title: "走错路了", eyebrow: "404 / 未知领域", headline: ["就算是龙，", "也会走错路。"], description: "这个页面不在这里。不过，还有几个有趣的地方可以去。", back: "回到 Elvis Mao 首页" }
+} satisfies Record<Locale, { title: string; eyebrow: string; headline: string[]; description: string; back: string }>;
+const copy = translations[locale];
+---
+
+<Layout locale={locale} title={`${copy.title} — Elvis Mao`} description={copy.description}>
+	<main id="main" class="page-main not-found">
+		<span class="eyebrow">{copy.eyebrow}</span>
+		<h1>{copy.headline[0]}<br />{copy.headline[1]}</h1>
+		<p>{copy.description}</p>
+		<a class="text-link" href={localizePath("/", locale)}>{copy.back} <Icon /></a>
+	</main>
+</Layout>
