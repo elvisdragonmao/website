@@ -85,7 +85,7 @@ function mountWork() {
 				const scrolledIntoSection = section.getBoundingClientRect().top < 0;
 				section.dataset.expanded = String(expanded);
 				button.setAttribute("aria-expanded", String(expanded));
-				button.textContent = expanded ? "Show less" : `Show all (${button.dataset.total})`;
+				button.textContent = (expanded ? button.dataset.labelCollapse : button.dataset.labelExpand) ?? "";
 				if (!expanded && scrolledIntoSection) section.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
 			},
 			{ signal: controller.signal }
