@@ -466,3 +466,19 @@
 .about-page .about-workspace > .about-research {
 	padding-top: 42px;
 }
+.about-page .facet-caption {
+	display: flow-root;
+	font-size: 13px;
+	line-height: 1.7;
+}
+.about-page .facet-caption p {
+	display: inline;
+}
+.about-page .facet-caption .about-link {
+	float: right;
+	margin: 0 0 0 8px;
+	line-height: 1.7;
+}
+.about-page .facet-touch p {
+	margin-bottom: 12px;
+}
