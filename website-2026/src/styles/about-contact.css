@@ -43,7 +43,10 @@
 	line-height: 1.6;
 }
 .about-page .contact-blue .contact-verse {
-	margin: 12px auto 18px;
+	width: 100%;
+	max-width: none;
+	margin: 12px 0 18px;
+	text-align: center;
 	font-size: 12px;
 	color: #879fca;
 }
