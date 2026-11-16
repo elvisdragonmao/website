@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "corepack pnpm run check && astro build",
+		"build": "corepack pnpm run check && astro build && node scripts/finalize-build.mjs && corepack pnpm run verify:build",
 		"character:export": "node scripts/export-character.mjs",
 		"character:prepare": "node scripts/prepare-character.mjs",
 		"check": "astro check",
@@ -14,9 +14,11 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"lint": "corepack pnpm run format:check",
-		"preview": "astro preview --host 127.0.0.1"
+		"preview": "astro preview --host 127.0.0.1",
+		"verify:build": "node scripts/verify-build.mjs"
 	},
 	"dependencies": {
+		"@astrojs/sitemap": "^3.7.5",
 		"@fontsource/ibm-plex-mono": "^5.3.0",
 		"@phosphor-icons/core": "^2.1.1",
 		"astro": "^7.4.8",

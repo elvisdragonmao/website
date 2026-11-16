@@ -1,0 +1,20 @@
+# Astro emits static redirects for known routes; hosting handles wildcard aliases.
+/code /work/ 301
+/code/ /work/ 301
+/code/sign.html /code/sign/ 301
+/en / 301
+/en/ / 301
+/en/* /:splat 301
+/zh /zh-Hant/ 301
+/zh/ /zh-Hant/ 301
+/zh/code /work/ 301
+/zh/code/ /work/ 301
+/zh/code/* /code/:splat 301
+/zh/* /zh-Hant/:splat 301
+/zh-Hant/code /work/ 301
+/zh-Hant/code/ /work/ 301
+/zh-Hant/code/* /code/:splat 301
+/zh-Hans/code /work/ 301
+/zh-Hans/code/ /work/ 301
+/zh-Hans/code/* /code/:splat 301
+/code/url-marquee/* /code/url-marquee/ 301

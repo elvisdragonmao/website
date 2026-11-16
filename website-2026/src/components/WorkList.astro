@@ -1,11 +1,15 @@
 ---
 import Icon from "./Icon.astro";
-import { projects } from "../data/projects";
+import { getProjects } from "../data/projects";
+import { getLocale, localizePath, type Locale } from "../i18n";
 import "../styles/work-gallery.css";
 interface Props {
 	full?: boolean;
+	locale?: Locale;
 }
 const { full = false } = Astro.props;
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const projects = getProjects(locale);
 // A readable, server-rendered glyph frame remains in place before JS measures the grid.
 const cols = 58,
 	rows = 35,
@@ -43,7 +47,7 @@ const frame = grid.map(row => row.join(""));
 <div class:list={["project-gallery", "work-box-gallery", { "project-gallery-full": full }]} data-work-gallery>
 	{
 		projects.map(project => (
-			<a class="project-box work-box" href={`/work/${project.slug}/`} data-project={project.slug}>
+			<a class="project-box work-box" href={localizePath(`/work/${project.slug}/`, locale)} data-project={project.slug}>
 				<svg class="work-box-geometry" viewBox={`0 0 ${cols * 8} ${rows * 16}`} preserveAspectRatio="none" aria-hidden="true" focusable="false" data-box-outline>
 					{frame.map((row, y) => (
 						<text x="0" y={y * 16 + 12} xml:space="preserve">

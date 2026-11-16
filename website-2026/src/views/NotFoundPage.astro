@@ -20,7 +20,7 @@ const translations = {
 const copy = translations[locale];
 ---
 
-<Layout locale={locale} title={`${copy.title} — Elvis Mao`} description={copy.description}>
+<Layout noindex locale={locale} title={`${copy.title} — Elvis Mao`} description={copy.description}>
 	<main id="main" class="page-main not-found">
 		<span class="eyebrow">{copy.eyebrow}</span>
 		<h1>{copy.headline[0]}<br />{copy.headline[1]}</h1>

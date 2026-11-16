@@ -1,10 +1,17 @@
 ---
 import "../styles/scene-loader.css";
+import { getLocale, type Locale } from "../i18n";
+import { homeCopy } from "../i18n/home";
+interface Props {
+	locale?: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const label = homeCopy[locale].loading;
 ---
 
-<section class="scene-loader" data-scene-loader role="status" aria-label="Waking up the dragon" aria-live="polite">
+<section class="scene-loader" data-scene-loader role="status" aria-label={label} aria-live="polite">
 	<div class="scene-loader-content">
 		<pre data-loader-art aria-hidden="true">[░░░░░░░░░░░░░░░░░░░░]</pre>
-		<p data-loader-label>Waking up the dragon…</p>
+		<p data-loader-label>{label}</p>
 	</div>
 </section>

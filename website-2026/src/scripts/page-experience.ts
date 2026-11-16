@@ -468,7 +468,7 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 					// fetch, background subscription, fabricated success, or swallowed submission.
 					if (!form.checkValidity()) return;
 					const referrer = form.querySelector<HTMLInputElement>('[name="entry.1137316312"]');
-					if (referrer) referrer.value = location.href;
+					if (referrer) referrer.value = new URLSearchParams(location.search).get("f") || location.href;
 					const status = form.querySelector<HTMLOutputElement>("[data-status]");
 					if (status) status.textContent = form.dataset.openingMessage ?? "";
 					debug.nativeNewsletterSubmissions++;

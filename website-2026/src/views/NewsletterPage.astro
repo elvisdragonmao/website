@@ -1,0 +1,106 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+import { getLocale, type Locale } from "../i18n";
+import { newsletterCopy } from "../i18n/newsletter";
+interface Props {
+	locale?: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const copy = newsletterCopy[locale];
+---
+
+<Layout locale={locale} title={copy.title} description={copy.description}>
+	<main id="main" class="letter-page">
+		<h1>{copy.heading}</h1>
+		<p class="letter-lead">{copy.intro}</p>
+		<p>{copy.details}</p>
+		<form
+			data-newsletter
+			data-opening-message={copy.opening}
+			action="https://docs.google.com/forms/d/e/1FAIpQLSeITLO_J8DsxypUmCL8Ubd4n_2WpiFI5hCnmtUY-TrKYys2Iw/formResponse"
+			method="post"
+			target="_blank"
+			data-astro-reload
+		>
+			<label for="letter-name">{copy.name}</label>
+			<input id="letter-name" name="entry.1211740646" autocomplete="name" placeholder={copy.namePlaceholder} />
+			<label for="letter-email">{copy.email}</label>
+			<input id="letter-email" name="entry.1272945868" type="email" autocomplete="email" required aria-describedby="letter-caption letter-status" />
+			<label for="letter-interest">{copy.interest}</label>
+			<textarea id="letter-interest" name="entry.1531547295" rows="3" placeholder={copy.interestPlaceholder}></textarea>
+			<input type="hidden" name="entry.488472312" value="elvismao.com" />
+			<input type="hidden" name="entry.1137316312" value="" />
+			<button type="submit">{copy.subscribe}</button>
+			<output id="letter-status" data-status role="status" aria-live="polite"></output>
+		</form>
+		<p id="letter-caption" class="letter-caption">{copy.caption}</p>
+	</main>
+	<Footer locale={locale} />
+</Layout>
+<style>
+	.letter-page {
+		width: min(38rem, calc(100% - 3rem));
+		margin: 0 auto;
+		padding: 10rem 0 6rem;
+	}
+	h1 {
+		font-size: clamp(1.8rem, 6vw, 3rem);
+		line-height: 1.25;
+		margin-bottom: 2.5rem;
+	}
+	.letter-lead {
+		font-size: 1.25rem;
+		color: var(--ink);
+	}
+	p {
+		line-height: 1.9;
+		color: var(--muted);
+	}
+	form {
+		display: grid;
+		gap: 0.75rem;
+		margin: 3rem 0 1.5rem;
+	}
+	label {
+		margin-top: 1rem;
+		font-size: 0.85rem;
+	}
+	input,
+	textarea {
+		width: 100%;
+		padding: 0.8rem;
+		border: 1px solid var(--line);
+		background: #111514;
+		color: var(--ink);
+		font: inherit;
+		border-radius: 0;
+	}
+	textarea {
+		resize: vertical;
+	}
+	input:focus-visible,
+	textarea:focus-visible {
+		outline: 2px solid var(--ink);
+		outline-offset: 3px;
+	}
+	button {
+		justify-self: start;
+		background: var(--ink);
+		color: #080909;
+		border: 1px solid var(--ink);
+		padding: 0.85rem 1.5rem;
+		margin-top: 1rem;
+		font: inherit;
+		cursor: pointer;
+	}
+	button:hover {
+		background: #080909;
+		color: var(--ink);
+	}
+	.letter-caption,
+	output {
+		font-size: 0.75rem;
+		line-height: 1.7;
+	}
+</style>

@@ -12,10 +12,11 @@ interface Props {
 	title?: string;
 	description?: string;
 	home?: boolean;
+	noindex?: boolean;
 	locale?: Locale;
 }
 const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
-const { title = t(locale, "site.title"), description = t(locale, "site.description"), home = false } = Astro.props;
+const { title = t(locale, "site.title"), description = t(locale, "site.description"), home = false, noindex = false } = Astro.props;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 const shareImageUrl = new URL(CHARACTER_POSTER_URL, Astro.site ?? Astro.url.origin);
 const alternateLocales = availableLocalesForPath(Astro.url.pathname);
@@ -28,6 +29,7 @@ const ogLocales: Record<Locale, string> = { en: "en_US", "zh-Hant": "zh_TW", "zh
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
+		{noindex && <meta name="robots" content="noindex" />}
 		<meta name="theme-color" content="#080808" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
