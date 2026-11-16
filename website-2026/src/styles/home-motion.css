@@ -57,6 +57,15 @@
 }
 .home-page .contact-section .newsletter-caption {
 	color: #a1ada8;
+	max-width: none;
+}
+.newsletter-caption > span {
+	white-space: nowrap;
+}
+@media (max-width: 700px) {
+	.home-page .contact-section .site-footer .newsletter-caption {
+		font-size: min(14px, calc((100vw - 48px) / 25));
+	}
 }
 .home-page .contact-section .footer-note {
 	padding-top: 18px;
