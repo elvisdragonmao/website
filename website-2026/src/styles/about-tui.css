@@ -1,30 +1,8 @@
-/* Three reviewable workspaces share the same approved content. */
+/* Responsive btop-inspired glyph frames. */
 .about-page[data-about-theme] {
 	--panel-bg: #080909;
 	--panel-ink: #739f9b;
 	padding-top: 78px;
-}
-.about-variants {
-	display: flex;
-	justify-content: flex-end;
-	gap: 5px;
-	margin-bottom: 30px;
-}
-.about-page:not([data-frames-ready]) .about-variants {
-	visibility: hidden;
-}
-.about-variants button {
-	padding: 4px 12px;
-	border: 0;
-	background: transparent;
-	color: #8d9d95;
-	font: inherit;
-	font-size: 12px;
-	cursor: pointer;
-}
-.about-variants button[aria-pressed="true"] {
-	background: #26352f;
-	color: #d6e77a;
 }
 :where(.about-page[data-about-theme]) .about-hero {
 	margin-bottom: 48px;
@@ -308,117 +286,6 @@
 	gap: 10px;
 }
 
-/* tmux: contiguous pane splits and a restrained green status strip. */
-.about-page[data-about-theme="tmux"] {
-	--panel-ink: #788f77;
-}
-[data-about-theme="tmux"] .about-facets {
-	gap: 0;
-}
-[data-about-theme="tmux"] .about-facet {
-	grid-column: span 6;
-	--panel-ink: #788f77;
-	padding: 34px 28px 27px;
-}
-[data-about-theme="tmux"] :is(.facet-touch, .facet-broadcast) {
-	grid-column: 1 / -1;
-}
-[data-about-theme="tmux"] .about-facet h2,
-[data-about-theme="tmux"] .about-section > h2,
-[data-about-theme="tmux"] .about-section-heading h2 {
-	background: #243527;
-	color: #d5e0cc;
-}
-[data-about-theme="tmux"] .about-variants {
-	justify-content: flex-start;
-	background: #243527;
-}
-[data-about-theme="tmux"] .about-variants button[aria-pressed="true"] {
-	background: #a2b58c;
-	color: #080909;
-}
-[data-about-theme="tmux"] .terminal-window-controls {
-	left: auto;
-	right: 24px;
-}
-[data-about-theme="tmux"] .terminal-output[data-cursor="true"]::after {
-	content: "_";
-}
-
-/* DOS: double-line dialog frames, blue windows, square grey title strips. */
-.about-page[data-about-theme="dos"] {
-	--panel-bg: #000080;
-	--panel-ink: #c6ceea;
-	--about-cyan: #86e9f4;
-	--about-green: #e8e8b0;
-}
-[data-about-theme="dos"] .about-facets {
-	gap: 24px;
-}
-[data-about-theme="dos"] .about-facet {
-	grid-column: span 6;
-	--panel-ink: #c6ceea;
-	padding-top: 56px;
-	box-shadow: 6px 6px #000;
-}
-[data-about-theme="dos"] .facet-broadcast {
-	grid-column: 1 / -1;
-}
-[data-about-theme="dos"] .facet-touch {
-	display: block;
-}
-[data-about-theme="dos"] .about-facet h2,
-[data-about-theme="dos"] .about-section > h2,
-[data-about-theme="dos"] .about-section-heading h2 {
-	top: 12px;
-	left: 16px;
-	right: 16px;
-	max-width: none;
-	background: #c6ceea;
-	color: #000080;
-	text-align: center;
-}
-[data-about-theme="dos"] .about-section {
-	padding-top: 58px;
-}
-[data-about-theme="dos"] .about-section-heading .about-link {
-	top: 42px;
-}
-[data-about-theme="dos"] .about-facet p {
-	color: #d8deef;
-}
-[data-about-theme="dos"] .about-art {
-	color: #c6ceea;
-}
-[data-about-theme="dos"] .about-variants button {
-	background: #c6ceea;
-	color: #000080;
-}
-[data-about-theme="dos"] .about-variants button[aria-pressed="true"] {
-	background: #000080;
-	color: #fff;
-}
-[data-about-theme="dos"] .terminal-output {
-	color: #fff;
-}
-[data-about-theme="dos"] .about-statement {
-	box-shadow: 6px 6px #000;
-}
-[data-about-theme="dos"] .terminal-window-controls i {
-	background: #c6ceea;
-}
-[data-about-theme="dos"] .talks-section {
-	padding-top: 25px;
-}
-[data-about-theme="dos"] .talks-app-title {
-	background: #c6ceea;
-	color: #000080;
-}
-[data-about-theme="dos"] .talks-console tr[data-selected="true"] {
-	background: #c6ceea;
-	color: #000080;
-}
-
 @media (max-width: 1100px) {
 	:where(.about-page[data-about-theme]) .about-facet h2 {
 		font-size: 12px;
@@ -441,9 +308,6 @@
 @media (max-width: 700px) {
 	.about-page[data-about-theme] {
 		padding-top: 96px;
-	}
-	.about-variants {
-		margin-bottom: 28px;
 	}
 	:where(.about-page[data-about-theme]) .about-hero {
 		margin-bottom: 34px;
@@ -518,15 +382,5 @@
 	}
 	:where(.about-page[data-about-theme]) .talks-console :is(td, th) {
 		padding: 0;
-	}
-	[data-about-theme="dos"] .about-facet,
-	[data-about-theme="dos"] .about-section {
-		padding-top: 56px;
-	}
-	[data-about-theme="dos"] .talks-section {
-		padding-top: 24px;
-	}
-	[data-about-theme="tmux"] .about-facets {
-		gap: 0;
 	}
 }

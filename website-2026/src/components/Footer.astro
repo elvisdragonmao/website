@@ -1,14 +1,16 @@
 ---
 import Icon from "./Icon.astro";
 import Newsletter from "./Newsletter.astro";
+import "../styles/ascii-footer.css";
 interface Props {
 	compact?: boolean;
 	newsletter?: boolean;
+	ascii?: boolean;
 }
-const { compact = false, newsletter = false } = Astro.props;
+const { compact = false, newsletter = false, ascii = false } = Astro.props;
 ---
 
-<footer class:list={["site-footer", { compact, "has-newsletter": newsletter }]}>
+<footer class:list={["site-footer", { compact, "has-newsletter": newsletter, "ascii-footer": ascii }]}>
 	<div class="footer-main">
 		<div class="footer-note">
 			<a class="footer-name" href="/">Elvis Mao.</a><a class="footer-studio" href="https://linyao.tw/" target="_blank" rel="noopener noreferrer">

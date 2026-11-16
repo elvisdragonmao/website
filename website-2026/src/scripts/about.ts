@@ -1,5 +1,5 @@
 import { startAboutArt } from "./about-art";
-import { startAboutPortrait } from "./about-portrait";
+import { startAboutMedia } from "./about-media";
 import { setupAboutWorkspace, setupTypingTerminal } from "./about-tui";
 
 function setupTalks(root: HTMLElement, signal: AbortSignal): void {
@@ -34,6 +34,8 @@ function setupTalks(root: HTMLElement, signal: AbortSignal): void {
 		select(rows.find(row => !row.hidden));
 		viewport.scrollTop = 0;
 		monitor.dataset.empty = String(!rows.some(row => !row.hidden));
+		const count = monitor.querySelector<HTMLOutputElement>("[data-talks-count]");
+		if (count) count.textContent = `${rows.filter(row => !row.hidden).length} / ${rows.length}`;
 	};
 	search.addEventListener("input", filter, { signal });
 	search.addEventListener("search", filter, { signal });
@@ -111,7 +113,7 @@ function mountAbout(): void {
 	root.dataset.aboutMounted = "true";
 	setupAboutWorkspace(root, signal);
 	startAboutArt(root, signal);
-	startAboutPortrait(root, signal);
+	startAboutMedia(root, signal);
 	setupTalks(root, signal);
 	setupTypingTerminal(root, signal);
 	signal.addEventListener(

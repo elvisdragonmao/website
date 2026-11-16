@@ -1,0 +1,308 @@
+/* Directory hierarchy, search results, and a compact htop process list. */
+.about-page .about-experience-list li {
+	grid-template-columns: minmax(0, 1fr) 17ch;
+	align-items: start;
+	padding: 10px 0 14px 25px;
+	gap: 16px;
+}
+.about-page :is(.about-experience, .about-research, .about-awards) {
+	--panel-ink: #739f9b;
+}
+.about-page :is(.about-experience, .about-research, .about-awards) h2::before {
+	content: "~/ ";
+	color: #687c70;
+}
+.experience-node {
+	position: relative;
+	min-width: 0;
+}
+.about-page .experience-organization {
+	display: block;
+	color: #7ac8d2;
+	font-size: 14px;
+}
+.experience-role {
+	display: block;
+	color: #c6cec7;
+}
+.experience-organization + .experience-role {
+	position: relative;
+	padding-left: 26px;
+	margin-top: 5px;
+	font-size: 12px;
+}
+.experience-organization + .experience-role::before {
+	content: "└─";
+	position: absolute;
+	left: 0;
+	color: #4b695d;
+}
+.about-page .experience-years {
+	color: #8e9d92;
+	text-align: right;
+	font-size: 12px;
+}
+.about-page .about-experience-list li:not(:last-child) {
+	border-left: 1px solid #263d31;
+}
+.about-page .about-experience-list li::before {
+	left: -1px;
+	background: #080909;
+}
+.about-page .research-interests {
+	color: #8c9c92;
+	margin-bottom: 28px;
+	padding-bottom: 22px;
+	border-bottom: 1px dashed #263d31;
+}
+.about-page .research-publication {
+	position: relative;
+	border-left: 0;
+	padding: 0 0 22px 26px;
+}
+.research-publication::before {
+	content: "├─";
+	color: #55766c;
+	position: absolute;
+	left: 0;
+	top: 2px;
+}
+.about-page .research-publication h3 {
+	font-size: 16px;
+	line-height: 1.8;
+	margin-bottom: 10px;
+	color: #d6e77a;
+}
+.about-page .research-publication p {
+	font-size: 12px;
+	line-height: 1.9;
+}
+.about-page .research-venue {
+	display: inline-block;
+	padding: 1px 8px;
+	background: #13211d;
+	color: #7ac8d2;
+}
+.about-page .research-current {
+	position: relative;
+	margin-top: 3px;
+	padding-left: 26px;
+}
+.research-current > h3::before {
+	content: "└─";
+	color: #55766c;
+	position: absolute;
+	left: 0;
+}
+.about-page .research-current h3 {
+	font-size: 14px;
+	color: #7ac8d2;
+	margin-bottom: 12px;
+}
+.about-page .research-current ul {
+	gap: 8px;
+}
+.about-page .research-current li {
+	font-size: 12px;
+}
+.about-page .awards-groups {
+	gap: 18px 32px;
+}
+.awards-year {
+	min-width: 0;
+}
+.awards-year summary {
+	position: relative;
+	padding: 6px 0 6px 22px;
+	color: #7ac8d2;
+	font-size: 14px;
+	cursor: pointer;
+	list-style: none;
+}
+.awards-year summary::-webkit-details-marker {
+	display: none;
+}
+.awards-year summary::before {
+	content: "+";
+	position: absolute;
+	left: 0;
+	color: #d6e77a;
+}
+.awards-year[open] summary::before {
+	content: "−";
+}
+.awards-year summary:hover {
+	background: #111c16;
+}
+.award-count {
+	color: #798c7c;
+	font-size: 11px;
+	margin-left: 14px;
+}
+.award-count::before {
+	content: "[";
+}
+.award-count::after {
+	content: "]";
+}
+.about-page .awards-year ul {
+	display: grid;
+	gap: 0;
+	padding-left: 5px;
+	margin-top: 8px;
+}
+.awards-year li {
+	position: relative;
+	padding: 6px 0 10px 23px;
+	border-left: 1px solid #263d31;
+	font-size: 12px;
+}
+.awards-year li::before {
+	content: "├─";
+	position: absolute;
+	left: -1px;
+	color: #55766c;
+	background: #080909;
+}
+.awards-year li:last-child {
+	border-left-color: transparent;
+}
+.awards-year li:last-child::before {
+	content: "└─";
+}
+.awards-year li strong {
+	display: block;
+	color: #c7d2c9;
+}
+.about-page .awards-year:last-child ul {
+	grid-template-columns: 1fr 1fr;
+	column-gap: 32px;
+}
+.about-page .talks-controls {
+	grid-template-columns: 1fr minmax(140px, 0.55fr);
+	gap: 22px;
+}
+.about-page .talks-years {
+	gap: 3px 20px;
+}
+.about-page .talks-years button {
+	padding-block: 0;
+	font-size: 12px;
+}
+.about-page .talks-search {
+	align-self: end;
+	margin-bottom: 3px;
+}
+.about-page .talks-meter {
+	width: 13ch;
+}
+.about-page .talks-app-title {
+	background: transparent;
+	color: #d6e77a;
+	padding: 0 8px 12px;
+}
+.about-page .talks-table-scroll {
+	max-height: 380px;
+}
+.about-page .talks-console thead {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background: #9cbb5b;
+	color: #080909;
+}
+.about-page .talks-console thead th {
+	font-weight: 500;
+	color: inherit;
+	padding: 2px 8px;
+}
+.about-page .talks-console :is(td, th) {
+	padding: 3px 8px;
+	font-size: 12px;
+	line-height: 1.6;
+}
+.about-page .talks-console .talk-year {
+	width: 65px;
+}
+.about-page .talks-console tbody tr:hover {
+	background: #173326;
+}
+.about-page .talks-console tbody tr[data-selected="true"] {
+	background: #5bbcc8;
+	color: #080909;
+}
+.talks-count {
+	display: block;
+	text-align: right;
+	font-size: 11px;
+	color: #8e9d92;
+	padding: 6px 8px 0;
+	font-variant-numeric: tabular-nums;
+}
+.talks-keybar button {
+	justify-content: flex-start;
+	gap: 0;
+	padding: 0;
+	background: #59b3c0;
+}
+.talks-keybar button kbd {
+	padding: 1px 5px;
+	background: #080909;
+	color: #dde5de;
+}
+.talks-keybar button > span {
+	padding-inline: 7px;
+}
+.talks-keybar button[aria-pressed="true"] {
+	background: #b6d17a;
+}
+@media (max-width: 1100px) {
+	.about-page .talks-controls {
+		grid-template-columns: 1fr;
+		gap: 12px;
+	}
+}
+@media (max-width: 700px) {
+	.about-page .about-experience-list li {
+		grid-template-columns: 1fr;
+		gap: 3px;
+		padding-left: 22px;
+	}
+	.about-page .experience-years {
+		text-align: left;
+		padding-left: 26px;
+		font-size: 11px;
+	}
+	.about-page .experience-organization {
+		font-size: 13px;
+	}
+	.about-page .awards-groups {
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+	.about-page .awards-year:last-child ul {
+		grid-template-columns: 1fr;
+	}
+	.about-page .talks-console thead {
+		display: block;
+	}
+	.about-page .talks-console thead tr {
+		grid-template-columns: 43px minmax(0, 1fr);
+		padding: 2px 8px;
+	}
+	.about-page .talks-console thead th {
+		padding: 0;
+	}
+	.about-page .talks-console thead th:last-child {
+		display: none;
+	}
+	.about-page .talks-console tbody tr {
+		padding: 6px 8px;
+	}
+	.about-page .talks-console tbody :is(th, td) {
+		padding: 0;
+	}
+	.about-page .talks-keybar button {
+		justify-content: flex-start;
+	}
+}

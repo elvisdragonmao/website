@@ -1,4 +1,4 @@
-type Kind = "touch" | "paws" | "code" | "music" | "hardware" | "camera" | "broadcast";
+type Kind = "touch" | "code" | "type" | "hardware" | "camera" | "broadcast";
 type Artwork = {
 	element: HTMLElement;
 	output: HTMLPreElement;
@@ -20,8 +20,9 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 	let lastPaint = -Infinity;
 	const resize = (art: Artwork) => {
 		const bounds = art.element.getBoundingClientRect();
-		art.columns = clamp(Math.floor(bounds.width / 6), 24, 82);
-		art.rows = clamp(Math.floor(bounds.height / 11.2), 10, 24);
+		const typography = art.kind === "type";
+		art.columns = clamp(Math.floor(bounds.width / (typography ? 4 : 6)), 24, 82);
+		art.rows = clamp(Math.floor(bounds.height / (typography ? 6 : 11.2)), 10, typography ? 36 : 24);
 		art.canvas.width = art.columns * 2;
 		art.canvas.height = art.rows * 2;
 		const size = Math.min(bounds.width / (art.columns * 0.6), bounds.height / (art.rows * 1.12), 10);
@@ -31,7 +32,7 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 	const render = (art: Artwork, time: number) => {
 		const { context: ctx, canvas, columns, rows, kind, pointer } = art;
 		let pixels: Uint8ClampedArray | undefined;
-		if (kind !== "touch") {
+		if (kind !== "touch" && kind !== "hardware") {
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.scale(canvas.width / 480, canvas.height / 270);
@@ -45,27 +46,7 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 				points.forEach(([x, y], i) => (i ? ctx.lineTo(x!, y!) : ctx.moveTo(x!, y!)));
 				ctx.stroke();
 			};
-			const circle = (x: number, y: number, r: number) => {
-				ctx.beginPath();
-				ctx.arc(x, y, r, 0, Math.PI * 2);
-				ctx.stroke();
-			};
-			if (kind === "paws") {
-				ctx.translate(pointer.x * 14, Math.sin(time * 0.7) * 5 + pointer.y * 8);
-				ctx.beginPath();
-				ctx.ellipse(244, 174, 70, 52, -0.12, 0, Math.PI * 2);
-				ctx.fill();
-				for (const [x, y, r, angle] of [
-					[151, 125, 25, -0.45],
-					[204, 76, 31, -0.16],
-					[271, 70, 31, 0.2],
-					[327, 113, 26, 0.5]
-				]) {
-					ctx.beginPath();
-					ctx.ellipse(x!, y!, r! * 0.75, r!, angle!, 0, Math.PI * 2);
-					ctx.fill();
-				}
-			} else if (kind === "code") {
+			if (kind === "code") {
 				ctx.strokeRect(40, 30, 400, 180);
 				line([
 					[175, 84],
@@ -94,79 +75,55 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 				ctx.globalAlpha = 0.55 + 0.3 * Math.sin(time * 1.4);
 				ctx.fillRect(371, 165, 15, 8);
 				ctx.globalAlpha = 1;
-			} else if (kind === "music") {
-				circle(143, 125, 99);
-				circle(143, 125, 70);
-				circle(143, 125, 37);
-				circle(143, 125, 10);
-				const angle = time * 0.65 + pointer.x * 0.4;
-				line([
-					[143 + Math.cos(angle) * 45, 125 + Math.sin(angle) * 45],
-					[143 + Math.cos(angle) * 86, 125 + Math.sin(angle) * 86]
-				]);
-				line([
-					[318, 40],
-					[390, 40],
-					[367, 139],
-					[327, 169]
-				]);
-				for (let i = 0; i < 9; i++) {
-					const h = 14 + (Math.sin(time * 1.8 + i * 1.3) * 0.5 + 0.5) * 68;
-					ctx.fillRect(275 + i * 20, 240 - h, 10, h);
+			} else if (kind === "type") {
+				// A single designed glyph, displaced by narrow scan slices rather than random noise.
+				ctx.font = '600 226px "PingFang TC", "Heiti TC", sans-serif';
+				ctx.textAlign = "center";
+				ctx.textBaseline = "middle";
+				for (let y = 0; y < 270; y += 9) {
+					ctx.save();
+					ctx.beginPath();
+					ctx.rect(0, y, 480, 9);
+					ctx.clip();
+					const pulse = Math.pow(Math.max(0, Math.sin(time * 1.4 + y * 0.025)), 22);
+					ctx.translate(240 + Math.sin(y * 0.08 + time * 3) * pulse * 17 + pointer.x * 8, 142);
+					ctx.scale(1.35, 1);
+					ctx.fillText("字", 0, 0);
+					ctx.restore();
 				}
-			} else if (kind === "hardware") {
-				ctx.strokeRect(36, 64, 160, 144);
-				ctx.strokeRect(71, 96, 90, 80);
-				for (let i = 0; i < 4; i++) {
-					const y = 84 + i * 35,
-						x = 55 + i * 36;
-					line([
-						[15, y],
-						[36, y]
-					]);
-					line([
-						[196, y],
-						[217, y]
-					]);
-					line([
-						[x, 44],
-						[x, 64]
-					]);
-					line([
-						[x, 208],
-						[x, 229]
-					]);
-				}
-				const angle = time * 0.18 + pointer.x * 0.2;
-				const vertices = Array.from({ length: 8 }, (_, i) => {
-					const x = i & 1 ? 65 : -65,
-						y = i & 2 ? 65 : -65,
-						z = i & 4 ? 65 : -65;
-					const rx = x * Math.cos(angle) - z * Math.sin(angle),
-						rz = x * Math.sin(angle) + z * Math.cos(angle);
-					return [345 + rx, 130 + y * 0.78 + rz * 0.4];
-				});
-				for (let i = 0; i < 8; i++) for (const bit of [1, 2, 4]) if (!(i & bit)) line([vertices[i]!, vertices[i | bit]!]);
 			} else if (kind === "camera") {
+				const x = 240 + pointer.x * 95,
+					y = 115 + pointer.y * 55;
+				ctx.lineWidth = 6;
 				line([
-					[45, 78],
-					[148, 78],
-					[173, 40],
-					[291, 40],
-					[317, 78],
-					[432, 78],
-					[432, 236],
-					[45, 236],
-					[45, 78]
+					[0, y],
+					[x - 27, y]
 				]);
-				circle(236, 152, 65);
-				circle(236, 152, 42);
-				circle(236 + pointer.x * 8, 152 + pointer.y * 8, 15);
-				ctx.strokeRect(352, 103, 48, 24);
 				line([
-					[72, 104],
-					[118, 104]
+					[x + 27, y],
+					[480, y]
 				]);
+				line([
+					[x, 0],
+					[x, y - 27]
+				]);
+				line([
+					[x, y + 27],
+					[x, 270]
+				]);
+				ctx.strokeRect(x - 23, y - 23, 46, 46);
+				ctx.fillRect(x - 2, y - 2, 4, 4);
+				for (const [cx, cy, dx, dy] of [
+					[20, 15, 1, 1],
+					[460, 15, -1, 1],
+					[20, 255, 1, -1],
+					[460, 255, -1, -1]
+				])
+					line([
+						[cx!, cy! + dy! * 18],
+						[cx!, cy!],
+						[cx! + dx! * 18, cy!]
+					]);
 			} else if (kind === "broadcast") {
 				for (let i = 0; i < 7; i++) {
 					const x = 58 + i * 60,
@@ -182,7 +139,35 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 			}
 			pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 		}
-		const ramp = " .:+*#@";
+		// Project the cube once per frame; sample its edge distance at every glyph.
+		const angle = time * 0.28 + pointer.x * 0.8 + 0.6;
+		const tilt = 0.45 + pointer.y * 0.6 + Math.sin(time * 0.23) * 0.12;
+		const vertices = Array.from({ length: 8 }, (_, i) => {
+			const x = i & 1 ? 0.63 : -0.63,
+				y = i & 2 ? 0.63 : -0.63,
+				z = i & 4 ? 0.63 : -0.63;
+			const rx = x * Math.cos(angle) - z * Math.sin(angle),
+				rz = x * Math.sin(angle) + z * Math.cos(angle);
+			const ry = y * Math.cos(tilt) - rz * Math.sin(tilt),
+				depth = y * Math.sin(tilt) + rz * Math.cos(tilt);
+			const perspective = 2.7 / (3 + depth);
+			return [rx * perspective, ry * perspective];
+		});
+		const edgeDistance = (x: number, y: number) => {
+			let distance = Infinity;
+			for (let i = 0; i < 8; i++)
+				for (const bit of [1, 2, 4])
+					if (!(i & bit)) {
+						const [ax, ay] = vertices[i]!,
+							[bx, by] = vertices[i | bit]!;
+						const dx = bx! - ax!,
+							dy = by! - ay!;
+						const h = clamp(((x - ax!) * dx + (y - ay!) * dy) / (dx * dx + dy * dy), 0, 1);
+						distance = Math.min(distance, Math.hypot(x - ax! - dx * h, y - ay! - dy * h));
+					}
+			return distance;
+		};
+		const ramp = kind === "hardware" ? " .-=+abcdX" : " .:+*#@";
 		const output: string[] = [];
 		for (let y = 0; y < rows; y++) {
 			let row = "";
@@ -197,6 +182,10 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 					const contour = 0.56 + Math.sin(a * 3 + time * 0.3) * 0.1 + Math.cos(a * 5 - time * 0.2) * 0.04 + breath;
 					const distance = Math.min(Math.abs(r - contour), Math.abs(r - contour * 0.58), Math.abs(r - contour * 1.32) + 0.025);
 					value = clamp(1 - distance / 0.065, 0, 1) * (0.6 + Math.sin(a * 2 + time) * 0.2);
+				} else if (kind === "hardware") {
+					const px = (x / columns - 0.5) * 3,
+						py = (y / rows - 0.5) * 2.15;
+					value = Math.exp(-edgeDistance(px, py) * (23 - pointer.x * 12));
 				} else if (pixels) {
 					for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) value += pixels[((y * 2 + dy) * canvas.width + x * 2 + dx) * 4 + 3]! / 1020;
 				}

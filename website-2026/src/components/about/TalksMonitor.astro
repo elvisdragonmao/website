@@ -30,6 +30,7 @@ const years = [...new Set(talks.map(talk => talk.year))];
 		<h2 id="talks-title" class="talks-app-title">Talks &amp; Teaching</h2>
 		<div class="talks-table-scroll" tabindex="0" role="region" aria-labelledby="talks-title">
 			<table aria-labelledby="talks-title">
+				<thead><tr><th scope="col" class="talk-year">Year</th><th scope="col">Talk / Course</th><th scope="col">Venue</th></tr></thead>
 				<tbody>
 					{
 						talks.map((talk, index) => (
@@ -43,6 +44,7 @@ const years = [...new Set(talks.map(talk => talk.year))];
 				</tbody>
 			</table>
 		</div>
+		<output class="talks-count" data-talks-count aria-live="polite">{talks.length} / {talks.length}</output>
 		<div class="talks-keybar" role="group" aria-label="Teaching monitor shortcuts">
 			{
 				years.map((year, i) => (

@@ -57,26 +57,6 @@
 	font-size: 13px;
 	color: var(--about-cyan);
 }
-.about-art-portrait {
-	position: relative;
-}
-.about-art-portrait .portrait-source,
-.about-art-portrait [data-portrait-output] {
-	position: absolute;
-	inset: 0;
-	width: 100%;
-	height: 100%;
-	object-fit: contain;
-}
-.about-art-portrait [data-portrait-output] {
-	opacity: 0;
-}
-.about-art-portrait[data-portrait-ready] [data-portrait-output] {
-	opacity: 1;
-}
-.about-art-portrait[data-portrait-ready] .portrait-source {
-	visibility: hidden;
-}
 .about-facets {
 	display: grid;
 	grid-template-columns: repeat(12, minmax(0, 1fr));

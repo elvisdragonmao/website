@@ -1,8 +1,4 @@
 const NS = "http://www.w3.org/2000/svg";
-const styles = ["btop", "tmux", "dos"] as const;
-type Style = (typeof styles)[number];
-const isStyle = (value: string | null): value is Style => styles.includes(value as Style);
-
 /** Glyph frames follow each panel's actual reflowed dimensions. */
 export function setupAboutWorkspace(root: HTMLElement, signal: AbortSignal): void {
 	const panels = [...root.querySelectorAll<HTMLElement>(".about-facet, .about-section, .about-statement")];
@@ -21,12 +17,11 @@ export function setupAboutWorkspace(root: HTMLElement, signal: AbortSignal): voi
 	const draw = () => {
 		frame = 0;
 		if (signal.aborted) return;
-		const style = root.dataset.aboutTheme ?? "btop";
-		const [tl, tr, bl, br, side, rail] = style === "dos" ? ["╔", "╗", "╚", "╝", "║", "═"] : style === "tmux" ? ["┌", "┐", "└", "┘", "│", "─"] : ["╭", "╮", "╰", "╯", "│", "─"];
+		const [tl, tr, bl, br, side, rail] = ["╭", "╮", "╰", "╯", "│", "─"];
 		for (const panel of panels) {
 			const width = panel.clientWidth,
 				height = panel.clientHeight;
-			const key = `${style}:${width}:${height}`;
+			const key = `${width}:${height}`;
 			if (sizes.get(panel) === key || !width || !height) continue;
 			sizes.set(panel, key);
 			const svg = frames.get(panel)!;
@@ -51,28 +46,6 @@ export function setupAboutWorkspace(root: HTMLElement, signal: AbortSignal): voi
 	const schedule = () => {
 		if (!frame && !signal.aborted) frame = requestAnimationFrame(draw);
 	};
-	const buttons = [...root.querySelectorAll<HTMLButtonElement>("[data-about-style]")];
-	const select = (style: Style, updateUrl: boolean) => {
-		root.dataset.aboutTheme = style;
-		for (const button of buttons) button.setAttribute("aria-pressed", String(button.dataset.aboutStyle === style));
-		if (updateUrl) {
-			const url = new URL(location.href);
-			url.searchParams.set("ui", style);
-			history.replaceState(history.state, "", url);
-		}
-		schedule();
-	};
-	const requested = new URLSearchParams(location.search).get("ui");
-	select(isStyle(requested) ? requested : "btop", false);
-	for (const button of buttons)
-		button.addEventListener(
-			"click",
-			() => {
-				const style = button.dataset.aboutStyle ?? null;
-				if (isStyle(style)) select(style, true);
-			},
-			{ signal }
-		);
 	const observer = new ResizeObserver(schedule);
 	for (const panel of panels) observer.observe(panel);
 	draw();

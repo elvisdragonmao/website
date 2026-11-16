@@ -485,7 +485,7 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 			const f = footer?.getBoundingClientRect(),
 				n = nav?.getBoundingClientRect();
 			const y = n ? n.top + n.height * 0.5 : 40;
-			const darkStory = document.body.classList.contains("home-page");
+			const darkStory = document.body.classList.contains("home-page") || Boolean(footer?.classList.contains("ascii-footer"));
 			document.documentElement.dataset.navTone = !darkStory && f && f.top < y && f.bottom > y ? "light" : "dark";
 		};
 		window.addEventListener("scroll", update, { passive: true, signal: scope.abort.signal });

@@ -1,0 +1,183 @@
+/* The homepage footer treatment, reusable without the homepage scroll stage. */
+.site-footer.ascii-footer.has-newsletter {
+	--ink: #eeeee7;
+	--muted: #a1ada8;
+	--cyan: #7ac8d2;
+	--accent: #7ac8d2;
+	position: relative;
+	width: 100%;
+	margin: 70px 0 0;
+	padding: 52px 0 25px;
+	color: var(--ink);
+	background: transparent;
+	border: 0;
+}
+.ascii-footer.has-newsletter .footer-main {
+	grid-template-columns: minmax(0, 1fr) minmax(0, 0.65fr) minmax(0, 1.5fr);
+	gap: 32px;
+}
+.ascii-footer.site-footer :is(p, a, h3, input, button, output, .footer-fine, .newsletter-caption) {
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.8;
+	letter-spacing: 0;
+}
+.ascii-footer .footer-note {
+	padding-top: 18px;
+}
+.ascii-footer .footer-name {
+	display: inline-block;
+	margin-bottom: 4px;
+}
+.ascii-footer .footer-name::before {
+	content: "[ ";
+}
+.ascii-footer .footer-name::after {
+	content: " ]";
+}
+.ascii-footer .footer-studio {
+	margin-top: 26px;
+}
+.ascii-footer .footer-socials {
+	gap: 13px;
+}
+.ascii-footer .footer-socials a {
+	gap: 10px;
+}
+.ascii-footer .footer-socials a::before {
+	content: "+ ";
+	color: #899c94;
+}
+.ascii-footer .footer-socials a::after {
+	content: " ↗";
+}
+.ascii-footer .newsletter-panel {
+	container-type: inline-size;
+}
+.ascii-footer .newsletter-panel h3 {
+	margin-bottom: 20px;
+}
+.ascii-footer .newsletter-panel h3 br {
+	display: none;
+}
+.ascii-footer .newsletter-input-row {
+	position: relative;
+	background: transparent;
+	border: 0;
+	margin-bottom: 32px;
+}
+.ascii-footer .newsletter-input-row:focus-within {
+	box-shadow: none;
+}
+.ascii-footer .newsletter-input-row::before {
+	content: ">";
+	color: #a1ada8;
+	transition: color 180ms;
+}
+.ascii-footer .newsletter-input-row input {
+	padding: 4px 0 4px 12px;
+	border: 0;
+	outline: 0;
+	box-shadow: none;
+}
+.ascii-footer .newsletter-input-row input::placeholder {
+	color: #a1ada8;
+}
+.ascii-footer .newsletter-input-row input:focus-visible {
+	outline: 0;
+}
+.ascii-footer .newsletter-submit {
+	display: block;
+	border: 0;
+	padding: 0;
+	background: transparent;
+	color: #7ac8d2;
+	margin-top: 26px;
+	cursor: pointer;
+}
+.ascii-footer .newsletter-submit:hover {
+	color: var(--ink);
+}
+.ascii-footer.site-footer .newsletter-caption {
+	margin-top: 20px;
+	max-width: none;
+	color: #a1ada8;
+	font-size: min(14px, 4cqi);
+}
+.ascii-footer .newsletter-caption > span {
+	white-space: nowrap;
+}
+.ascii-footer .footer-fine {
+	position: relative;
+	margin-top: 65px;
+	padding-top: 24px;
+	align-items: start;
+	gap: 20px;
+}
+.ascii-footer .footer-meta {
+	display: flex;
+	gap: 28px;
+	margin-left: auto;
+}
+.ascii-footer::before,
+.ascii-footer .footer-fine::before,
+.ascii-footer .newsletter-input-row::after {
+	content: "+----------------------------------------------------------------------------------------------------------------------------------------+";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 24px;
+	overflow: hidden;
+	white-space: pre;
+	color: #60746d;
+	font:
+		14px/24px "IBM Plex Mono",
+		monospace;
+	pointer-events: none;
+}
+.ascii-footer .footer-fine::before {
+	top: -12px;
+}
+.ascii-footer .newsletter-input-row::after {
+	content: "-------------------------------------------------------------";
+	top: auto;
+	bottom: -16px;
+	transition: color 180ms;
+}
+.ascii-footer .newsletter-input-row:focus-within::before,
+.ascii-footer .newsletter-input-row:focus-within::after {
+	color: #7ac8d2;
+}
+@media (max-width: 1200px) {
+	.ascii-footer.has-newsletter .footer-main {
+		grid-template-columns: 1fr 1fr;
+	}
+	.ascii-footer .newsletter-panel {
+		grid-column: 1 / -1;
+		max-width: 520px;
+		margin-top: 10px;
+	}
+}
+@media (max-width: 700px) {
+	.ascii-footer.has-newsletter .footer-main {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+	.ascii-footer .footer-socials {
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: 10px 22px;
+	}
+	.ascii-footer .newsletter-panel {
+		max-width: none;
+	}
+	.ascii-footer .footer-fine {
+		flex-direction: column;
+		gap: 15px;
+	}
+	.ascii-footer .footer-meta {
+		margin-left: 0;
+	}
+}

@@ -1,38 +1,18 @@
 ---
-import head from "../../assets/about/head.webp";
 interface Props {
-	kind: "portrait" | "touch" | "paws" | "code" | "music" | "hardware" | "camera" | "broadcast";
+	kind: "touch" | "code" | "type" | "hardware" | "camera" | "broadcast";
 }
 const { kind } = Astro.props;
 const fallback = {
-	portrait:
-		"       /\\              /\\\n      /  \\    /\\      /  \\\n     /    \\__/  \\____/    \\\n    /    /            \\    \\\n    \\   /  /\\      /\\ \\   /\n     \\/   \\_/      \\_/  \\/\n      \\        __        /\n       \\    \\____/      /\n        \\_____________/",
-	touch:
-		"                .  :  .\n          .  .:::     :::.  .\n       .::::              ::::.\n     .:::     . .::: . .      :::.\n    :::    .::         ::.      :::\n     :::.    ::.     .::      .::: \n       '::::.   ':::'    .::::'\n            '::......::'",
-	paws: "      .::.        .::.\n     ::::::      ::::::\n        .:::.  .:::.\n       :::::::::::::\n       ':::::::::::'\n          ':::::'",
-	code: "    .---------------------------.\n    |                           |\n    |      /       /       \\    |\n    |     <       /         >   |\n    |      \\    /         /    |\n    |                           |\n    '---------------------------'\n              |       |\n           ---'-------'---",
-	music:
-		"         .:::::::::.\n      .:::         :::.\n     :::   .:::::.   :::\n    :::   :::   :::   :::\n     :::   ':::::'   :::\n      ':::         :::'\n         ':::::::::'\n    ▁ ▃ ▂ ▆ ▄ ▇ ▃ ▂ ▅ ▆ ▃ ▁",
-	hardware:
-		"       | | | | | | |\n    .--+-+-+-+-+-+-+--.\n  --+                 +--\n  --+    .-------.    +--\n  --+    |       |    +--\n  --+    '-------'    +--\n  --+                 +--\n    '--+-+-+-+-+-+-+--'\n       | | | | | | |",
-	camera:
-		"           .-----------.\n     .-----'           '-----.\n     |     .:::::::::.   [] |\n     |   .:::       :::.    |\n     |   :::   .:.   :::    |\n     |   ':::       :::'    |\n     |     ':::::::::'      |\n     '----------------------'",
-	broadcast:
-		"       :     :     :     :\n       |     |     |     |\n      [=]    |    [=]    |\n       |    [=]    |     |\n       |     |     |    [=]\n       |     |     |     |\n    ▁ ▄ ▃ ▆ ▂ ▅ ▇ ▄ ▂ ▃ ▅ ▁"
+	touch: "      .: .:::::. :.\n    .::           ::.\n   ::    .:::::.    ::\n    '::.         .::'\n       ':::::::'",
+	code: " .----------------------.\n |      < / >           |\n |                  _   |\n '----------------------'\n        |      |\n     ---'------'---",
+	type: "字",
+	hardware: "      +--------+\n     /        /|\n    +--------+ |\n    |        | +\n    |        |/\n    +--------+",
+	camera: "           :\n           :\n  - - - -  +  - - - -\n           :\n           :",
+	broadcast: "  :    :    :    :    :\n  |   [=]   |    |    |\n [=]   |    |   [=]   |\n  |    |   [=]   |    |\n  |    |    |    |   [=]\n  ▁ ▄ ▃ ▆ ▂ ▅ ▇ ▄ ▂ ▃ ▁"
 }[kind];
 ---
 
 <div class:list={["about-art", `about-art-${kind}`]} data-about-art={kind} aria-hidden="true">
-	{
-		kind === "portrait" ? (
-			<>
-				<>
-					<img class="portrait-source" src={head.src} width={head.width} height={head.height} alt="" decoding="async" />
-					<canvas data-portrait-output />
-				</>
-			</>
-		) : (
-			<pre data-art-output>{fallback}</pre>
-		)
-	}
+	<pre data-art-output>{fallback}</pre>
 </div>
