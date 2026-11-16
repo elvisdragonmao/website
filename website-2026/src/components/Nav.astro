@@ -1,14 +1,82 @@
 ---
-const path = Astro.url.pathname;
+import { availableLocalesForPath, getLocale, localeLabels, localizePath, stripLocalePath, t, type Locale } from "../i18n";
+interface Props {
+	locale?: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const path = stripLocalePath(Astro.url.pathname);
 const home = path === "/";
+const languageOptions = availableLocalesForPath(Astro.url.pathname);
+const shortLabels: Record<Locale, string> = { en: "EN", "zh-Hant": "繁", "zh-Hans": "简" };
 ---
 
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="skip-link" href="#main">{t(locale, "nav.skip")}</a>
 <header class="site-nav">
-	<a class="wordmark" href={home ? "#cover" : "/"} aria-label="Elvis Mao, home">Elvis Mao<span class="nav-period">.</span></a>
-	<nav aria-label="Main navigation">
-		<a href="/work/" aria-current={path.startsWith("/work") ? "page" : undefined}>Work</a>
-		<a href="/about/" aria-current={path === "/about/" ? "page" : undefined}>About</a>
-		<a href="https://emtech.cc/">Blog<span class="external-mark link-arrow" aria-hidden="true">↗</span></a>
+	<a class="wordmark" href={home ? "#cover" : localizePath("/", locale)} aria-label={t(locale, "nav.home")}>Elvis Mao<span class="nav-period">.</span></a>
+	<nav aria-label={t(locale, "nav.main")}>
+		<a href={localizePath("/work/", locale)} aria-current={path === "/work/" || path.startsWith("/work/") ? "page" : undefined}>{t(locale, "nav.work")}</a>
+		<a href={localizePath("/about/", locale)} aria-current={path === "/about/" ? "page" : undefined}>{t(locale, "nav.about")}</a>
+		<a href="https://emtech.cc/">{t(locale, "nav.blog")}<span class="external-mark link-arrow" aria-hidden="true">↗</span></a>
 	</nav>
+	{
+		languageOptions.length > 1 && (
+			<div class="locale-switcher" role="group" aria-label={t(locale, "nav.language")}>
+				{languageOptions.map(value => (
+					<a
+						data-locale-link
+						href={localizePath(path, value)}
+						lang={value}
+						hreflang={value}
+						aria-label={localeLabels[value]}
+						title={localeLabels[value]}
+						aria-current={value === locale ? "page" : undefined}
+					>
+						{shortLabels[value]}
+					</a>
+				))}
+			</div>
+		)
+	}
 </header>
+
+<style>
+	.locale-switcher {
+		display: flex;
+		gap: 10px;
+		margin-top: 22px;
+		font-size: 10px;
+	}
+	.locale-switcher a {
+		padding: 1px 3px;
+		background: #080909;
+		color: #a3a3a3;
+	}
+	.locale-switcher a:hover,
+	.locale-switcher a[aria-current="page"] {
+		color: var(--accent);
+	}
+	.locale-switcher a:focus-visible {
+		outline: 1px solid currentColor;
+		outline-offset: 3px;
+	}
+	@media (max-width: 700px) {
+		.locale-switcher {
+			position: absolute;
+			top: 12px;
+			right: 22px;
+			margin-top: 0;
+		}
+	}
+</style>
+<script>
+	function updateLocaleLinks() {
+		document.querySelectorAll<HTMLAnchorElement>("a[data-locale-link]").forEach(link => {
+			const url = new URL(link.href);
+			url.search = location.search;
+			url.hash = location.hash;
+			link.href = url.pathname + url.search + url.hash;
+		});
+	}
+	document.addEventListener("astro:page-load", updateLocaleLinks);
+	window.addEventListener("hashchange", updateLocaleLinks);
+</script>

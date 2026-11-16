@@ -7,22 +7,23 @@ import Nav from "../components/Nav.astro";
 import { CHARACTER_POSTER_URL } from "../data/character";
 import { ClientRouter } from "astro:transitions";
 import "../styles/transitions.css";
+import { availableLocalesForPath, getLocale, localizePath, t, type Locale } from "../i18n";
 interface Props {
 	title?: string;
 	description?: string;
 	home?: boolean;
+	locale?: Locale;
 }
-const {
-	title = "Elvis Mao — Developer, Designer & HCI Researcher",
-	description = "Interactive websites, open-source services, and human–computer interaction. Also a blue dragon.",
-	home = false
-} = Astro.props;
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const { title = t(locale, "site.title"), description = t(locale, "site.description"), home = false } = Astro.props;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 const shareImageUrl = new URL(CHARACTER_POSTER_URL, Astro.site ?? Astro.url.origin);
+const alternateLocales = availableLocalesForPath(Astro.url.pathname);
+const ogLocales: Record<Locale, string> = { en: "en_US", "zh-Hant": "zh_TW", "zh-Hans": "zh_CN" };
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -31,17 +32,24 @@ const shareImageUrl = new URL(CHARACTER_POSTER_URL, Astro.site ?? Astro.url.orig
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
+		<meta property="og:locale" content={ogLocales[locale]} />
+		{alternateLocales.filter(value => value !== locale).map(value => <meta property="og:locale:alternate" content={ogLocales[value]} />)}
 		<meta property="og:url" content={canonicalUrl.href} />
 		<meta property="og:image" content={shareImageUrl.href} />
-		<meta property="og:image:alt" content="EM’s dragon character" />
+		<meta property="og:image:alt" content={t(locale, "site.imageAlt")} />
 		<link rel="canonical" href={canonicalUrl.href} />
+		{
+			alternateLocales.length > 1 &&
+				alternateLocales.map(value => <link rel="alternate" hreflang={value} href={new URL(localizePath(Astro.url.pathname, value), Astro.site ?? Astro.url.origin).href} />)
+		}
+		{alternateLocales.length > 1 && <link rel="alternate" hreflang="x-default" href={new URL(localizePath(Astro.url.pathname, "en"), Astro.site ?? Astro.url.origin).href} />}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)" />
 		<title>{title}</title>
 		<ClientRouter fallback="swap" />
 	</head>
 	<body class:list={[home ? "home-page" : "inner-page"]} data-art={home ? "story" : undefined}>
-		<Nav />
+		<Nav locale={locale} />
 		<slot />
 		<canvas id="route-pixels" transition:persist="route-pixels" aria-hidden="true"></canvas>
 	</body>

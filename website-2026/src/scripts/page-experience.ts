@@ -470,7 +470,7 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 					const referrer = form.querySelector<HTMLInputElement>('[name="entry.1137316312"]');
 					if (referrer) referrer.value = location.href;
 					const status = form.querySelector<HTMLOutputElement>("[data-status]");
-					if (status) status.textContent = "Opening subscription confirmation…";
+					if (status) status.textContent = form.dataset.openingMessage ?? "";
 					debug.nativeNewsletterSubmissions++;
 				},
 				{ signal: scope.abort.signal }
