@@ -1,5 +1,6 @@
 import { startAboutArt } from "./about-art";
 import { startAboutPortrait } from "./about-portrait";
+import { setupAboutWorkspace, setupTypingTerminal } from "./about-tui";
 
 function setupTalks(root: HTMLElement, signal: AbortSignal): void {
 	const monitor = root.querySelector<HTMLElement>("[data-talks-monitor]");
@@ -36,12 +37,29 @@ function setupTalks(root: HTMLElement, signal: AbortSignal): void {
 	};
 	search.addEventListener("input", filter, { signal });
 	search.addEventListener("search", filter, { signal });
-	search.addEventListener(
+	const reset = () => {
+		year = null;
+		search.value = "";
+		for (const button of buttons) button.setAttribute("aria-pressed", "false");
+		filter();
+	};
+	monitor.querySelector<HTMLButtonElement>("[data-talks-reset]")?.addEventListener("click", reset, { signal });
+	monitor.addEventListener(
 		"keydown",
 		event => {
-			if (event.key === "Escape") {
-				search.value = "";
-				filter();
+			if (event.ctrlKey || event.metaKey || event.altKey) return;
+			if (/^F[1-5]$/.test(event.key)) {
+				event.preventDefault();
+				const index = Number(event.key.slice(1)) - 1;
+				monitor.querySelectorAll<HTMLButtonElement>(".talks-keybar [data-talks-year]")[index]?.click();
+				if (viewport.contains(event.target as Node)) {
+					if (selected) select(selected, true);
+					else viewport.focus({ preventScroll: true });
+				}
+			} else if (event.key === "Escape") {
+				event.preventDefault();
+				reset();
+				if (viewport.contains(event.target as Node)) select(selected, true);
 			}
 		},
 		{ signal }
@@ -91,9 +109,11 @@ function mountAbout(): void {
 	activeAbout = new AbortController();
 	const { signal } = activeAbout;
 	root.dataset.aboutMounted = "true";
+	setupAboutWorkspace(root, signal);
 	startAboutArt(root, signal);
 	startAboutPortrait(root, signal);
 	setupTalks(root, signal);
+	setupTypingTerminal(root, signal);
 	signal.addEventListener(
 		"abort",
 		() => {

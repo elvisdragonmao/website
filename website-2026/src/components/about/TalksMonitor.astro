@@ -4,8 +4,7 @@ import Icon from "../Icon.astro";
 const years = [...new Set(talks.map(talk => talk.year))];
 ---
 
-<section class="about-section talks-section" aria-labelledby="talks-title" data-talks-monitor>
-	<h2 id="talks-title">Talks &amp; Teaching</h2>
+<section class="about-section talks-section tui-panel" aria-labelledby="talks-title" data-talks-monitor>
 	<div class="talks-console">
 		<div class="talks-controls">
 			<div class="talks-years" role="group" aria-label="Filter by year">
@@ -16,7 +15,7 @@ const years = [...new Set(talks.map(talk => talk.year))];
 								<span>{year}</span>
 								<span class="talks-meter" aria-hidden="true">
 									{"["}
-									<span>{"|".repeat(talks.filter(t => t.year === year).length * 2)}</span>
+									<span>{"|".repeat(talks.filter(t => t.year === year).length)}</span>
 									{"]"}
 								</span>
 							</>
@@ -28,6 +27,7 @@ const years = [...new Set(talks.map(talk => talk.year))];
 				<Icon name="search" /><input type="search" aria-label="Search talks and teaching" data-talks-search autocomplete="off" spellcheck="false" />
 			</label>
 		</div>
+		<h2 id="talks-title" class="talks-app-title">Talks &amp; Teaching</h2>
 		<div class="talks-table-scroll" tabindex="0" role="region" aria-labelledby="talks-title">
 			<table aria-labelledby="talks-title">
 				<tbody>
@@ -42,6 +42,19 @@ const years = [...new Set(talks.map(talk => talk.year))];
 					}
 				</tbody>
 			</table>
+		</div>
+		<div class="talks-keybar" role="group" aria-label="Teaching monitor shortcuts">
+			{
+				years.map((year, i) => (
+					<button type="button" data-talks-year={year} aria-pressed="false">
+						<>
+							<kbd>{`F${i + 1}`}</kbd>
+							<span>{year}</span>
+						</>
+					</button>
+				))
+			}
+			<button type="button" data-talks-reset aria-label="Reset filters"><kbd>Esc</kbd></button>
 		</div>
 	</div>
 </section>

@@ -4,10 +4,23 @@ import AsciiArt from "../components/about/AsciiArt.astro";
 import TalksMonitor from "../components/about/TalksMonitor.astro";
 import { experiences, researchInterests, awards, otherRecognition } from "../data/about";
 import "../styles/about.css";
+import "../styles/about-tui.css";
 ---
 
 <Layout title="Elvis Dragon Mao." description="Developer · Designer · Researcher · Debater">
-	<main id="main" class="about-page">
+	<main id="main" class="about-page" data-about-theme="btop">
+		<script is:inline data-astro-rerun>
+			{
+				const style = new URLSearchParams(location.search).get("ui");
+				const root = document.currentScript?.closest("main");
+				if (root && ["btop", "tmux", "dos"].includes(style)) root.dataset.aboutTheme = style;
+			}
+		</script>
+		<div class="about-variants" role="group" aria-label="About interface style">
+			<button type="button" data-about-style="btop" aria-pressed="true">btop</button>
+			<button type="button" data-about-style="tmux" aria-pressed="false">tmux</button>
+			<button type="button" data-about-style="dos" aria-pressed="false">DOS</button>
+		</div>
 		<header class="about-hero">
 			<div class="about-identity">
 				<h1>Elvis Dragon Mao.</h1>
@@ -22,7 +35,7 @@ import "../styles/about.css";
 		</header>
 
 		<div class="about-facets">
-			<section class="about-facet facet-touch">
+			<section class="about-facet tui-panel facet-touch">
 				<div>
 					<h2>Touch, I need something more.</h2>
 					<p>Exploring new ways for people and technology to connect. Through movement, touch, and interfaces that go beyond the screen.</p>
@@ -30,58 +43,59 @@ import "../styles/about.css";
 				</div>
 				<AsciiArt kind="touch" />
 			</section>
-			<section class="about-facet facet-furry">
+			<section class="about-facet tui-panel facet-furry">
 				<AsciiArt kind="paws" />
 				<h2>Eww! Furry!</h2>
 				<p>I'm a furry. I love this wonderfully creative and welcoming community.</p>
 			</section>
-			<section class="about-facet facet-stack">
+			<section class="about-facet tui-panel facet-stack">
 				<AsciiArt kind="code" />
 				<h2>Full-Stack Dragon.</h2>
 				<p>I build complex systems and stunning web experiences.</p>
 				<a class="about-link" href="/work/">Explore my work ↗</a>
 			</section>
-			<section class="about-facet facet-source">
+			<section class="about-facet tui-panel facet-source">
 				<h2>❤️ Open Source.</h2>
 				<p>Creator of <strong>emfont</strong>, an open-source CJK webfont service.</p>
 				<p class="about-font-metric"><span>1.2M+</span> requests/day.</p>
 				<a class="about-link" href="https://font.emtech.cc/" target="_blank" rel="noopener noreferrer">emfont ↗</a>
 			</section>
-			<section class="about-facet facet-debate">
+			<section class="about-facet tui-panel facet-debate">
 				<h2>I argue with people.</h2>
 				<p>Public Forum debate instructor and adjudicator. Also done Policy, WS, BP, and Extemp.</p>
 			</section>
-			<section class="about-facet facet-music">
+			<section class="about-facet tui-panel facet-music">
 				<AsciiArt kind="music" />
 				<h2>EDM / Hip-Hop</h2>
 				<p>Porter Robinson, Skrillex, Kendrick Lamar, and a lot more.</p>
 			</section>
-			<section class="about-facet facet-hardware">
+			<section class="about-facet tui-panel facet-hardware">
 				<AsciiArt kind="hardware" />
 				<h2>Embedded / IoT / 3D Design</h2>
 				<p>Love working with Arduino, sensors, and anything I can solder together.</p>
 			</section>
-			<section class="about-facet facet-camera">
+			<section class="about-facet tui-panel facet-camera">
 				<AsciiArt kind="camera" />
 				<h2>I Shoot People.</h2>
 				<p>With cameras, capture every touching moment.</p>
 			</section>
-			<section class="about-facet facet-broadcast">
+			<section class="about-facet tui-panel facet-broadcast">
 				<AsciiArt kind="broadcast" />
 				<h2>Behind the Scenes.</h2>
 				<p>I do PA and live broadcasting for event I love.</p>
 			</section>
 		</div>
 
-		<section class="about-statement">
+		<section class="about-statement terminal-window tui-panel" data-typing-terminal>
+			<div class="terminal-window-controls" aria-hidden="true"><i></i><i></i><i></i></div>
 			<p>
-				<span>When I learned to truly love myself,</span>
-				<span>I stopped chasing grand futures.</span>
-				<span>I simply do what I love, my way, at my own rhythm.</span>
+				<span class="terminal-line"><span class="terminal-source">When I learned to truly love myself,</span></span>
+				<span class="terminal-line"><span class="terminal-source">I stopped chasing grand futures.</span></span>
+				<span class="terminal-line"><span class="terminal-source">I simply do what I love, my way, at my own rhythm.</span></span>
 			</p>
 		</section>
 
-		<section class="about-section about-experience" aria-labelledby="experience-title">
+		<section class="about-section tui-panel about-experience" aria-labelledby="experience-title">
 			<div class="about-section-heading">
 				<h2 id="experience-title">Experience</h2>
 				<a class="about-link" href="https://resume.elvismao.com/" target="_blank" rel="noopener noreferrer">Full CV ↗</a>
@@ -101,7 +115,7 @@ import "../styles/about.css";
 			</ol>
 		</section>
 
-		<section id="research" class="about-section about-research" aria-labelledby="research-title">
+		<section id="research" class="about-section tui-panel about-research" aria-labelledby="research-title">
 			<h2 id="research-title">Selected Research</h2>
 			<p class="research-interests">{researchInterests}</p>
 			<article class="research-publication">
@@ -120,7 +134,7 @@ import "../styles/about.css";
 
 		<TalksMonitor />
 
-		<section class="about-section about-awards" aria-labelledby="awards-title">
+		<section class="about-section tui-panel about-awards" aria-labelledby="awards-title">
 			<h2 id="awards-title">Honors &amp; Awards</h2>
 			<div class="awards-groups">
 				{
