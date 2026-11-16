@@ -1,0 +1,105 @@
+import { startAboutArt } from "./about-art";
+
+function setupTalks(root: HTMLElement, signal: AbortSignal): void {
+	const monitor = root.querySelector<HTMLElement>("[data-talks-monitor]");
+	const search = monitor?.querySelector<HTMLInputElement>("[data-talks-search]");
+	const viewport = monitor?.querySelector<HTMLElement>(".talks-table-scroll");
+	if (!monitor || !search || !viewport) return;
+	const rows = [...monitor.querySelectorAll<HTMLTableRowElement>("[data-talks-row]")];
+	const buttons = [...monitor.querySelectorAll<HTMLButtonElement>("[data-talks-year]")];
+	const searchText = new Map(rows.map(row => [row, row.textContent?.toLocaleLowerCase() ?? ""]));
+	let year: string | null = null;
+	let selected: HTMLTableRowElement | undefined = rows[0];
+	const select = (row?: HTMLTableRowElement, focus = false) => {
+		selected = row;
+		for (const candidate of rows) {
+			candidate.dataset.selected = String(candidate === row);
+			candidate.tabIndex = candidate === row ? 0 : -1;
+			if (candidate === row) candidate.setAttribute("aria-current", "true");
+			else candidate.removeAttribute("aria-current");
+		}
+		if (row && focus) {
+			row.focus({ preventScroll: true });
+			const box = row.getBoundingClientRect(),
+				frame = viewport.getBoundingClientRect();
+			if (box.top < frame.top + 5) viewport.scrollTop += box.top - frame.top - 5;
+			else if (box.bottom > frame.bottom) viewport.scrollTop += box.bottom - frame.bottom;
+		}
+	};
+	const filter = () => {
+		const query = search.value.trim().toLocaleLowerCase();
+		for (const row of rows) row.hidden = Boolean((year && row.dataset.year !== year) || !searchText.get(row)?.includes(query));
+		select(rows.find(row => !row.hidden));
+		viewport.scrollTop = 0;
+		monitor.dataset.empty = String(!rows.some(row => !row.hidden));
+	};
+	search.addEventListener("input", filter, { signal });
+	search.addEventListener("search", filter, { signal });
+	search.addEventListener(
+		"keydown",
+		event => {
+			if (event.key === "Escape") {
+				search.value = "";
+				filter();
+			}
+		},
+		{ signal }
+	);
+	for (const button of buttons)
+		button.addEventListener(
+			"click",
+			() => {
+				year = year === button.dataset.talksYear ? null : (button.dataset.talksYear ?? null);
+				for (const candidate of buttons) candidate.setAttribute("aria-pressed", String(candidate.dataset.talksYear === year));
+				filter();
+			},
+			{ signal }
+		);
+	viewport.addEventListener(
+		"click",
+		event => {
+			const row = (event.target as Element).closest<HTMLTableRowElement>("[data-talks-row]");
+			if (row && rows.includes(row)) select(row, true);
+		},
+		{ signal }
+	);
+	viewport.addEventListener(
+		"keydown",
+		event => {
+			if (!["ArrowDown", "ArrowUp", "Home", "End", "PageDown", "PageUp"].includes(event.key)) return;
+			const visible = rows.filter(row => !row.hidden);
+			if (!visible.length) return;
+			event.preventDefault();
+			let index = selected ? visible.indexOf(selected) : 0;
+			if (event.key === "Home") index = 0;
+			else if (event.key === "End") index = visible.length - 1;
+			else index += ({ ArrowDown: 1, ArrowUp: -1, PageDown: 8, PageUp: -8 } as Record<string, number>)[event.key] ?? 0;
+			select(visible[Math.max(0, Math.min(visible.length - 1, index))], true);
+		},
+		{ signal }
+	);
+	select(selected);
+	monitor.dataset.ready = "true";
+}
+
+let activeAbout: AbortController | undefined;
+function mountAbout(): void {
+	const root = document.querySelector<HTMLElement>(".about-page");
+	if (!root || root.dataset.aboutMounted) return;
+	activeAbout?.abort();
+	activeAbout = new AbortController();
+	const { signal } = activeAbout;
+	root.dataset.aboutMounted = "true";
+	startAboutArt(root, signal);
+	setupTalks(root, signal);
+	signal.addEventListener(
+		"abort",
+		() => {
+			delete root.dataset.aboutMounted;
+		},
+		{ once: true }
+	);
+}
+document.addEventListener("astro:before-swap", () => activeAbout?.abort());
+document.addEventListener("astro:page-load", mountAbout);
+mountAbout();

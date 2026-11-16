@@ -46,7 +46,7 @@
 }
 .about-page .about-roles {
 	margin-top: 30px;
-	max-width: 39ch;
+	max-width: none;
 	font-size: 14px;
 	line-height: 2;
 }
@@ -402,6 +402,9 @@
 	outline-offset: -1px;
 }
 .talks-console [hidden] {
+	display: none;
+}
+[data-talks-monitor]:not([data-ready]) .talks-controls {
 	display: none;
 }
 .awards-groups {
