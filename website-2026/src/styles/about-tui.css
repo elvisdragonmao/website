@@ -174,8 +174,9 @@
 }
 .terminal-window-controls {
 	position: absolute;
-	top: 18px;
-	left: 23px;
+	/* The ASCII rails sit 8px down and 4px in: leave the same visual inset. */
+	top: 24px;
+	left: 20px;
 	display: flex;
 	gap: 7px;
 }
