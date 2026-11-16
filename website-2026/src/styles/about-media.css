@@ -34,10 +34,10 @@
 }
 .media-portrait {
 	height: clamp(320px, 26vw, 420px);
-	mask-image: linear-gradient(transparent, #000 3%, #000 76%, transparent 100%);
+	mask-image: linear-gradient(transparent, #000 3%, #000 88%, transparent 100%);
 }
 .media-portrait [data-image-output] {
-	mask-image: radial-gradient(ellipse 62% 65% at 50% 44%, #000 55%, transparent 100%);
+	mask-image: radial-gradient(ellipse 62% 90% at 50% 44%, #000 65%, transparent 110%);
 }
 .media-portrait .portrait-cloud {
 	filter: blur(1.1px);

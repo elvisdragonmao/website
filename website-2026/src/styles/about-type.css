@@ -31,13 +31,7 @@
 	white-space: pre;
 	letter-spacing: 0;
 }
-.stack-mark span {
-	display: block;
-	font-size: 10px;
-	line-height: 14px;
-	margin-top: 4px;
-	color: #b5c6c0;
-}
+
 .stack-mark:nth-child(3n) {
 	color: #aaa5cc;
 }

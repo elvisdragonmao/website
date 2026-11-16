@@ -456,3 +456,10 @@
 	font-size: 14px;
 	line-height: 1.6;
 }
+
+.about-page .about-workspace .about-link {
+	margin: 0;
+}
+.about-page .facet-source .about-font-metric {
+	margin-bottom: 10px;
+}
