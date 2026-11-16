@@ -1,0 +1,690 @@
+.about-page {
+	--about-cyan: #7ac8d2;
+	--about-green: #d6e77a;
+	--about-pink: #caa8dc;
+	width: 100%;
+	max-width: 1720px;
+	margin-inline: auto;
+	padding: 108px var(--margin) 100px var(--content-left);
+	font-size: 14px;
+	line-height: 1.85;
+}
+.about-page :is(h1, h2, h3, p, pre, ol, ul) {
+	margin: 0;
+}
+.about-page :is(h1, h2, h3) {
+	font-weight: 400;
+	letter-spacing: -0.045em;
+}
+.about-page strong {
+	font-weight: 500;
+}
+.about-page p {
+	max-width: 62ch;
+}
+.about-page a {
+	text-underline-offset: 5px;
+}
+.about-page a:hover {
+	color: var(--about-cyan);
+}
+.about-hero {
+	display: grid;
+	grid-template-columns: 1.1fr 1fr;
+	align-items: center;
+	gap: 36px;
+	margin-bottom: 92px;
+}
+.about-identity h1 {
+	font-size: clamp(30px, 3.1vw, 48px);
+	line-height: 1.2;
+}
+.about-page .about-alias {
+	margin-top: 20px;
+	color: #a1a5a2;
+	font-size: 13px;
+}
+.about-page .about-roles {
+	margin-top: 30px;
+	max-width: 39ch;
+	font-size: 14px;
+	line-height: 2;
+}
+.about-facets {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: 80px 48px;
+	align-items: start;
+}
+.about-facet {
+	min-width: 0;
+	grid-column: span 4;
+}
+.about-facet h2 {
+	font-size: clamp(24px, 2.3vw, 34px);
+	line-height: 1.35;
+	margin-bottom: 20px;
+	max-width: 20ch;
+}
+.about-facet p {
+	color: #aeb7b1;
+}
+.about-link {
+	display: inline-block;
+	color: var(--about-cyan);
+	font-size: 13px;
+	margin-top: 22px;
+}
+.facet-touch {
+	grid-column: span 8;
+	display: grid;
+	grid-template-columns: 1.2fr 0.8fr;
+	align-items: center;
+	gap: 24px;
+}
+.facet-touch h2 {
+	font-size: clamp(30px, 3.4vw, 48px);
+	max-width: 16ch;
+}
+.facet-furry {
+	padding-top: 6px;
+}
+.facet-source {
+	padding-top: 28px;
+}
+.facet-debate {
+	padding-top: 72px;
+}
+.facet-debate h2 {
+	font-size: clamp(30px, 3vw, 42px);
+	max-width: 12ch;
+}
+.about-page .about-font-metric {
+	margin-top: 32px;
+	font-size: 12px;
+	color: #a1a5a2;
+}
+.about-font-metric span {
+	display: block;
+	font-size: clamp(40px, 4.2vw, 64px);
+	line-height: 1.2;
+	letter-spacing: -0.07em;
+	color: var(--about-cyan);
+}
+.facet-music {
+	grid-column: span 5;
+}
+.facet-hardware {
+	grid-column: span 7;
+	padding-top: 34px;
+}
+.facet-camera {
+	grid-column: span 7;
+}
+.facet-broadcast {
+	grid-column: span 5;
+	padding-top: 45px;
+}
+.about-art {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-width: 0;
+	height: 164px;
+	margin-bottom: 28px;
+	color: #7b9995;
+	overflow: hidden;
+}
+.about-art pre {
+	font:
+		9px/1.15 "IBM Plex Mono",
+		monospace;
+	letter-spacing: 0;
+	white-space: pre;
+	user-select: none;
+}
+.about-art-portrait {
+	height: 340px;
+	margin-bottom: 0;
+	color: #7ac8d2;
+}
+.about-art-portrait pre {
+	font-size: 7.5px;
+	line-height: 1.02;
+}
+.about-art-touch {
+	height: 220px;
+	margin-bottom: 0;
+	color: var(--about-green);
+}
+.about-art-paws {
+	height: 126px;
+	color: var(--about-cyan);
+}
+.about-art-music {
+	color: var(--about-pink);
+	height: 190px;
+}
+.about-art-hardware {
+	height: 190px;
+}
+.about-art-camera {
+	height: 190px;
+	color: #819cae;
+}
+.about-art-broadcast {
+	color: var(--about-green);
+}
+.about-statement {
+	padding-block: 140px 132px;
+}
+.about-page .about-statement p {
+	max-width: none;
+	font-size: clamp(18px, 1.8vw, 26px);
+	line-height: 2;
+	letter-spacing: -0.04em;
+}
+.about-statement span {
+	display: block;
+}
+.about-statement span:first-child {
+	color: #a1a5a2;
+}
+.about-section {
+	margin-bottom: 112px;
+	scroll-margin-top: 110px;
+}
+.about-section > h2,
+.about-section-heading h2 {
+	font-size: clamp(28px, 3vw, 42px);
+	line-height: 1.3;
+	margin-bottom: 36px;
+}
+.about-section-heading {
+	display: flex;
+	justify-content: space-between;
+	gap: 24px;
+	align-items: baseline;
+}
+.about-section-heading .about-link {
+	margin-top: 0;
+	flex-shrink: 0;
+}
+.about-experience-list {
+	list-style: none;
+	padding: 0;
+}
+.about-experience-list li {
+	display: grid;
+	grid-template-columns: 17ch 1fr;
+	gap: 24px;
+	padding-block: 14px;
+}
+.experience-years {
+	color: var(--about-cyan);
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+	padding-top: 2px;
+}
+.experience-organization {
+	color: #a1a5a2;
+}
+.about-page .research-interests {
+	font-size: 12px;
+	line-height: 2;
+	max-width: 110ch;
+	color: #8a9690;
+	margin-top: -14px;
+	margin-bottom: 42px;
+}
+.research-publication h3 {
+	font-size: 21px;
+	line-height: 1.6;
+	margin-bottom: 16px;
+	max-width: 62ch;
+}
+.research-publication p {
+	font-size: 13px;
+	color: #a1a5a2;
+	max-width: 100ch;
+}
+.research-publication strong {
+	color: var(--ink);
+}
+.about-page .research-venue {
+	margin-top: 16px;
+	color: var(--about-cyan);
+}
+.research-current {
+	margin-top: 48px;
+}
+.research-current h3 {
+	font-size: 18px;
+	margin-bottom: 18px;
+}
+.research-current ul {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	gap: 12px;
+	color: #b3bcb6;
+}
+.talks-console {
+	font-size: 12px;
+	line-height: 1.6;
+}
+.talks-controls {
+	display: grid;
+	grid-template-columns: 1fr minmax(160px, 0.6fr);
+	gap: 36px;
+	align-items: center;
+	margin-bottom: 22px;
+}
+.talks-years {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px 24px;
+}
+.talks-years button {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 3px 4px;
+	border: 0;
+	background: transparent;
+	color: var(--about-cyan);
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+.talks-years button[aria-pressed="true"] {
+	background: var(--about-green);
+	color: #080909;
+}
+.talks-meter {
+	display: flex;
+	justify-content: space-between;
+	gap: 2px;
+	width: 15ch;
+	color: #64726b;
+}
+.talks-meter > span {
+	color: var(--about-green);
+	margin-right: auto;
+	letter-spacing: 0.02em;
+}
+.talks-years button:nth-child(2n) .talks-meter > span {
+	color: var(--about-cyan);
+}
+.talks-years button:nth-child(3n) .talks-meter > span {
+	color: #d7be6b;
+}
+.talks-years button[aria-pressed="true"] .talks-meter,
+.talks-years button[aria-pressed="true"] .talks-meter > span {
+	color: #080909;
+}
+.talks-search {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	border-bottom: 1px solid #39443d;
+	color: #8a9690;
+}
+.talks-search:focus-within {
+	color: var(--about-cyan);
+	border-color: var(--about-cyan);
+}
+.talks-search .icon {
+	flex-shrink: 0;
+	font-size: 16px;
+}
+.talks-search input {
+	width: 100%;
+	min-width: 0;
+	padding: 8px 0;
+	border: 0;
+	border-radius: 0;
+	outline: none;
+	background: transparent;
+	color: var(--ink);
+	font: inherit;
+}
+.talks-table-scroll {
+	max-height: 500px;
+	overflow: auto;
+	overscroll-behavior: contain;
+	scrollbar-color: #5f766a #111713;
+	scrollbar-width: thin;
+	border-block-start: 5px solid var(--about-green);
+}
+.talks-table-scroll:focus-visible {
+	outline: 1px solid var(--about-cyan);
+	outline-offset: 5px;
+}
+.talks-console table {
+	width: 100%;
+	border-collapse: collapse;
+	table-layout: fixed;
+}
+.talks-console tr {
+	cursor: default;
+}
+.talks-console :is(td, th) {
+	padding: 10px 12px;
+	vertical-align: top;
+	text-align: left;
+	overflow-wrap: anywhere;
+}
+.talks-console th {
+	font: inherit;
+	width: 50%;
+}
+.talks-console .talk-year {
+	width: 68px;
+	color: var(--about-cyan);
+	font-variant-numeric: tabular-nums;
+}
+.talk-context {
+	color: #a1a5a2;
+}
+.talks-console tr:hover {
+	background: #13201b;
+}
+.talks-console tr[data-selected="true"] {
+	background: var(--about-cyan);
+	color: #080909;
+}
+.talks-console tr[data-selected="true"] :is(td, th) {
+	color: inherit;
+}
+.talks-console tr:focus-visible {
+	outline: 1px solid var(--about-green);
+	outline-offset: -1px;
+}
+.talks-console [hidden] {
+	display: none;
+}
+.awards-groups {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 42px 56px;
+	align-items: start;
+}
+.awards-year h3 {
+	font-size: 15px;
+	color: var(--about-cyan);
+	margin-bottom: 17px;
+}
+.awards-year ul {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	gap: 16px;
+	font-size: 13px;
+	line-height: 1.85;
+}
+.awards-year li > span {
+	color: #a1a5a2;
+}
+.awards-year:last-child {
+	grid-column: 1 / -1;
+}
+.awards-year:last-child ul {
+	grid-template-columns: 1fr 1fr;
+	gap: 12px 56px;
+	color: #a1a5a2;
+}
+.about-contact {
+	padding-block: 36px 10px;
+}
+.about-contact h2 {
+	font-size: clamp(38px, 4.7vw, 68px);
+	line-height: 1.2;
+}
+.about-page .contact-verse {
+	margin-top: 14px;
+	margin-bottom: 38px;
+	font-size: 12px;
+	color: #819087;
+}
+.about-contact > p {
+	color: #aeb7b1;
+}
+.about-contact > a {
+	display: inline-block;
+	margin-top: 24px;
+	font-size: clamp(19px, 2.5vw, 32px);
+	color: var(--about-cyan);
+}
+@media (min-width: 1800px) {
+	.about-page {
+		padding-left: 280px;
+	}
+}
+@media (max-width: 1100px) {
+	.about-page {
+		padding-left: 190px;
+	}
+	.about-facets {
+		gap: 64px 32px;
+	}
+	.facet-touch {
+		grid-column: span 7;
+		display: block;
+	}
+	.facet-touch .about-art {
+		height: 160px;
+		margin-top: 22px;
+	}
+	.facet-furry {
+		grid-column: span 5;
+		padding-top: 40px;
+	}
+	.about-hero {
+		grid-template-columns: 1fr 0.85fr;
+		gap: 16px;
+	}
+	.about-art-portrait pre {
+		font-size: 5.5px;
+	}
+	.about-identity h1 {
+		font-size: 34px;
+	}
+	.talks-controls {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+	.talks-search {
+		max-width: 340px;
+	}
+}
+@media (max-width: 700px) {
+	.about-page {
+		padding: 124px 22px 70px;
+	}
+	.about-hero {
+		grid-template-columns: 1fr;
+		gap: 32px;
+		margin-bottom: 70px;
+	}
+	.about-identity h1 {
+		font-size: clamp(29px, 7.2vw, 40px);
+	}
+	.about-page .about-roles {
+		margin-top: 20px;
+		max-width: 32ch;
+		font-size: 13px;
+	}
+	.about-art-portrait {
+		height: 270px;
+	}
+	.about-art-portrait pre {
+		font-size: 6.1px;
+	}
+	.about-facets {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 52px 24px;
+	}
+	.about-facet {
+		grid-column: 1 / -1;
+		padding-top: 0;
+	}
+	.about-facet h2 {
+		font-size: 28px;
+	}
+	.facet-touch {
+		display: grid;
+		grid-template-columns: 1fr;
+	}
+	.facet-touch h2 {
+		font-size: 38px;
+		max-width: 17ch;
+	}
+	.facet-touch .about-art {
+		grid-row: 1;
+		margin-top: 0;
+		height: 190px;
+	}
+	.facet-furry {
+		display: grid;
+		grid-template-columns: 0.7fr 1fr;
+		gap: 12px 22px;
+		align-items: center;
+	}
+	.facet-furry .about-art {
+		grid-row: span 2;
+		margin: 0;
+		height: 130px;
+	}
+	.facet-furry h2 {
+		margin: 0;
+		font-size: 26px;
+	}
+	.facet-furry p {
+		font-size: 13px;
+	}
+	.facet-source {
+		grid-column: 1;
+	}
+	.facet-debate {
+		grid-column: 2;
+	}
+	.facet-source h2,
+	.facet-debate h2 {
+		font-size: 25px;
+	}
+	.facet-source p,
+	.facet-debate p {
+		font-size: 13px;
+	}
+	.about-art {
+		margin-bottom: 22px;
+	}
+	.about-art-music,
+	.about-art-hardware,
+	.about-art-camera {
+		height: 180px;
+	}
+	.about-statement {
+		padding-block: 88px;
+	}
+	.about-page .about-statement p {
+		font-size: 19px;
+		line-height: 1.9;
+	}
+	.about-statement span + span {
+		margin-top: 16px;
+	}
+	.about-section {
+		margin-bottom: 80px;
+		scroll-margin-top: 100px;
+	}
+	.about-section > h2,
+	.about-section-heading h2 {
+		font-size: 29px;
+		margin-bottom: 26px;
+	}
+	.about-section-heading {
+		gap: 12px;
+	}
+	.about-experience-list li {
+		grid-template-columns: 1fr;
+		gap: 4px;
+		padding-block: 12px;
+	}
+	.experience-organization {
+		display: inline;
+	}
+	.research-publication h3 {
+		font-size: 19px;
+	}
+	.about-page .research-interests {
+		margin-top: 0;
+		margin-bottom: 30px;
+	}
+	.talks-years {
+		gap: 7px 12px;
+	}
+	.talks-years button {
+		gap: 8px;
+		padding-inline: 0;
+		font-size: 11px;
+	}
+	.talks-meter {
+		width: 13ch;
+	}
+	.talks-controls {
+		margin-bottom: 18px;
+	}
+	.talks-search {
+		max-width: none;
+	}
+	.talks-table-scroll {
+		max-height: 510px;
+	}
+	.talks-console table,
+	.talks-console tbody {
+		display: block;
+	}
+	.talks-console tr {
+		display: grid;
+		grid-template-columns: 43px minmax(0, 1fr);
+		padding: 10px 8px;
+		gap: 3px 8px;
+	}
+	.talks-console :is(td, th) {
+		display: block;
+		width: auto;
+		padding: 0;
+	}
+	.talks-console .talk-year {
+		grid-row: span 2;
+		width: auto;
+	}
+	.talk-context {
+		grid-column: 2;
+		font-size: 11px;
+	}
+	.awards-groups {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+	.awards-year:last-child ul {
+		grid-template-columns: 1fr;
+	}
+	.about-contact {
+		padding-top: 0;
+	}
+	.about-contact h2 {
+		font-size: 43px;
+	}
+}
+@media (max-width: 360px) {
+	.facet-source,
+	.facet-debate {
+		grid-column: 1 / -1;
+	}
+	.about-art-portrait pre {
+		font-size: 5.6px;
+	}
+}

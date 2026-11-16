@@ -1,137 +1,162 @@
 ---
-import { CHARACTER_POSTER_URL } from "../data/character";
 import Layout from "../layouts/Layout.astro";
-import Footer from "../components/Footer.astro";
-import Icon from "../components/Icon.astro";
-const experiences = [
-	{
-		years: "2025—NOW",
-		category: "RESEARCH",
-		title: "Human-AI & Creative Computing Lab",
-		detail: "Undergraduate researcher and systems administrator at NYCU. Research prototypes, experimental preparation, and infrastructure for human–AI interaction."
-	},
-	{
-		years: "2026—NOW",
-		category: "DESIGN & DEVELOPMENT",
-		title: "LinYao Studio",
-		detail: "Independent design and development for artists, cultural projects, and organisations. From the first sketch through deployment and maintenance.",
-		href: "https://linyao.tw/"
-	},
-	{
-		years: "2026",
-		category: "COMMUNITY",
-		title: "SITCON 2026",
-		detail: "Website visual and interaction design, and development team lead. Building a conference experience with the design and development teams.",
-		href: "/work/sitcon-2026/"
-	},
-	{ years: "2026—NOW", category: "COMMUNITY", title: "BambooFox Cybersecurity Club", detail: "President of NYCU's cybersecurity club. Making room for people to learn, explore, and build together." },
-	{ years: "ONGOING", category: "TEACHING & DEBATE", title: "Learning out loud", detail: "Teaching web development and creative tools; competing, teaching, and judging in English debate." }
-];
+import AsciiArt from "../components/about/AsciiArt.astro";
+import TalksMonitor from "../components/about/TalksMonitor.astro";
+import { experiences, researchInterests, awards, otherRecognition } from "../data/about";
+import "../styles/about.css";
 ---
 
-<Layout title="About Elvis Mao — A Little More About the Dragon" description="Meet Elvis Mao: developer, designer, HCI researcher, English debater, music enthusiast, and blue dragon.">
-	<main id="main" class="page-main">
-		<header class="page-heading about-heading">
-			<p class="eyebrow">ABOUT · THE LONGER INTRODUCTION</p><h1>A little more<br />about the<br /><span class="accent">dragon.</span></h1><div class="about-intro">
-				<p>I'm Elvis Mao.<br />You can call me EM.</p><p>
-					I build interactive websites, open-source services, and research prototypes. I also make music, draw, take photographs, and spend a fair amount of time making things outside a browser.
-				</p>
+<Layout title="Elvis Dragon Mao." description="Developer · Designer · Researcher · Debater">
+	<main id="main" class="about-page">
+		<header class="about-hero">
+			<div class="about-identity">
+				<h1>Elvis Dragon Mao.</h1>
+				<p class="about-alias">a.k.a. 毛哥 EM, EM, Elvis Mao.</p>
+				<p class="about-roles">Developer · Designer · Researcher · Debater</p>
 			</div>
+			<AsciiArt kind="portrait" />
 		</header>
-		<div class="about-index">
-			<span>FOLLOW YOUR CURIOSITY</span><a href="#research">Research</a><a href="#making">Making</a><a href="#dragon">The dragon</a><a href="#offscreen">Off screen</a><a href="#experience">
-				Experience
-			</a>
+
+		<div class="about-facets">
+			<section class="about-facet facet-touch">
+				<div>
+					<h2>Touch, I need something more.</h2>
+					<p>Exploring new ways for people and technology to connect. Through movement, touch, and interfaces that go beyond the screen.</p>
+					<a class="about-link" href="#research">Explore my research ↗</a>
+				</div>
+				<AsciiArt kind="touch" />
+			</section>
+			<section class="about-facet facet-furry">
+				<AsciiArt kind="paws" />
+				<h2>Eww! Furry!</h2>
+				<p>I'm a furry. I love this wonderfully creative and welcoming community.</p>
+			</section>
+			<section class="about-facet facet-stack">
+				<AsciiArt kind="code" />
+				<h2>Full-Stack Dragon.</h2>
+				<p>I build complex systems and stunning web experiences.</p>
+				<a class="about-link" href="/work/">Explore my work ↗</a>
+			</section>
+			<section class="about-facet facet-source">
+				<h2>❤️ Open Source.</h2>
+				<p>Creator of <strong>emfont</strong>, an open-source CJK webfont service.</p>
+				<p class="about-font-metric"><span>1.2M+</span> requests/day.</p>
+				<a class="about-link" href="https://font.emtech.cc/" target="_blank" rel="noopener noreferrer">emfont ↗</a>
+			</section>
+			<section class="about-facet facet-debate">
+				<h2>I argue with people.</h2>
+				<p>Public Forum debate instructor and adjudicator. Also done Policy, WS, BP, and Extemp.</p>
+			</section>
+			<section class="about-facet facet-music">
+				<AsciiArt kind="music" />
+				<h2>EDM / Hip-Hop</h2>
+				<p>Porter Robinson, Skrillex, Kendrick Lamar, and a lot more.</p>
+			</section>
+			<section class="about-facet facet-hardware">
+				<AsciiArt kind="hardware" />
+				<h2>Embedded / IoT / 3D Design</h2>
+				<p>Love working with Arduino, sensors, and anything I can solder together.</p>
+			</section>
+			<section class="about-facet facet-camera">
+				<AsciiArt kind="camera" />
+				<h2>I Shoot People.</h2>
+				<p>With cameras, capture every touching moment.</p>
+			</section>
+			<section class="about-facet facet-broadcast">
+				<AsciiArt kind="broadcast" />
+				<h2>Behind the Scenes.</h2>
+				<p>I do PA and live broadcasting for event I love.</p>
+			</section>
 		</div>
-		<section class="about-feature" id="research">
-			<span class="eyebrow">01 / QUESTIONS</span><div>
-				<h2>What happens<br />between people<br />and AI?</h2><p>
-					At National Yang Ming Chiao Tung University, I study computer science and work on human–AI interaction at the Human-AI & Creative Computing Lab.
-				</p><p>I help build research systems, prepare experiments, and keep the computing infrastructure running. My work involves speech interfaces, communication, and collaboration.</p><p>
-					OmniObserve is one of those projects: a team effort exploring the opinions people hesitate to share in online meetings, and how they might discover common ground.
-				</p><a class="text-link" href="/work/omniobserve/">Explore OmniObserve <Icon /></a>
-			</div>
+
+		<section class="about-statement">
+			<p>
+				<span>When I learned to truly love myself,</span>
+				<span>I stopped chasing grand futures.</span>
+				<span>I simply do what I love, my way, at my own rhythm.</span>
+			</p>
 		</section>
-		<section class="about-feature" id="making">
-			<span class="eyebrow">02 / MAKING</span><div>
-				<h2>From the first sketch<br />to the server logs.</h2><p>
-					Web development is where I started, and it is still a big part of what I do. I design interactions, build interfaces, and work on the systems that support them.
-				</p><p>
-					That can mean a playful website for an artist, a conference experience built with a team, or infrastructure that quietly needs to keep working. emfont is one of the systems I continue to
-					build and maintain.
-				</p><a class="text-link" href="/work/">See what I've been making <Icon /></a>
+
+		<section class="about-section about-experience" aria-labelledby="experience-title">
+			<div class="about-section-heading">
+				<h2 id="experience-title">Experience</h2>
+				<a class="about-link" href="https://resume.elvismao.com/" target="_blank" rel="noopener noreferrer">Full CV ↗</a>
 			</div>
-		</section>
-		<section class="dragon-note" id="dragon">
-			<div class="dragon-note-image"><img src={CHARACTER_POSTER_URL} alt="EM's blue dragon character" width="1200" height="1200" loading="lazy" /></div><div>
-				<span class="eyebrow">03 / YES, REALLY</span><h2>The dragon<br />is me.</h2><p>
-					I'm a furry, and a blue dragon is how I represent myself. You'll find that part of me in my drawings, my interests, and the things I want to make.
-				</p><p>I'm particularly curious about what wearable technology could bring to fursuits: new ways to express a character, respond to people, and make a body part of an interface.</p><p
-					class="dragon-punchline"
-				>
-					There are a few research questions hiding in the fur.
-				</p>
-			</div>
-		</section>
-		<section class="offscreen-section" id="offscreen">
-			<span class="eyebrow">04 / OUTSIDE THE BROWSER</span><div class="about-modules">
-				<article>
-					<span class="module-glyph" aria-hidden="true">≈ ≈ ≈</span><h2>Usually with<br />a lot of bass.</h2><p>
-						Electronic music and hip-hop: Porter Robinson, Skrillex, Gummy B, REX, and plenty more. I also make music and work with live sound and broadcasting.
-					</p><p>Other ways to think about timing, attention, and how something feels.</p>
-				</article><article>
-					<span class="module-glyph" aria-hidden="true">+ — +</span><h2>Some experiments<br />need a soldering iron.</h2><p>
-						I work with ESP32s and Arduinos, play with 3D modelling, draw, and take photographs. I like moving between code, physical materials, images, and sound.
-					</p><p>There is a lot more to an interface than what fits behind a piece of glass.</p>
-				</article><article>
-					<span class="module-glyph" aria-hidden="true">“ ”</span><h2>Arguing,<br />with rules.</h2><p>
-						I compete, teach, and judge in English debate: Public Forum, World Schools, Policy, and British Parliamentary. In 2025, I represented Taiwan at the NSDA National Speech & Debate
-						Tournament.
-					</p><p>I like a good argument—especially one that leaves us understanding each other better.</p>
-				</article><article>
-					<span class="module-glyph" aria-hidden="true">{`{ }`}</span><h2>Better with<br />other people.</h2><p>
-						I teach web development and creative tools, from React to photography and music production. I like helping people get from an idea to something they can actually try.
-					</p><p>Some of the work is technical. A lot of it is making room for people to learn and build together.</p>
-				</article>
-			</div>
-		</section>
-		<section class="experience-section" id="experience">
-			<span class="eyebrow">05 / SELECTED EXPERIENCE</span><h2>A few things<br />that brought me here.</h2><div class="experience-list">
+			<ol class="about-experience-list">
 				{
 					experiences.map(item => (
-						<article>
-							<>
-								<div class="experience-meta">
-									<>
-										<span>{item.years}</span>
-										<span>{item.category}</span>
-									</>
-								</div>
-								<div>
-									<>
-										<h3>
-											{item.href ? (
-												<a href={item.href}>
-													{item.title} <Icon />
-												</a>
-											) : (
-												item.title
-											)}
-										</h3>
-										<p>{item.detail}</p>
-									</>
-								</div>
-							</>
-						</article>
+						<li>
+							<span class="experience-years">{item.years}</span>
+							<span>
+								{item.role}
+								{item.organization && <span class="experience-organization"> — {item.organization}</span>}
+							</span>
+						</li>
 					))
 				}
+			</ol>
+		</section>
+
+		<section id="research" class="about-section about-research" aria-labelledby="research-title">
+			<h2 id="research-title">Selected Research</h2>
+			<p class="research-interests">{researchInterests}</p>
+			<article class="research-publication">
+				<h3><a href="/work/omniobserve/">OmniObserve: Revealing Hidden Consensus in Online Meetings</a></h3>
+				<p>Shih-Kai Hong, Ethel Yu-Tsen Hsiao, Yi-Jie Chen, Jason Zhi-Jun Chang, <strong>Elvis Dragon Mao</strong>, and Grace Yu-Chun Yen.</p>
+				<p class="research-venue">TAICHI 2026 · Poster</p>
+			</article>
+			<div class="research-current">
+				<h3>Current Research</h3>
+				<ul>
+					<li>AI Assistance for Police Workflows (ft. Hsinchu Criminal Investigation Corps)</li>
+					<li>Fursuit Identity Retrieval and Recognition from 2D Images</li>
+				</ul>
 			</div>
 		</section>
-		<section class="page-outro">
-			<p class="eyebrow">YOUR TURN</p><h2>What are you<br />working on?</h2><p>
-				A research question, a creative experiment, or something you think I'd find interesting. You can also just say hello.
-			</p><a class="big-link" href="mailto:info@elvismao.com">Let's talk <Icon /></a>
+
+		<TalksMonitor />
+
+		<section class="about-section about-awards" aria-labelledby="awards-title">
+			<h2 id="awards-title">Honors &amp; Awards</h2>
+			<div class="awards-groups">
+				{
+					awards.map(group => (
+						<section class="awards-year">
+							<h3>{group.year}</h3>
+							<ul>
+								{group.items.map(item => (
+									<li>
+										<strong>{item.title}</strong>
+										{item.context && (
+											<span>
+												{" "}
+												— {item.context}
+												{"project" in item && (
+													<>
+														{" "}
+														<em>{item.project}</em>
+													</>
+												)}
+											</span>
+										)}
+									</li>
+								))}
+							</ul>
+						</section>
+					))
+				}
+				<section class="awards-year">
+					<h3>Other Recognition</h3>
+					<ul>{otherRecognition.map(item => <li>{item}</li>)}</ul>
+				</section>
+			</div>
+		</section>
+
+		<section class="about-contact" aria-labelledby="contact-title">
+			<h2 id="contact-title">What's up bro!</h2>
+			<p class="contact-verse">--2 Samuel 20:9</p>
+			<p>Feel free to reach out for research, commission, or just to say hi!</p>
+			<a href="mailto:info@elvismao.com">info@elvismao.com</a>
 		</section>
 	</main>
-	<Footer compact />
 </Layout>

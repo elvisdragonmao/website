@@ -1,0 +1,47 @@
+---
+import { talks } from "../../data/about";
+import Icon from "../Icon.astro";
+const years = [...new Set(talks.map(talk => talk.year))];
+---
+
+<section class="about-section talks-section" aria-labelledby="talks-title" data-talks-monitor>
+	<h2 id="talks-title">Talks &amp; Teaching</h2>
+	<div class="talks-console">
+		<div class="talks-controls">
+			<div class="talks-years" role="group" aria-label="Filter by year">
+				{
+					years.map(year => (
+						<button type="button" data-talks-year={year} aria-pressed="false" aria-label={`Filter ${year}; select again to show all years`}>
+							<>
+								<span>{year}</span>
+								<span class="talks-meter" aria-hidden="true">
+									{"["}
+									<span>{"|".repeat(talks.filter(t => t.year === year).length * 2)}</span>
+									{"]"}
+								</span>
+							</>
+						</button>
+					))
+				}
+			</div>
+			<label class="talks-search">
+				<Icon name="search" /><input type="search" aria-label="Search talks and teaching" data-talks-search autocomplete="off" spellcheck="false" />
+			</label>
+		</div>
+		<div class="talks-table-scroll" tabindex="0" role="region" aria-labelledby="talks-title">
+			<table aria-labelledby="talks-title">
+				<tbody>
+					{
+						talks.map((talk, index) => (
+							<tr data-talks-row data-year={talk.year} data-selected={index === 0 ? "true" : undefined} tabindex={index === 0 ? 0 : -1}>
+								<td class="talk-year">{talk.year}</td>
+								<th scope="row">{talk.title}</th>
+								<td class="talk-context">{talk.context}</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>

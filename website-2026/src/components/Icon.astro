@@ -5,12 +5,13 @@ import envelope from "@phosphor-icons/core/assets/regular/envelope-simple.svg?ra
 import github from "@phosphor-icons/core/assets/regular/github-logo.svg?raw";
 import telegram from "@phosphor-icons/core/assets/regular/telegram-logo.svg?raw";
 import instagram from "@phosphor-icons/core/assets/regular/instagram-logo.svg?raw";
+import search from "@phosphor-icons/core/assets/regular/magnifying-glass.svg?raw";
 interface Props {
 	name?: string;
 	class?: string;
 }
 const { name = "arrow", class: className = "" } = Astro.props;
-const icons: Record<string, string> = { arrow, arrowLeft, envelope, github, telegram, instagram };
+const icons: Record<string, string> = { arrow, arrowLeft, envelope, github, telegram, instagram, search };
 ---
 
 <span class:list={["icon", className]} aria-hidden="true" set:html={icons[name] ?? arrow} />
