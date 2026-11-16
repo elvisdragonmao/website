@@ -60,6 +60,7 @@ export const creditSections: { title: string; entries: Credit[] }[] = [
 		title: "Visual Inspiration",
 		entries: [
 			{ name: "ASCII Play — Andreas Gysin", href: "https://play.ertdfgcvb.xyz/" },
+			{ name: "Heo", href: "https://blog.zhheo.com/" },
 			{ name: "btop", href: "https://github.com/aristocratos/btop" },
 			{ name: "htop", href: "https://htop.dev/" },
 			{ name: "Lusion", href: "https://lusion.co/" }
