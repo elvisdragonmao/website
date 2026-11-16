@@ -4,8 +4,7 @@
 	overflow: hidden;
 	cursor: crosshair;
 }
-.people-reticle,
-.people-charge {
+.people-reticle {
 	position: absolute;
 	inset: 0;
 	margin: 0;
@@ -19,13 +18,7 @@
 	white-space: pre;
 	transition: color 180ms;
 }
-.people-charge {
-	color: #ffb998;
-	z-index: 3;
-	opacity: 0;
-	text-shadow: 0 0 7px #ffb99899;
-	clip-path: circle(0);
-}
+
 .people-burst {
 	position: absolute;
 	inset: 0;
@@ -64,8 +57,8 @@
 	filter: drop-shadow(0 0 4px #a3daff55);
 }
 .ascii-walker:focus-visible {
-	outline: 1px dashed #7ac8d2;
-	outline-offset: -4px;
+	outline: 0;
+	filter: drop-shadow(0 0 4px #7ac8d2);
 }
 .ascii-walker:nth-of-type(1) {
 	left: 5%;
@@ -97,4 +90,17 @@
 }
 .people-field:not([data-people-ready]) .ascii-walker:nth-of-type(5) {
 	left: 81%;
+}
+
+.people-field:not([data-people-ready]) .ascii-walker:nth-of-type(6) {
+	left: 14%;
+	top: 48%;
+}
+.people-field:not([data-people-ready]) .ascii-walker:nth-of-type(7) {
+	left: 43%;
+	top: 48%;
+}
+.people-field:not([data-people-ready]) .ascii-walker:nth-of-type(8) {
+	left: 72%;
+	top: 48%;
 }

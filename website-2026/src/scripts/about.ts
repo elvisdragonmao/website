@@ -1,4 +1,5 @@
 import { startAboutArt } from "./about-art";
+import { startAboutContact } from "./about-contact";
 import { startAboutMedia } from "./about-media";
 import { setupPeopleField } from "./about-people";
 import { setupAboutWorkspace, setupTypingTerminal } from "./about-tui";
@@ -187,6 +188,7 @@ function mountAbout(): void {
 	startAboutMedia(root, signal);
 	setupPeopleField(root, signal);
 	startAboutType(root, signal);
+	startAboutContact(root, signal);
 	setupTalks(root, signal);
 	setupTypingTerminal(root, signal);
 	signal.addEventListener(

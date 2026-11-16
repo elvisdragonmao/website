@@ -4,10 +4,6 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 	const reticle = field?.querySelector<HTMLPreElement>("[data-people-reticle]");
 	const status = field?.querySelector<HTMLOutputElement>("[data-people-status]");
 	if (!field || !reticle) return;
-	const charge = document.createElement("pre");
-	charge.className = "people-charge";
-	charge.setAttribute("aria-hidden", "true");
-	field.append(charge);
 	const burst = document.createElement("canvas");
 	burst.className = "people-burst";
 	burst.setAttribute("aria-hidden", "true");
@@ -20,8 +16,8 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 		x: 0,
 		y: 0,
 		step: -1,
-		phase: i / 5,
-		speed: 18 + i * 4,
+		phase: i / field.querySelectorAll("[data-walker]").length,
+		speed: 30 + i * 3,
 		colored: false,
 		cycle: 0
 	}));
@@ -41,28 +37,41 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 		field.dataset.coloredCount = String(count);
 		if (status) status.textContent = `${count} of ${people.length} people in color.`;
 	};
-	const drawReticle = () => {
+	const drawReticle = (now = performance.now()) => {
 		const cols = Math.max(10, Math.floor(width / 6)),
 			rows = Math.max(4, Math.floor(height / 12));
 		const cx = Math.round(aim.x * (cols - 1)),
 			cy = Math.round(aim.y * (rows - 1));
-		reticle.textContent = Array.from({ length: rows }, (_, y) =>
+		const age = now - fireAt,
+			active = age >= 0 && age < 2100;
+		const progress = reduced.matches ? 1 : Math.min(1, age / 1200);
+		const reach = Math.max(aim.x * width, (1 - aim.x) * width, aim.y * height, (1 - aim.y) * height) * progress;
+		const fade = age < 1650 ? 1 : Math.max(0, (2100 - age) / 450);
+		const warm = hit ? [255, 177, 160] : [156, 239, 255];
+		const rowsHtml = Array.from({ length: rows }, (_, y) =>
 			Array.from({ length: cols }, (_, x) => {
-				const dx = (x - cx) * 6,
-					dy = (y - cy) * 12,
-					r = Math.hypot(dx, dy);
-				if (x === cx && y === cy) return "+";
-				if (Math.abs(r - 27) < 3.5) {
-					if (Math.abs(dx) > 21) return dx < 0 ? "[" : "]";
-					return Math.abs(dy) > 20 ? "-" : "+";
-				}
-				if (y === cy && Math.abs(dx) > 13) return x % 2 ? "-" : " ";
-				if (x === cx && Math.abs(dy) > 13) return "|";
-				return " ";
+				const gx = x - cx,
+					gy = y - cy,
+					dx = gx * 6,
+					dy = gy * 12;
+				let glyph = " ";
+				if (gx === 0 && gy === 0) glyph = "+";
+				else if (Math.abs(gx) === 4 && Math.abs(gy) === 2) glyph = gy < 0 ? (gx < 0 ? "┌" : "┐") : gx < 0 ? "└" : "┘";
+				else if (gy === 0 && Math.abs(gx) > 2) glyph = Math.abs(gx) % 2 ? "-" : " ";
+				else if (gx === 0 && Math.abs(gy) > 1) glyph = Math.abs(gy) % 2 ? "|" : " ";
+				if (glyph === " " || !active) return glyph;
+				const blend = Math.max(0, Math.min(1, (reach - Math.hypot(dx, dy) + 12) / 24)) * fade;
+				if (blend <= 0.005) return glyph;
+				const base = [186, 214, 233],
+					rgb = base.map((v, i) => Math.round(v + (warm[i]! - v) * blend));
+				return `<span class="reticle-lit" style="color:rgb(${rgb.join(",")});text-shadow:0 0 ${5 * blend}px currentColor">${glyph}</span>`;
 			}).join("")
 		).join("\n");
+		reticle.innerHTML = rowsHtml;
 		field.dataset.aim = `${aim.x.toFixed(2)},${aim.y.toFixed(2)}`;
+		if (active) field.dataset.chargeProgress = Math.max(0, progress).toFixed(2);
 	};
+
 	const draw = (time: number) => {
 		let recycled = false;
 		for (let i = 0; i < people.length; i++) {
@@ -79,7 +88,7 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 					recycled = true;
 				}
 				person.x = (unwrapped % travel) - 20;
-				person.y = height * (0.38 + (i % 3) * 0.12) + Math.sin(time * 3 + i) * 1.5;
+				person.y = height * (0.32 + (i % 3) * 0.17) + Math.sin(time * 3 + i) * 1.5;
 			}
 			person.button.style.transform = `translate(${person.x - 22}px,${person.y - 32}px)`;
 			const step = reduced.matches ? 0 : Math.floor(time * 3.5 + i) % 4;
@@ -96,16 +105,11 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 		if (!ctx) return;
 		ctx.clearRect(0, 0, width, height);
 		if (p < 0 || p >= 1) {
-			charge.style.opacity = "0";
 			delete field.dataset.flash;
 			return;
 		}
 		const x = shot.x * width,
 			y = shot.y * height;
-		const progress = reduced.matches ? 1 : Math.min(1, p / 0.72);
-		charge.style.clipPath = `circle(${Math.hypot(width, height) * progress}px at ${x}px ${y}px)`;
-		charge.style.opacity = String(p < 0.65 ? 1 : (1 - p) / 0.35);
-		field.dataset.chargeProgress = progress.toFixed(2);
 		if (reduced.matches) return;
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
@@ -124,7 +128,10 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 			lastPaint = ms;
 			draw(reduced.matches ? 0 : (ms - start) / 1000);
 		}
-		if (ms - fireAt < 740) paintShot(ms);
+		if (ms - fireAt < 2100) {
+			paintShot(ms);
+			drawReticle(ms);
+		}
 		if (!reduced.matches) frame = requestAnimationFrame(animate);
 	};
 	const wake = () => {
@@ -189,18 +196,18 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 			shot.x = aim.x;
 			shot.y = aim.y;
 			fireAt = performance.now();
-			charge.textContent = reticle.textContent;
 			field.dataset.flash = "true";
 			field.dataset.chargeProgress = "0";
 			paintShot(fireAt);
+			drawReticle(fireAt);
 			wake();
 			window.clearTimeout(resetTimer);
 			resetTimer = window.setTimeout(() => {
-				charge.style.opacity = "0";
 				ctx?.clearRect(0, 0, width, height);
 				delete field.dataset.flash;
 				delete field.dataset.chargeProgress;
-			}, 740);
+				drawReticle();
+			}, 2120);
 		},
 		{ signal }
 	);
@@ -233,7 +240,6 @@ export function setupPeopleField(root: HTMLElement, signal: AbortSignal): void {
 			window.clearTimeout(resetTimer);
 			observer.disconnect();
 			resizer.disconnect();
-			charge.remove();
 			burst.remove();
 		},
 		{ once: true }

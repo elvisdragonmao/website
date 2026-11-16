@@ -20,6 +20,7 @@ const parts = [
 ---
 
 <section class="about-contact contact-blue" aria-labelledby="contact-title">
+	<canvas class="contact-static" data-contact-static aria-hidden="true"></canvas>
 	<AsciiArt kind="contact" />
 	<h2 id="contact-title" class="sr-only">What's up bro!</h2>
 	<div class="contact-banner" aria-hidden="true"><pre class="banner-full">{banner}</pre><div class="banner-split">{parts.map(part => <pre>{part}</pre>)}</div></div>

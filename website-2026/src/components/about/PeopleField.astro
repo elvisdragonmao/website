@@ -5,7 +5,7 @@ const walker = " o \n/|\\\n/ \\";
 <div class="people-field" data-people-field role="group" aria-label="Color the passing ASCII people with the crosshair">
 	<pre class="people-reticle" data-people-reticle aria-hidden="true">+ </pre>
 	{
-		Array.from({ length: 5 }, (_, i) => (
+		Array.from({ length: 8 }, (_, i) => (
 			<button type="button" class="ascii-walker" data-walker={i} aria-label={`Color person ${i + 1}`}>
 				<span aria-hidden="true">{walker}</span>
 			</button>
