@@ -3,14 +3,17 @@ import profile from "../../assets/about/profile.webp";
 import furry from "../../assets/about/furry.webp";
 import porter from "../../assets/about/porter.webp";
 import kendrick from "../../assets/about/kendrick.webp";
+import trump from "../../assets/about/trump.webp";
 interface Props {
-	kind: "portrait" | "furry" | "music";
+	kind: "portrait" | "furry" | "music" | "debate";
 }
 const { kind } = Astro.props;
-const images = kind === "music" ? [kendrick, porter] : [kind === "portrait" ? profile : furry];
+const images = kind === "music" ? [kendrick, porter] : [kind === "portrait" ? profile : kind === "debate" ? trump : furry];
 ---
 
 <div class:list={["about-media", `media-${kind}`]} data-image-art={kind} aria-hidden="true">
+	{kind === "portrait" && <canvas class="portrait-cloud" data-image-atmosphere />}
+	{kind === "portrait" && <canvas data-image-halo />}
 	<div class="media-images">
 		{
 			images.map((image, i) => (
@@ -18,5 +21,5 @@ const images = kind === "music" ? [kendrick, porter] : [kind === "portrait" ? pr
 			))
 		}
 	</div>
-	<canvas data-image-output></canvas>
+	{kind !== "furry" && <canvas data-image-output />}
 </div>

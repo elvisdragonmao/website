@@ -1,4 +1,4 @@
-type Kind = "touch" | "code" | "type" | "hardware" | "camera" | "broadcast";
+type Kind = "touch" | "code" | "type" | "hardware" | "motto" | "broadcast";
 type Artwork = {
 	element: HTMLElement;
 	output: HTMLPreElement;
@@ -86,44 +86,27 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 					ctx.rect(0, y, 480, 9);
 					ctx.clip();
 					const pulse = Math.pow(Math.max(0, Math.sin(time * 1.4 + y * 0.025)), 22);
-					ctx.translate(240 + Math.sin(y * 0.08 + time * 3) * pulse * 17 + pointer.x * 8, 142);
-					ctx.scale(1.35, 1);
+					ctx.translate(240 + Math.sin(time * 0.7) * 20 + Math.sin(y * 0.08 + time * 3) * pulse * 38 + pointer.x * 16, 142 + Math.sin(time * 0.6) * 12);
+					ctx.rotate(Math.sin(time * 0.45) * 0.07);
+					ctx.scale(1.35 + Math.sin(time * 0.9) * 0.08, 1);
 					ctx.fillText("字", 0, 0);
 					ctx.restore();
 				}
-			} else if (kind === "camera") {
-				const x = 240 + pointer.x * 95,
-					y = 115 + pointer.y * 55;
-				ctx.lineWidth = 6;
-				line([
-					[0, y],
-					[x - 27, y]
-				]);
-				line([
-					[x + 27, y],
-					[480, y]
-				]);
-				line([
-					[x, 0],
-					[x, y - 27]
-				]);
-				line([
-					[x, y + 27],
-					[x, 270]
-				]);
-				ctx.strokeRect(x - 23, y - 23, 46, 46);
-				ctx.fillRect(x - 2, y - 2, 4, 4);
-				for (const [cx, cy, dx, dy] of [
-					[20, 15, 1, 1],
-					[460, 15, -1, 1],
-					[20, 255, 1, -1],
-					[460, 255, -1, -1]
-				])
-					line([
-						[cx!, cy! + dy! * 18],
-						[cx!, cy!],
-						[cx! + dx! * 18, cy!]
-					]);
+			} else if (kind === "motto") {
+				// A half-twisted ribbon: closed in 3D, impossible in the flat projection.
+				ctx.lineWidth = 4;
+				const project = (u: number, v: number) => {
+					const r = 104 + v * Math.cos(u / 2),
+						x = r * Math.cos(u),
+						z = r * Math.sin(u),
+						y = v * Math.sin(u / 2);
+					const a = time * 0.23 + pointer.x * 0.5,
+						rx = x * Math.cos(a) - z * Math.sin(a),
+						rz = x * Math.sin(a) + z * Math.cos(a);
+					return [240 + rx * 1.35, 135 + y * 0.95 + rz * 0.58];
+				};
+				for (let v = -34; v <= 34; v += 11) line(Array.from({ length: 181 }, (_, i) => project((i / 180) * Math.PI * 2, v)));
+				for (let i = 0; i < 36; i++) line([project((i / 36) * Math.PI * 2, -34), project((i / 36) * Math.PI * 2, 34)]);
 			} else if (kind === "broadcast") {
 				for (let i = 0; i < 7; i++) {
 					const x = 58 + i * 60,
@@ -215,7 +198,8 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 		const art: Artwork = { element, output, kind: element.dataset.aboutArt as Kind, canvas, context, columns: 0, rows: 0, pointer: { x: 0, y: 0 } };
 		resize(art);
 		artworks.push(art);
-		element.addEventListener(
+		const interaction = element.closest<HTMLElement>(".about-facet") ?? element;
+		interaction.addEventListener(
 			"pointermove",
 			event => {
 				const box = element.getBoundingClientRect();
@@ -225,7 +209,7 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 			},
 			{ passive: true, signal }
 		);
-		element.addEventListener(
+		interaction.addEventListener(
 			"pointerleave",
 			() => {
 				art.pointer.x = art.pointer.y = 0;

@@ -1,6 +1,6 @@
 ---
 interface Props {
-	kind: "touch" | "code" | "type" | "hardware" | "camera" | "broadcast";
+	kind: "touch" | "code" | "type" | "hardware" | "motto" | "broadcast";
 }
 const { kind } = Astro.props;
 const fallback = {
@@ -8,7 +8,7 @@ const fallback = {
 	code: " .----------------------.\n |      < / >           |\n |                  _   |\n '----------------------'\n        |      |\n     ---'------'---",
 	type: "字",
 	hardware: "      +--------+\n     /        /|\n    +--------+ |\n    |        | +\n    |        |/\n    +--------+",
-	camera: "           :\n           :\n  - - - -  +  - - - -\n           :\n           :",
+	motto: "    .----.\n  /  / /  \\ \n (  (  )   )\n  \\  \\ /  /\n    '----'",
 	broadcast: "  :    :    :    :    :\n  |   [=]   |    |    |\n [=]   |    |   [=]   |\n  |    |   [=]   |    |\n  |    |    |    |   [=]\n  ▁ ▄ ▃ ▆ ▂ ▅ ▇ ▄ ▂ ▃ ▁"
 }[kind];
 ---

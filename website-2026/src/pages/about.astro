@@ -3,27 +3,19 @@ import Layout from "../layouts/Layout.astro";
 import AsciiArt from "../components/about/AsciiArt.astro";
 import ImageArt from "../components/about/ImageArt.astro";
 import Footer from "../components/Footer.astro";
+import PeopleField from "../components/about/PeopleField.astro";
+import "@fontsource/ibm-plex-mono/500-italic.css";
 import TalksMonitor from "../components/about/TalksMonitor.astro";
 import { experiences, researchInterests, awards, otherRecognition } from "../data/about";
 import "../styles/about.css";
 import "../styles/about-tui.css";
 import "../styles/about-media.css";
 import "../styles/about-apps.css";
+import "../styles/about-people.css";
 ---
 
 <Layout title="Elvis Dragon Mao." description="Developer · Designer · Researcher · Debater">
-	<main id="main" class="about-page" data-about-theme="btop" data-image-mode="ascii">
-		<script is:inline data-astro-rerun>
-			{
-				const mode = new URLSearchParams(location.search).get("media");
-				const root = document.currentScript?.closest("main");
-				if (root && mode === "image") root.dataset.imageMode = "image";
-			}
-		</script>
-		<div class="about-media-controls" role="group" aria-label="Image rendering">
-			<button type="button" data-image-mode-button="ascii" aria-pressed="true">ASCII</button>
-			<button type="button" data-image-mode-button="image" aria-pressed="false">Image</button>
-		</div>
+	<main id="main" class="about-page" data-about-theme="btop">
 		<header class="about-hero">
 			<div class="about-identity">
 				<h1>Elvis Dragon Mao.</h1>
@@ -75,15 +67,17 @@ import "../styles/about-apps.css";
 				<p>Love working with Arduino, sensors, and anything I can solder together.</p>
 			</section>
 			<section class="about-facet tui-panel facet-motto">
+				<AsciiArt kind="motto" />
 				<h2>motto</h2>
 				<p>Because It's Absurd,<br />I Believe.</p>
 			</section>
 			<section class="about-facet tui-panel facet-camera">
-				<AsciiArt kind="camera" />
+				<PeopleField />
 				<h2>I Shoot People.</h2>
 				<p>With cameras, capture every touching moment.</p>
 			</section>
 			<section class="about-facet tui-panel facet-debate">
+				<ImageArt kind="debate" />
 				<h2>I argue with people.</h2>
 				<p>Public Forum debate instructor and adjudicator. Also done Policy, WS, BP, and Extemp.</p>
 			</section>
