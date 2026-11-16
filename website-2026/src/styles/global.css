@@ -1239,8 +1239,8 @@ html:not(.art-ready) .world-label > .label-leader {
 }
 
 /* Text links grow an underline; card links reserve the treatment for their title. */
-a:not(.project-box):not(.next-page),
-.link-underline {
+a:not(.project-box):not(.next-page):not(footer a),
+.link-underline:not(footer *) {
 	background-image: linear-gradient(currentColor, currentColor);
 	background-size: 0% 1px;
 	background-position: 0 100%;
@@ -1249,8 +1249,8 @@ a:not(.project-box):not(.next-page),
 		color 160ms ease,
 		background-size 280ms cubic-bezier(0.2, 0.7, 0.25, 1);
 }
-a:not(.project-box):not(.next-page):is(:hover, :focus-visible),
-a:is(:hover, :focus-visible) .link-underline {
+a:not(.project-box):not(.next-page):not(footer a):is(:hover, :focus-visible),
+a:not(footer a):is(:hover, :focus-visible) .link-underline {
 	background-size: 100% 1px;
 }
 a.project-box:is(:hover, :focus-visible) {
