@@ -3,6 +3,7 @@ type ImageArtwork = {
 	images: HTMLImageElement[];
 	canvas: HTMLCanvasElement;
 	ready: boolean;
+	layer?: number;
 };
 const hash = (n: number) => {
 	const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -57,8 +58,8 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 			ctx.drawImage(layer, 0, 0, width, height);
 		};
 		if (kind === "music") {
-			drawSoft(art.images[0]!, width * 0.28, height * 0.03, width * 0.84, height * 1.15, 1.05, true, true);
-			drawSoft(art.images[1]!, -width * 0.22, height * 0.13, width * 1.16, height * 0.93, 1.06, true);
+			if (art.layer === 0) drawSoft(art.images[0]!, width * 0.28, height * 0.03, width * 0.84, height * 1.15, 1.05, true, true);
+			if (art.layer === 1) drawSoft(art.images[1]!, -width * 0.22, height * 0.13, width * 1.16, height * 0.93, 1.06, true);
 		} else if (kind === "debate") drawSoft(art.images[0]!, width * 0.07, height * 0.02, width * 0.86, height * 0.84, 1, false, true);
 		else drawSoft(art.images[0]!, 0, -height * 0.18, width, height * 1.42, 1, false, true);
 		if (kind === "music" || kind === "debate") {
@@ -93,6 +94,24 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 		art.canvas.width = Math.round(width * ratio);
 		art.canvas.height = Math.round(height * ratio);
 		output.setTransform(ratio, 0, 0, ratio, 0, 0);
+		if (kind === "music" && art.layer === 1) {
+			// ASCII glyphs have holes; the foreground silhouette must still occlude the artist behind it.
+			const matte = document.createElement("canvas");
+			matte.width = columns;
+			matte.height = rows;
+			const matteContext = matte.getContext("2d");
+			if (matteContext) {
+				const mask = matteContext.createImageData(columns, rows);
+				for (let i = 0; i < pixels.length; i += 4) {
+					mask.data[i] = 8;
+					mask.data[i + 1] = 9;
+					mask.data[i + 2] = 9;
+					mask.data[i + 3] = pixels[i + 3]!;
+				}
+				matteContext.putImageData(mask, 0, 0);
+				output.drawImage(matte, 0, 0, width, height);
+			}
+		}
 		output.font = `500 ${lineHeight.toFixed(3)}px "IBM Plex Mono", monospace`;
 		output.textBaseline = "top";
 		output.textAlign = "center";
@@ -181,8 +200,8 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 	const resize = new ResizeObserver(schedule);
 	for (const element of root.querySelectorAll<HTMLElement>("[data-image-art]")) {
 		const images = [...element.querySelectorAll<HTMLImageElement>("img")];
-		const canvas = element.querySelector<HTMLCanvasElement>("[data-image-output]");
-		if (!canvas) {
+		const canvases = [...element.querySelectorAll<HTMLCanvasElement>("[data-image-output]")];
+		if (!canvases.length) {
 			void Promise.all(images.map(image => image.decode()))
 				.then(() => {
 					if (!signal.aborted) element.dataset.mediaReady = "true";
@@ -190,19 +209,42 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 				.catch(() => {});
 			continue;
 		}
-		const art = { element, images, canvas, ready: false };
-		artworks.push(art);
+		for (const canvas of canvases) {
+			const art: ImageArtwork = { element, images, canvas, ready: false, layer: Number(canvas.dataset.imageOutput) };
+			artworks.push(art);
+			void Promise.all([...images.map(image => image.decode()), document.fonts.load('500 12px "IBM Plex Mono"')])
+				.then(() => {
+					if (signal.aborted) return;
+					art.ready = true;
+					schedule();
+				})
+				.catch(() => {
+					/* Source images remain the fallback. */
+				});
+		}
 		resize.observe(element);
-		void Promise.all([...images.map(image => image.decode()), document.fonts.load('500 12px "IBM Plex Mono"')])
-			.then(() => {
-				if (signal.aborted) return;
-				art.ready = true;
-				schedule();
-			})
-			.catch(() => {
-				/* The original image remains the progressive fallback. */
-			});
 	}
+	const music = root.querySelector<HTMLElement>('[data-image-art="music"]');
+	const musicCard = music?.closest<HTMLElement>(".facet-music");
+	const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+	musicCard?.addEventListener(
+		"pointermove",
+		event => {
+			if (!music || reduced.matches || !finePointer.matches) return;
+			const box = musicCard.getBoundingClientRect();
+			music.style.setProperty("--music-x", `${((event.clientX - box.left) / box.width - 0.5) * 10}px`);
+			music.style.setProperty("--music-y", `${((event.clientY - box.top) / box.height - 0.5) * 6}px`);
+		},
+		{ signal, passive: true }
+	);
+	musicCard?.addEventListener(
+		"pointerleave",
+		() => {
+			music?.style.setProperty("--music-x", "0px");
+			music?.style.setProperty("--music-y", "0px");
+		},
+		{ signal }
+	);
 	const visibility = new IntersectionObserver(
 		entries => {
 			visible = entries.some(e => e.isIntersecting);

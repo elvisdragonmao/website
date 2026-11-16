@@ -21,5 +21,16 @@ const images = kind === "music" ? [kendrick, porter] : [kind === "portrait" ? pr
 			))
 		}
 	</div>
-	{kind !== "furry" && <canvas data-image-output />}
+	{
+		kind === "music" ? (
+			<>
+				<>
+					<canvas class="music-ascii-kendrick" data-image-output="0" />
+					<canvas class="music-ascii-porter" data-image-output="1" />
+				</>
+			</>
+		) : (
+			kind !== "furry" && <canvas data-image-output />
+		)
+	}
 </div>

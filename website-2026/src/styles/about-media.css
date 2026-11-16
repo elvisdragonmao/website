@@ -386,3 +386,29 @@
 .about-page .facet-furry p a {
 	color: #a6e0e8;
 }
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+	.media-music [data-image-output] {
+		transition:
+			opacity 350ms,
+			transform 420ms cubic-bezier(0.2, 0.7, 0.25, 1);
+	}
+	.facet-music:hover .music-ascii-porter {
+		transform: translate(calc(var(--music-x, 0px) + 2px), calc(var(--music-y, 0px) - 1px));
+	}
+	.facet-music:hover .music-ascii-kendrick {
+		transform: translate(calc(var(--music-x, 0px) * -0.6 - 1px), calc(var(--music-y, 0px) * -0.5 + 1px));
+	}
+	.media-furry .media-images img {
+		transition: transform 650ms cubic-bezier(0.2, 0.7, 0.25, 1);
+	}
+	.facet-furry:hover .media-images img {
+		transform: scale(1.035);
+	}
+}
+.media-music .music-ascii-kendrick {
+	z-index: 0;
+}
+.media-music .music-ascii-porter {
+	z-index: 1;
+}
