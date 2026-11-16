@@ -1,0 +1,70 @@
+.about-page .contact-blue {
+	position: relative;
+	isolation: isolate;
+	container: contact / inline-size;
+	padding: 42px 24px 34px;
+	overflow: hidden;
+	background: radial-gradient(ellipse at 50% 0, #15357a88, transparent 72%), linear-gradient(120deg, #10152a, #102758 55%, #111a35);
+	text-align: center;
+}
+.contact-blue .about-art-contact {
+	position: absolute;
+	inset: 0;
+	height: auto;
+	margin: 0;
+	color: #517fdc;
+	opacity: 0.28;
+	pointer-events: none;
+}
+.contact-banner {
+	position: relative;
+	z-index: 2;
+	margin: 0 auto;
+	color: #d3e4ff;
+	text-shadow: 0 0 20px #79adff66;
+}
+.about-page .contact-banner pre {
+	font:
+		min(14px, 1.05cqi)/1.15 "IBM Plex Mono",
+		monospace;
+	white-space: pre;
+	letter-spacing: 0;
+	text-align: center;
+}
+.banner-split {
+	display: none;
+}
+.about-page .contact-blue > p {
+	position: relative;
+	z-index: 2;
+	margin: 12px auto 0;
+	color: #c6d6f0;
+	font-size: 14px;
+	line-height: 1.6;
+}
+.about-page .contact-blue .contact-verse {
+	margin: 12px auto 18px;
+	font-size: 12px;
+	color: #879fca;
+}
+.about-page .contact-blue > a {
+	position: relative;
+	z-index: 2;
+	display: block;
+	width: fit-content;
+	margin: 16px auto 0;
+	font-size: 14px;
+	color: #a9dfff;
+}
+@container contact (max-width:560px) {
+	.contact-banner .banner-full {
+		display: none;
+	}
+	.banner-split {
+		display: grid;
+		gap: 10px;
+	}
+	.about-page .banner-split pre {
+		font-size: min(12px, 2.5cqi);
+	}
+}

@@ -4,6 +4,8 @@ import AsciiArt from "../components/about/AsciiArt.astro";
 import ImageArt from "../components/about/ImageArt.astro";
 import Footer from "../components/Footer.astro";
 import PeopleField from "../components/about/PeopleField.astro";
+import TechMarquee from "../components/about/TechMarquee.astro";
+import ContactBlue from "../components/about/ContactBlue.astro";
 import "@fontsource/ibm-plex-mono/500-italic.css";
 import TalksMonitor from "../components/about/TalksMonitor.astro";
 import { experiences, researchInterests, awards, otherRecognition } from "../data/about";
@@ -12,6 +14,8 @@ import "../styles/about-tui.css";
 import "../styles/about-media.css";
 import "../styles/about-apps.css";
 import "../styles/about-people.css";
+import "../styles/about-type.css";
+import "../styles/about-contact.css";
 ---
 
 <Layout title="Elvis Dragon Mao." description="Developer · Designer · Researcher · Debater">
@@ -44,7 +48,7 @@ import "../styles/about-people.css";
 				<p>I'm a <a href="https://emtech.cc/p/furry-intro/" target="_blank" rel="noopener noreferrer">furry</a>. I love this wonderfully creative and welcoming community.</p>
 			</section>
 			<section class="about-facet tui-panel facet-stack">
-				<AsciiArt kind="code" />
+				<TechMarquee />
 				<h2>Full-Stack Dragon.</h2>
 				<p>I build complex systems and stunning web experiences.</p>
 				<a class="about-link" href="/work/">Explore my work ↗</a>
@@ -72,7 +76,8 @@ import "../styles/about-people.css";
 			<section class="about-facet tui-panel facet-motto">
 				<AsciiArt kind="motto" />
 				<h2>motto</h2>
-				<p>Because It's Absurd,<br />I Believe.</p>
+				<canvas class="motto-type" data-motto-type aria-hidden="true"></canvas>
+				<p class="motto-copy"><span>Because It's</span><span>Absurd,</span><span>I Believe.</span></p>
 			</section>
 			<section class="about-facet tui-panel facet-camera">
 				<PeopleField />
@@ -177,12 +182,7 @@ import "../styles/about-people.css";
 				</div>
 			</section>
 
-			<section class="about-contact about-section tui-panel" aria-labelledby="contact-title">
-				<h2 id="contact-title">What's up bro!</h2>
-				<p class="contact-verse">--2 Samuel 20:9</p>
-				<p>Feel free to reach out for research, commission, or just to say hi!</p>
-				<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer">[info@elvismao.com]</a>
-			</section>
+			<ContactBlue />
 			<Footer newsletter ascii />
 		</div>
 	</main>

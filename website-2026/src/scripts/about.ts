@@ -2,6 +2,7 @@ import { startAboutArt } from "./about-art";
 import { startAboutMedia } from "./about-media";
 import { setupPeopleField } from "./about-people";
 import { setupAboutWorkspace, setupTypingTerminal } from "./about-tui";
+import { startAboutType } from "./about-type";
 
 function setupTalks(root: HTMLElement, signal: AbortSignal): void {
 	const monitor = root.querySelector<HTMLElement>("[data-talks-monitor]");
@@ -185,6 +186,7 @@ function mountAbout(): void {
 	startAboutArt(root, signal);
 	startAboutMedia(root, signal);
 	setupPeopleField(root, signal);
+	startAboutType(root, signal);
 	setupTalks(root, signal);
 	setupTypingTerminal(root, signal);
 	signal.addEventListener(

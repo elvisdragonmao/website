@@ -1,0 +1,29 @@
+---
+import AsciiArt from "./AsciiArt.astro";
+const banner = `██╗    ██╗██╗  ██╗ █████╗ ████████╗███████╗    ██╗   ██╗██████╗     ██████╗ ██████╗  ██████╗ ██╗
+██║    ██║██║  ██║██╔══██╗╚══██╔══╝██╔════╝    ██║   ██║██╔══██╗    ██╔══██╗██╔══██╗██╔═══██╗██║
+██║ █╗ ██║███████║███████║   ██║   ███████╗    ██║   ██║██████╔╝    ██████╔╝██████╔╝██║   ██║██║
+██║███╗██║██╔══██║██╔══██║   ██║   ╚════██║    ██║   ██║██╔═══╝     ██╔══██╗██╔══██╗██║   ██║╚═╝
+╚███╔███╔╝██║  ██║██║  ██║   ██║   ███████║    ╚██████╔╝██║         ██████╔╝██║  ██║╚██████╔╝██╗
+ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝     ╚═════╝ ╚═╝         ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝`;
+const split = banner.split("\n")[0]!.indexOf("██╗   ██╗");
+const parts = [
+	banner
+		.split("\n")
+		.map(line => line.slice(0, split).trimEnd())
+		.join("\n"),
+	banner
+		.split("\n")
+		.map(line => line.slice(split))
+		.join("\n")
+];
+---
+
+<section class="about-contact contact-blue" aria-labelledby="contact-title">
+	<AsciiArt kind="contact" />
+	<h2 id="contact-title" class="sr-only">What's up bro!</h2>
+	<div class="contact-banner" aria-hidden="true"><pre class="banner-full">{banner}</pre><div class="banner-split">{parts.map(part => <pre>{part}</pre>)}</div></div>
+	<p class="contact-verse">--2 Samuel 20:9</p>
+	<p>Feel free to reach out for research, commission, or just to say hi!</p>
+	<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer">[info@elvismao.com]</a>
+</section>

@@ -1,4 +1,4 @@
-type Kind = "touch" | "code" | "type" | "hardware" | "motto" | "broadcast";
+type Kind = "touch" | "code" | "type" | "hardware" | "motto" | "broadcast" | "contact";
 type Artwork = {
 	element: HTMLElement;
 	output: HTMLPreElement;
@@ -32,7 +32,7 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 	const render = (art: Artwork, time: number) => {
 		const { context: ctx, canvas, columns, rows, kind, pointer } = art;
 		let pixels: Uint8ClampedArray | undefined;
-		if (kind !== "touch" && kind !== "hardware") {
+		if (kind !== "touch" && kind !== "hardware" && kind !== "contact") {
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.scale(canvas.width / 480, canvas.height / 270);
@@ -156,7 +156,12 @@ export function startAboutArt(root: HTMLElement, signal: AbortSignal): void {
 			let row = "";
 			for (let x = 0; x < columns; x++) {
 				let value = 0;
-				if (kind === "touch") {
+				if (kind === "contact") {
+					const px = x / columns,
+						py = y / rows;
+					const wave = Math.sin(px * 21 + time * 0.23) + Math.cos(py * 12 - time * 0.3) + Math.sin((px + py) * 9 + time * 0.16);
+					value = Math.max(0, Math.min(1, wave * 0.16 + 0.3)) * (0.4 + Math.abs(px - 0.5));
+				} else if (kind === "touch") {
 					const px = (x / columns - 0.5) * 2 - pointer.x * 0.17;
 					const py = (y / rows - 0.5) * 2 - pointer.y * 0.17;
 					const a = Math.atan2(py, px),

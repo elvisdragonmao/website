@@ -1,9 +1,10 @@
 ---
 interface Props {
-	kind: "touch" | "code" | "type" | "hardware" | "motto" | "broadcast";
+	kind: "touch" | "code" | "type" | "hardware" | "motto" | "broadcast" | "contact";
 }
 const { kind } = Astro.props;
 const fallback = {
+	contact: " . . . . . . . . . . . . \n  : : : : : : : : : : : \n . . . . . . . . . . . . ",
 	touch: "      .: .:::::. :.\n    .::           ::.\n   ::    .:::::.    ::\n    '::.         .::'\n       ':::::::'",
 	code: " .----------------------.\n |      < / >           |\n |                  _   |\n '----------------------'\n        |      |\n     ---'------'---",
 	type: "字",

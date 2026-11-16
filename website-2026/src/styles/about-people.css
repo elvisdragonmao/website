@@ -4,23 +4,37 @@
 	overflow: hidden;
 	cursor: crosshair;
 }
-.people-reticle {
+.people-reticle,
+.people-charge {
 	position: absolute;
 	inset: 0;
 	margin: 0;
 	font:
-		10px/12px "IBM Plex Mono",
+		500 10px/12px "IBM Plex Mono",
 		monospace;
-	color: #6b839488;
+	color: #bad6e9;
 	user-select: none;
 	pointer-events: none;
 	z-index: 2;
 	white-space: pre;
 	transition: color 180ms;
 }
-.people-field[data-flash] .people-reticle {
-	color: #d6e77a;
+.people-charge {
+	color: #ffb998;
+	z-index: 3;
+	opacity: 0;
+	text-shadow: 0 0 7px #ffb99899;
+	clip-path: circle(0);
 }
+.people-burst {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 4;
+}
+
 .ascii-walker {
 	position: absolute;
 	left: 0;
