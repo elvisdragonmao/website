@@ -1,34 +1,106 @@
 # elvismao.com
 
-The personal website of Elvis Mao / EM. The 2026 rebuild is being developed separately from the original site.
+Elvis Mao / 毛哥 EM's personal website, built with Astro, TypeScript and Three.js. The portfolio, newsletter and historical web tools live in one application at the repository root.
 
-| Directory                          | Purpose                                                                   |
-| ---------------------------------- | ------------------------------------------------------------------------- |
-| [`website-2026/`](./website-2026/) | Astro / TypeScript / Three.js rebuild, with an interactive ASCII homepage |
-| [`website-old/`](./website-old/)   | Archived original website and tools; not migrated into the rebuild        |
+## Development
 
-## Work on the rebuild
-
-Use the pinned Corepack pnpm version from inside the project:
+Use Node.js **22.23.4+** and Corepack. The package manager is pinned to **pnpm 12.18.0** with an integrity hash.
 
 ```sh
-cd website-2026
 corepack pnpm install --frozen-lockfile
 corepack pnpm run dev
 ```
 
-Development runs at `http://127.0.0.1:4326/`. Development-only routes include `/cover-lab/` and `/loading-lab/`.
+Open `http://127.0.0.1:4326/`. `/cover-lab/` and `/loading-lab/` are development-only pages for the character camera, gaze, ASCII rendering and loading animation. They are excluded from production.
 
 ```sh
+corepack pnpm run check
 corepack pnpm run format:check
 corepack pnpm run build
-corepack pnpm run deploy:check
+corepack pnpm run preview --port 4327
 ```
 
-The workflow validates changes without automatically publishing them. See the [project README](./website-2026/README.md) for deployment and character setup.
+`build` checks TypeScript, generates static HTML, prepares localized error pages and verifies the output. The final check covers translated routes, locale metadata, project coverage, image placeholders, compatibility redirects, sitemap entries and local links/assets. Run it independently with `corepack pnpm run verify:build` after building.
 
-## Local working assets
+## Languages and content
 
-Models, editable character sources, and `docs/` are intentionally excluded from Git while they are being organised. They are kept locally and backed up separately on the Desktop. Restore the character assets before running the complete interactive homepage; a fresh clone includes its static fallback.
+Astro owns language routing. English is the default and has no prefix:
 
-The original site's award history and implementation notes remain in its [archived README](./website-old/README.md).
+| English         | Traditional Chinese     | Simplified Chinese      |
+| --------------- | ----------------------- | ----------------------- |
+| `/`             | `/zh-Hant/`             | `/zh-Hans/`             |
+| `/about/`       | `/zh-Hant/about/`       | `/zh-Hans/about/`       |
+| `/work/`        | `/zh-Hant/work/`        | `/zh-Hans/work/`        |
+| `/work/emfont/` | `/zh-Hant/work/emfont/` | `/zh-Hans/work/emfont/` |
+| `/colophon/`    | `/zh-Hant/colophon/`    | `/zh-Hans/colophon/`    |
+| `/hmmm/`        | `/zh-Hant/hmmm/`        | `/zh-Hans/hmmm/`        |
+
+All four case studies share their slugs across languages. Page routes pass a locale into shared views; templates are not duplicated. The URL determines the language, and the switcher preserves the current page, query and fragment.
+
+- `src/i18n/index.ts`: locale types, Astro URL helpers and typed UI lookup.
+- `src/i18n/ui.ts`: complete dictionaries for navigation, footer and common controls.
+- `src/i18n/{home,about,work,projects,credits,newsletter}.ts`: page content and descriptions.
+- `src/data/work-projects.json`: reviewed project IDs, order, featured status, images and links. Chinese project copy is keyed by the same IDs in `src/i18n/work.ts`; the build rejects missing or extra translations.
+- `src/data/about.ts` and `about-localized.ts`: shared experience/talk/award IDs with localized copy.
+- `src/data/projects.ts`: four case studies, shared assets and `getProjects(locale)`.
+
+Required UI and page dictionaries use TypeScript completeness checks rather than silent English fallbacks. Interactive scripts receive only their page's translated messages through attributes. They initialize again after Astro ClientRouter navigation and dispose page resources before a swap.
+
+The existing `/code/*` tools retain their canonical URLs and original languages. They do not generate duplicate translated versions or misleading `hreflang` links. `/code/` now opens the project catalog. Old `/en/*`, `/zh/*` and locale-prefixed tool URLs redirect to their canonical equivalents. `scripts/routing.mjs` derives tool compatibility entries from source routes; `public/_redirects` handles wildcard aliases on Cloudflare.
+
+## Project structure
+
+```text
+src/
+  assets/        bundled case study images and required legacy tool assets
+  components/    shared UI, About components and legacy tool shell
+  data/          shared structured content and asset references
+  dev/           development-only visual labs
+  i18n/          typed UI and page dictionaries
+  layouts/       metadata, language and document shell
+  pages/         English routes, localized wrappers and historical tools
+  scripts/       browser interactions and Three.js scene
+  styles/        shared and page styles
+  views/         common page implementations
+public/
+  images/        portfolio thumbnails and character fallback poster
+  models/        local runtime character assets, excluded from Git
+scripts/         routing, output verification and character preparation
+```
+
+Portfolio images are WebP quality 80, with a maximum width of 500 and height of 250 pixels. Cards without a cover retain the same dark media rectangle. Homepage ASCII banners live in `src/data/ascii-headings.json`.
+
+## Deployment
+
+```sh
+corepack pnpm run deploy:check
+corepack pnpm run deploy
+```
+
+`deploy:check` builds and validates the Cloudflare bundle without publishing. `deploy` publishes after a successful build and requires Cloudflare authentication. The Worker configuration is `wrangler.jsonc`; the static output is `dist/`. Configure a connected host's project root as the repository root, its build command as `corepack pnpm run build`, and its output directory as `dist`.
+
+`.github/workflows/website.yml` installs frozen dependencies, checks formatting, builds and runs a Wrangler dry run. It does not publish automatically. Cloudflare serves the nearest localized `404.html` with HTTP 404 for missing pages.
+
+## Local character assets
+
+`docs/`, `assets/character/`, `public/models/` and 3D model formats are intentionally excluded from Git and backed up separately. A fresh clone includes the static character poster. Restore the local runtime model before expecting the full interactive character in development or deployment. Builds do not regenerate models or require Desktop files.
+
+The editable source is `assets/character/source.blend`, with packed image maps. Source models and reports stay outside `public/`.
+
+```sh
+# Recompress an existing uncompressed GLB:
+corepack pnpm run character:prepare
+
+# Export an edited Blender master and prepare the runtime model:
+corepack pnpm run character:export
+```
+
+Only export requires Blender. Set `BLENDER_BIN` if the executable is outside its standard macOS location or PATH. Production uses the committed cover preset; browser-saved tuning and development renderer controls are not exposed in the production build.
+
+## Integrations and credits
+
+Newsletter forms preserve the existing Google Forms POST endpoint and field mappings. Google provides submission confirmation; this site does not infer successful subscription from an opaque request. Work inquiries link to [LinYao Studio](https://linyao.tw/).
+
+Some historical tools require their external service, an API key, or physical device capabilities. The weekly bulletin publisher's archived PDF URLs may be unavailable; the tool retains date selection and generated links. iPhone pressure measurements require actual 3D Touch hardware.
+
+Current character, typography, icons and creative-code credits are available at `/colophon/`. The original site's implementation remains accessible in Git history. Code is distributed under the [Apache 2.0 license](LICENSE); third-party assets retain their respective terms.

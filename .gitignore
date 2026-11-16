@@ -23,5 +23,12 @@ research/
 *.vrm
 *.unitypackage
 
-# Local project review includes private repository metadata and personal drafts.
-tools/project-review/.local/
+.env
+.env.*
+!.env.example
+*.log
+*.tsbuildinfo
+__pycache__/
+*.py[cod]
+
+.wrangler/

@@ -1,0 +1,127 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-Hant">
+	<head>
+		<Head path="code/liff" title="LINE Flex Message Sender | 毛哥EM的基地" description="LINE Flex message 發送工具。" theme="#FFF" />
+		<style is:global>
+			body {
+				font-family:
+					system-ui,
+					-apple-system,
+					BlinkMacSystemFont,
+					"Segoe UI",
+					Roboto,
+					Oxygen,
+					Ubuntu,
+					Cantarell,
+					"Open Sans",
+					"Helvetica Neue",
+					sans-serif;
+			}
+
+			h1 {
+				text-align: center;
+			}
+
+			button {
+				padding: 4px 12px;
+				outline: none;
+				border-radius: 3px;
+				color: #06c755;
+				font-size: 12px;
+				line-height: 24px;
+				font-weight: 700;
+				border: #06c755 1px solid;
+				background: #fff;
+				cursor: pointer;
+			}
+
+			.send {
+				background-color: #06c755;
+				color: #fff;
+				border: none;
+			}
+
+			button:hover {
+				opacity: 0.8;
+			}
+
+			label {
+				display: block;
+				font-weight: 700;
+			}
+
+			input,
+			textarea {
+				width: 100%;
+				padding: 8px;
+				margin-block: 5px 16px;
+				display: inline-block;
+				border: 1px solid #ccc;
+				box-sizing: border-box;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>LINE Flex Message Sender</h1>
+		<label for="alt">Alt</label>
+		<input type="text" id="alt" placeholder="Alt" />
+		<label for="content">Content</label>
+		<textarea id="content" rows="5" placeholder='{
+        "type": "bubble"...
+}'></textarea>
+		<button onclick="sendMessage()" class="send">Send</button>
+		<button onclick="to()">Open In Line</button>
+		<button onclick="simulator()">Simulator</button>
+
+		<p id="status" role="status" aria-live="polite"></p>
+		<script is:inline src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+		<script is:inline>
+			let ready;
+			const status = document.getElementById("status");
+			async function initialize() {
+				if (!window.liff) throw new Error("LINE SDK could not load. Check your connection and try again.");
+				if (!ready)
+					ready = liff.init({ liffId: "1656564267-XlA7y2d2" }).catch(error => {
+						ready = null;
+						throw error;
+					});
+				await ready;
+			}
+			async function sendMessage() {
+				const button = document.querySelector(".send");
+				try {
+					const alt = document.getElementById("alt").value.trim();
+					if (!alt || alt.length > 400) throw new Error("Enter alternative text of 1–400 characters.");
+					let content;
+					try {
+						content = JSON.parse(document.getElementById("content").value);
+					} catch {
+						throw new Error("Content must be valid Flex Message JSON.");
+					}
+					// Accept either simulator output or its bubble/carousel contents.
+					if (content.type === "flex") content = content.contents;
+					if (!content || !["bubble", "carousel"].includes(content.type)) throw new Error("Content must be a bubble or carousel.");
+					button.disabled = true;
+					await initialize();
+					if (!liff.isInClient()) throw new Error("Open this page in LINE to select recipients.");
+					if (!liff.isApiAvailable("shareTargetPicker")) throw new Error("Sharing is unavailable in this LINE version or account.");
+					const result = await liff.shareTargetPicker([{ type: "flex", altText: alt, contents: content }]);
+					status.textContent = result ? "Message shared." : "Sharing cancelled.";
+				} catch (error) {
+					status.textContent = error.message || "Unable to initialize LINE. Please reopen this page in LINE.";
+				} finally {
+					button.disabled = false;
+				}
+			}
+			function to() {
+				window.location.href = "https://liff.line.me/1656564267-XlA7y2d2";
+			}
+			function simulator() {
+				window.open("https://developers.line.biz/flex-simulator/", "_blank", "noopener,noreferrer");
+			}
+		</script>
+	</body>
+</html>
