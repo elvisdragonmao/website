@@ -1,0 +1,282 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-tw">
+	<head>
+		<Head path="code/sysh/time/" title="西苑高中上下課及時倒數 | 毛哥EM的基地" description="即時更新的西苑高中課程時間表，方便學生和老師掌握上下課時間，避免拖堂。" theme="#00BFFF" />
+		<link href="https://fonts.googleapis.com/css?family=Aldrich" rel="stylesheet" type="text/css" />
+		<script is:inline src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.3/dist/confetti.browser.min.js"></script>
+		<style is:global>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: "Aldrich", 微軟正黑體, monospace, sans-serif;
+				/* outline: 1px solid lightgreen; */
+			}
+
+			body {
+				color: rgba(0, 0, 0, 0.25);
+				background-color: #86a3b8;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				height: 100dvh;
+				text-align: center;
+				font-size: 5vw;
+				overflow: hidden;
+			}
+
+			#time {
+				font-size: 15vw;
+				font-weight: bold;
+				text-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.2);
+				color: #fe7777;
+				display: flex;
+				justify-content: center;
+			}
+
+			#time div {
+				width: 10vw;
+			}
+
+			#time div:nth-child(3n) {
+				width: 7vw;
+			}
+
+			.progress {
+				width: 50%;
+				height: 100%;
+				position: absolute;
+				right: 0;
+				top: 0;
+				background-color: #e8d2a6;
+				z-index: -1;
+				box-shadow: -1rem 0 1rem rgba(0, 0, 0, 0.1);
+			}
+
+			canvas {
+				display: block;
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+
+			#current {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				font-size: 1.7rem;
+				color: #fff;
+				text-shadow: 1rem 0 2rem rgba(0, 0, 0, 0.959);
+			}
+
+			#a {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			p {
+				color: #f48484;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<div class="progress"></div>
+			<div id="time">我想一下</div>
+			<p id="next">毛哥EM製作<br />點擊進入全螢幕</p>
+		</main>
+		<div id="current"></div>
+		<canvas id="my-canvas"></canvas>
+		<script is:inline>
+			let elem = document.documentElement; // get the root element of the document
+			document.addEventListener("mousedown", requestFullScreen);
+			document.addEventListener("touchstart", requestFullScreen);
+
+			function requestFullScreen() {
+				if (elem.requestFullscreen) {
+					elem.requestFullscreen().catch(() => {});
+				} else if (elem.webkitRequestFullscreen) {
+					elem.webkitRequestFullscreen();
+				} else if (elem.msRequestFullscreen) {
+					elem.msRequestFullscreen();
+				}
+			}
+
+			setInterval(function () {
+				var now = new Date();
+				document.getElementById("current").innerHTML = now;
+				var time = document.getElementById("time");
+				var hour = now.getHours();
+				var minute = now.getMinutes();
+				let target, length;
+				let progress = document.querySelector(".progress");
+				if (hour > 17 || (hour === 17 && minute >= 5)) {
+					time.innerHTML = "再見";
+					display(2, "明天見");
+				} else {
+					if (hour == 12) {
+						target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 13, 10, 0);
+						length = 65;
+						display(1, "後起床");
+					} else if (hour == 16 && minute >= 15) {
+						target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 5, 0);
+						length = 50;
+						display(0, "第八節禁止考試及上進度");
+					} else if (hour == 17 && minute < 5) {
+						target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 5, 0);
+						length = 50;
+						display(0, "馬上放學再撐一下");
+					} else if (hour >= 15) {
+						if (now.getDay() == 4) {
+							if (hour == 15) {
+								if (minute < 10) {
+									target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 10, 0);
+									length = 10;
+									display(0, "後上課");
+								} else {
+									target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 0, 0);
+									length = 50;
+									display(0, "後下課");
+								}
+							} else {
+								target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 15, 0);
+								length = 15;
+								display(1, "打掃囉");
+							}
+						} else {
+							console.log(hour);
+							if (hour == 15) {
+								if (minute < 15) {
+									target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 15, 0);
+									length = 15;
+									display(1, "打掃囉");
+								} else {
+									target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 5, 0);
+									length = 50;
+									display(0, "最後兩節，再撐一下");
+								}
+							} else if (minute < 5) {
+								target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 5, 0);
+								length = 50;
+								display(0, "後下課");
+							} else {
+								target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 16, 15, 0);
+								length = 10;
+								display(1, "後上課");
+							}
+						}
+						//                     thursday
+						// 3:00~3:10 10 R hours == 3 && minutes < 10
+						// 3:10~4:00 50 R
+						// 4:00~4:15 15
+						// 4:15~5:05 50 V
+
+						// other
+						// 3:00~3:15 15
+						// 3:15~4:05 50
+						// 4:05~4:15 10
+						// 4:15~5:05 50 V
+					} else {
+						if (minute < 10) {
+							target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, 10, 0);
+							length = 10;
+							display(1, "後上課");
+						} else {
+							target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour + 1, 0, 0);
+							length = 50;
+							display(0, "後下課");
+						}
+					}
+					var diff = target.getTime() - now.getTime();
+					progress.style.width = (diff / 1000 / 60 / length) * 100 + "%";
+					// 將毫秒轉換為分鐘和秒數
+					var minutes = Math.floor(diff / 1000 / 60);
+					var seconds = Math.floor(diff / 1000) % 60;
+					var millisecond = Math.floor((diff % 1000) / 10);
+					if (minutes == 0 && seconds == 0) runConfetti();
+					var chars = minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
+					if (minutes == 0) chars += ":" + millisecond.toString().padEnd(2, "0");
+					chars = chars.split("");
+					time.innerHTML = chars.map(char => `<div>${char}</div>`).join("");
+				}
+			}, 10);
+			function display(a, b) {
+				if (a == 1) {
+					document.getElementById("next").innerHTML = b;
+					document.getElementById("next").style.color = "#46C2CB";
+					document.getElementById("time").style.color = "#F2F7A1";
+					document.querySelector("body").style.backgroundColor = "#453C67";
+					document.querySelector(".progress").style.backgroundColor = "#6D67E4";
+				} else if (a == 2) {
+					document.getElementById("next").innerHTML = "明天見";
+					document.getElementById("next").style.color = "#FFF";
+					document.getElementById("time").style.color = "#FFF";
+					document.querySelector("body").style.background =
+						"linear-gradient(90deg, hsl(0, 100%, 50%), hsl(30, 100%, 50%), hsl(60, 100%, 50%), hsl(90, 100%, 50%), hsl(120, 100%, 50%), hsl(150, 100%, 50%), hsl(180, 100%, 50%), hsl(210, 100%, 50%), hsl(240, 100%, 50%), hsl(270, 100%, 50%), hsl(300, 100%, 50%), hsl(330, 100%, 50%), hsl(360, 100%, 50%) )";
+					document.querySelector(".progress").style.display = "none";
+				} else {
+					document.getElementById("next").innerHTML = b;
+					document.getElementById("next").style.color = "#D864A9";
+					document.getElementById("time").style.color = "#7AA874";
+					document.querySelector("body").style.backgroundColor = "#EBB02D";
+					document.querySelector(".progress").style.backgroundColor = "#F7DB6A";
+				}
+			}
+		</script>
+		
+		<script is:inline>
+			function runConfetti() {
+				const end = Date.now() + 10 * 1000;
+				const colors = ["#26ccff", "#a25afd", "#ff5e7e", "#88ff5a", "#fcff42", "#ffa62d", "#ff36ff"];
+				const random = (max, min) => {
+					min = min || 0;
+					return min + Math.round(Math.random() * (max - min));
+				};
+				const canvas = document.getElementById("my-canvas");
+				if (!window.confetti) return;
+				const confettiInstance = confetti.create(canvas, {
+					resize: true
+				});
+				const confettiFunc = () => {
+					confettiInstance({
+						particleCount: 1,
+						startVelocity: 0,
+						ticks: 300,
+						scale: 4,
+						origin: {
+							x: Math.random(),
+							y: 0
+						},
+						colors: [colors[random(colors.length)]]
+					});
+					if (Date.now() < end) {
+						requestAnimationFrame(confettiFunc);
+					}
+				};
+				confettiFunc();
+			}
+			function addParagraphToMain() {
+				const mainElement = document.querySelector("main");
+				const newParagraph = document.createElement("p");
+				const paragraphText = document.createTextNode(prompt("Enter text for the new paragraph:"));
+				newParagraph.appendChild(paragraphText);
+				mainElement.appendChild(newParagraph);
+			}
+
+			document.addEventListener("keydown", function (event) {
+				if (event.code === "Space") {
+					addParagraphToMain();
+				}
+			});
+		</script>
+	</body>
+</html>

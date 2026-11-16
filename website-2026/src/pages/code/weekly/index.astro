@@ -1,0 +1,85 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-Hant">
+	<head>
+		<Head path="code/weekly" title="旌旗青年週報下載器" description="輕鬆下載旌旗青年週報 PDF 檔" theme="#00adb5" favicon={false} />
+		<link href="https://www.bannerch.org/templates/fortune_bannerch/favicon.png" rel="icon" type="image/x-icon" />
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="https://pages-themes.github.io/cayman/assets/css/style.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" media="screen" />
+	</head>
+	<body>
+		<section class="page-header">
+			<h1 class="project-name">旌旗青年週報下載器</h1>
+			<h2 class="project-tagline">輕鬆下載週報pdf檔</h2>
+			<p>此工具沿用教會公開週報的檔名規則；若檔案未上架或已搬移，下載連結可能無法使用。</p>
+			<a href="" class="btn" id="satLast" download>上週週報 -/-</a>
+			<a href="" class="btn" id="satThis" download>本週週報 -/-</a>
+			<a href="/code/weekly/manual/" class="btn" id="manual">其他日期</a>
+			<script type="text/javascript">
+				//add day
+				function addDays(days) {
+					Today.setDate(Today.getDate() + days);
+					var Month = Today.getMonth() + 1;
+					if (Month < 10) {
+						Month = "" + 0 + Month;
+					}
+					var Day = Today.getDate();
+					if (Day < 10) {
+						Day = "" + 0 + Day;
+					}
+					var link = "https://www.bannerch.org/images/media/weekly/" + Today.getFullYear() + "/weekly-" + Today.getFullYear() + Month + Day + ".pdf";
+					return link;
+				}
+				//sat
+				var Today = new Date();
+				var SatLast = addDays(-1 - Today.getDay());
+				var Month = Today.getMonth() + 1;
+				var SatLastWord = "上週週報 " + Month + "/" + Today.getDate();
+				Today = new Date();
+				var SatThis = addDays(6 - Today.getDay());
+				var Month = Today.getMonth() + 1;
+				var SatThisWord = "本週週報 " + Month + "/" + Today.getDate();
+				function setUrl() {
+					document.getElementById("satLast").href = SatLast;
+					document.getElementById("satThis").href = SatThis;
+					document.getElementById("satLast").innerHTML = SatLastWord;
+					document.getElementById("satThis").innerHTML = SatThisWord;
+				}
+				window.onload = setUrl;
+			</script>
+		</section>
+		<section class="main-content">
+			<a class="anchor" href="../../" aria-hidden="true"><span class="octicon octicon-link">回首頁</span></a>
+			<h1><a id="welcome" class="anchor" href="#welcome" aria-hidden="true"><span class="octicon octicon-link"></span></a>關於此網站</h1>
+			<p>
+				上次維護日期:2022/6/25<br />點擊上方連結即可直接下載上週或本週報彩色完整的pdf檔。之前青年官網及直播只有提供圖片檔，較不方便利用。<br
+				/>周間時當週週報教會可能還未釋出，若無法下載（出現404）請過一陣子再試。若持續無法使用，請與我聯絡，可能旌旗教會修改了檔案的命名方式。
+			</p>
+			<h1><a id="direct" class="anchor" href="#direct" aria-hidden="true"><span class="octicon octicon-link"></span></a>當週週報連結</h1>
+			<p>
+				如果你平常只需要獲取當周週報，可直接到以下網址，永久有效。歡迎設為書籤<br /><a href="/code/weekly/redirect/">/code/weekly/redirect/</a>
+			</p>
+			<h1><a id="aboutMe" class="anchor" href="#aboutMe" aria-hidden="true"><span class="octicon octicon-link"></span></a>ios捷徑（稍後更新連結）</h1>
+			<p>
+				若你使用的是ios裝置，你可以使用我製作的捷徑腳本來快速獲取當天、上一次、或指定日期的週報。<br
+				/>需要注意的是:若未曾匯入非官方的捷徑，須至設定/捷徑開啟"允許加入不受信任的捷徑"。此網站及捷徑皆為開源項目，歡迎到GitHub查看。
+			</p>
+			<p>
+				如果你覺得這個網頁有幫助到你，歡迎將它分享出去（<a
+					href="javascript: void(window.open('https://lineit.line.me/share/ui?url=' .concat(encodeURIComponent(location.href)) ));"
+					title="分享給 LINE 好友"
+				>
+					Line分享按我
+				</a>）
+				<footer class="site-footer">
+					<p>本網站由<a href="https://github.com/elvisdragonmao">毛哥EM(Edit Mr.)</a>製作，若有任何問題歡迎<a href="mailto:elvismao.070512@gmail.com">與我聯絡</a><br />也歡迎幫我買杯咖啡</p>
+					<a href="mailto:elvismao.070512@gmail.com"><img src="https://img.shields.io/badge/-elvismao.070512@gmail.com-D14836?style=flat-square&logo=Gmail&logoColor=white" /></a>
+					<a href="https://www.paypal.me/elvismao"><img src="https://img.shields.io/badge/-elvismao.070512@gmail.com-169BD7?style=flat-square&logo=PayPal&logoColor=white" /></a>
+				</footer>
+			</p>
+		</section>
+	</body>
+</html>

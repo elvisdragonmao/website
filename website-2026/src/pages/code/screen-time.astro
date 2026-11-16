@@ -1,0 +1,1477 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<!doctype html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>macOS 螢幕使用時間分析</title>
+		<Head path="code/screen-time" title="macOS 螢幕使用時間分析 | 毛哥EM的基地" description="匯出並視覺化 macOS knowledgeC.db 的 App 使用紀錄，查看每日 sessions、時間軸與摘要統計。" theme="#1d1d1f" />
+		<script is:inline src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+		<style is:global>
+			:root {
+				color-scheme: light;
+				--bg: #f5f5f7;
+				--surface: #ffffff;
+				--surface-subtle: #fafafc;
+				--surface-dark: #000000;
+				--text: #1d1d1f;
+				--text-soft: rgba(29, 29, 31, 0.72);
+				--text-faint: rgba(29, 29, 31, 0.48);
+				--text-dark: #ffffff;
+				--text-dark-soft: rgba(255, 255, 255, 0.76);
+				--line: rgba(29, 29, 31, 0.08);
+				--line-dark: rgba(255, 255, 255, 0.14);
+				--accent: #0071e3;
+				--accent-hover: #0077ed;
+				--link: #0066cc;
+				--link-dark: #2997ff;
+				--good: #2d7d46;
+				--warn: #b26b00;
+				--bad: #c9342c;
+				--radius: 12px;
+				--pill-radius: 980px;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			html {
+				background: var(--bg);
+			}
+
+			body {
+				margin: 0;
+				font-family:
+					"SF Pro Text",
+					"SF Pro Display",
+					-apple-system,
+					BlinkMacSystemFont,
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
+					sans-serif;
+				-webkit-font-smoothing: antialiased;
+				background: var(--bg);
+				color: var(--text);
+				min-height: 100vh;
+			}
+
+			.wrap {
+				max-width: 1480px;
+				margin: 0 auto;
+				padding: 32px 24px 48px;
+			}
+
+			.hero {
+				display: grid;
+				grid-template-columns: minmax(0, 1.65fr) minmax(320px, 1fr);
+				gap: 18px;
+				margin-bottom: 24px;
+			}
+
+			.card {
+				background: var(--surface);
+				border-radius: var(--radius);
+				box-shadow: inset 0 0 0 1px var(--line);
+				min-width: 0;
+				padding: 28px;
+			}
+
+			.hero > *,
+			.grid > *,
+			.charts-2 > *,
+			.inline > *,
+			.content-grid,
+			.controls {
+				min-width: 0;
+			}
+
+			.hero-primary {
+				background: #1d1d1f;
+				color: var(--text-dark);
+				display: grid;
+				place-items: center;
+				min-height: 360px;
+				text-align: center;
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+			}
+
+			.hero-primary .title {
+				max-width: 12ch;
+				line-height: 120%;
+			}
+
+			.hero-primary .subtitle {
+				color: var(--text-dark-soft);
+				max-width: 40rem;
+			}
+
+			.hero-primary .mono {
+				color: var(--text-dark);
+			}
+
+			.hero-primary .pill-row {
+				justify-content: center;
+			}
+
+			.hero-secondary {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+			}
+
+			.hero-secondary .subtitle {
+				max-width: none;
+			}
+
+			.title {
+				font-family:
+					"SF Pro Display",
+					"SF Pro Text",
+					-apple-system,
+					BlinkMacSystemFont,
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
+					sans-serif;
+				font-size: clamp(2.5rem, 4vw, 3.5rem);
+				font-weight: 600;
+				margin: 0 0 12px;
+				line-height: 1.07;
+				letter-spacing: -0.028em;
+			}
+
+			.subtitle {
+				color: var(--text-soft);
+				font-size: 17px;
+				line-height: 1.47;
+				letter-spacing: -0.022em;
+				margin: 0;
+			}
+
+			.pill-row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px;
+				margin-top: 24px;
+			}
+
+			.pill {
+				padding: 8px 14px;
+				border-radius: var(--pill-radius);
+				background: rgba(255, 255, 255, 0.06);
+				border: 1px solid rgba(255, 255, 255, 0.14);
+				color: var(--text-dark-soft);
+				font-size: 12px;
+				line-height: 1.33;
+				letter-spacing: -0.01em;
+			}
+
+			h2 {
+				font-family:
+					"SF Pro Display",
+					"SF Pro Text",
+					-apple-system,
+					BlinkMacSystemFont,
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
+					sans-serif;
+				margin: 0 0 16px;
+				font-size: clamp(1.6rem, 2vw, 2.125rem);
+				font-weight: 600;
+				line-height: 1.14;
+				letter-spacing: -0.024em;
+				color: inherit;
+			}
+
+			h3 {
+				margin: 0 0 10px;
+				font-size: 21px;
+				font-weight: 600;
+				line-height: 1.19;
+				letter-spacing: -0.014em;
+			}
+
+			.grid {
+				display: grid;
+				grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
+				gap: 18px;
+				align-items: start;
+			}
+
+			.controls {
+				display: grid;
+				gap: 18px;
+				position: sticky;
+				top: 24px;
+			}
+
+			label {
+				display: block;
+				font-size: 12px;
+				font-weight: 600;
+				line-height: 1.33;
+				letter-spacing: -0.01em;
+				color: var(--text-soft);
+				margin-bottom: 8px;
+			}
+
+			input,
+			select,
+			textarea {
+				width: 100%;
+				border: 1px solid transparent;
+				background: var(--surface-subtle);
+				color: var(--text);
+				border-radius: 11px;
+				padding: 12px 14px;
+				font: inherit;
+				box-shadow: inset 0 0 0 1px var(--line);
+				outline: none;
+				transition:
+					box-shadow 0.15s ease,
+					background-color 0.15s ease;
+			}
+
+			input::placeholder,
+			textarea::placeholder {
+				color: var(--text-faint);
+			}
+
+			input:focus,
+			select:focus,
+			textarea:focus {
+				background: #ffffff;
+				box-shadow:
+					inset 0 0 0 1px rgba(0, 113, 227, 0.42),
+					0 0 0 2px rgba(0, 113, 227, 0.18);
+			}
+
+			textarea {
+				min-height: 260px;
+				resize: vertical;
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+				line-height: 1.5;
+			}
+
+			input[type="file"] {
+				padding: 0;
+				background: transparent;
+				box-shadow: none;
+			}
+
+			input[type="file"]::file-selector-button {
+				border: 0;
+				margin-right: 12px;
+				border-radius: var(--pill-radius);
+				background: var(--accent);
+				color: #ffffff;
+				font: inherit;
+				padding: 10px 16px;
+				cursor: pointer;
+				transition: background-color 0.12s ease;
+			}
+
+			input[type="file"]::file-selector-button:hover {
+				background: var(--accent-hover);
+			}
+
+			button {
+				min-width: 128px;
+				width: auto;
+				cursor: pointer;
+				background: var(--accent);
+				border: 1px solid transparent;
+				color: #ffffff;
+				border-radius: var(--pill-radius);
+				padding: 12px 18px;
+				font-size: 17px;
+				font-weight: 400;
+				line-height: 1;
+				letter-spacing: -0.022em;
+				transition:
+					transform 0.12s ease,
+					background-color 0.12s ease,
+					color 0.12s ease,
+					border-color 0.12s ease;
+			}
+
+			button:hover {
+				transform: translateY(-1px);
+				background: var(--accent-hover);
+			}
+
+			button:active {
+				transform: translateY(0);
+			}
+
+			button:focus-visible {
+				outline: 2px solid var(--accent);
+				outline-offset: 2px;
+			}
+
+			button.secondary {
+				background: transparent;
+				border-color: rgba(0, 102, 204, 0.22);
+				color: var(--link);
+			}
+
+			button.secondary:hover {
+				background: rgba(0, 102, 204, 0.05);
+			}
+
+			.muted {
+				color: var(--text-soft);
+			}
+			.small {
+				font-size: 12px;
+			}
+			.mono {
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+			}
+
+			.inline {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 10px;
+			}
+
+			.triple {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 14px;
+			}
+
+			.stats {
+				display: grid;
+				grid-template-columns: repeat(4, minmax(0, 1fr));
+				gap: 12px;
+				margin-bottom: 20px;
+			}
+
+			.stat {
+				background: var(--surface-subtle);
+				border-radius: 12px;
+				padding: 18px;
+				box-shadow: inset 0 0 0 1px var(--line);
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+			}
+
+			.stat .k {
+				color: var(--text-soft);
+				font-size: 12px;
+				font-weight: 600;
+				line-height: 1.33;
+				letter-spacing: -0.01em;
+				margin-bottom: 8px;
+			}
+
+			.stat .v {
+				font-family:
+					"SF Pro Display",
+					"SF Pro Text",
+					-apple-system,
+					BlinkMacSystemFont,
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
+					sans-serif;
+				font-size: clamp(1.9rem, 3vw, 2.5rem);
+				font-weight: 600;
+				line-height: 1.07;
+				letter-spacing: -0.03em;
+			}
+
+			#statDate {
+				font-size: clamp(1.5rem, 2vw, 2rem);
+			}
+
+			.content-grid {
+				display: grid;
+				gap: 18px;
+			}
+
+			.charts-2 {
+				display: grid;
+				grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+				gap: 18px;
+			}
+
+			.card-dark {
+				background: var(--surface-dark);
+				color: var(--text-dark);
+				box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+			}
+
+			.card-dark .subtitle,
+			.card-dark .muted,
+			.card-dark .footer-note,
+			.card-dark label {
+				color: var(--text-dark-soft);
+			}
+
+			.card-dark button.secondary {
+				color: var(--link-dark);
+				border-color: rgba(41, 151, 255, 0.24);
+			}
+
+			.chart {
+				width: 100%;
+				height: 420px;
+			}
+
+			.table-wrap {
+				overflow: auto;
+				max-width: 100%;
+				border-radius: 12px;
+				background: var(--surface-subtle);
+				box-shadow: inset 0 0 0 1px var(--line);
+			}
+
+			.table-wrap-scroll {
+				max-height: 500px;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: separate;
+				border-spacing: 0;
+				min-width: 760px;
+			}
+
+			th,
+			td {
+				padding: 14px 16px;
+				border-bottom: 1px solid var(--line);
+				text-align: left;
+				vertical-align: top;
+				font-size: 14px;
+				line-height: 1.43;
+				letter-spacing: -0.016em;
+			}
+
+			th {
+				position: sticky;
+				top: 0;
+				background: rgba(250, 250, 252, 0.92);
+				backdrop-filter: saturate(180%) blur(20px);
+				z-index: 1;
+				color: rgba(29, 29, 31, 0.72);
+				font-weight: 600;
+			}
+
+			tbody tr:last-child td {
+				border-bottom: 0;
+			}
+
+			tr:hover td {
+				background: rgba(0, 113, 227, 0.04);
+			}
+
+			code,
+			pre {
+				font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+			}
+
+			pre {
+				margin: 0;
+				white-space: pre-wrap;
+				word-break: break-word;
+				background: var(--surface-subtle);
+				box-shadow: inset 0 0 0 1px var(--line);
+				border-radius: 12px;
+				padding: 16px;
+				line-height: 1.5;
+				color: var(--text);
+				overflow: auto;
+				font-size: 12px;
+			}
+
+			.section-actions {
+				display: flex;
+				gap: 10px;
+				flex-wrap: wrap;
+				justify-content: center;
+				margin-top: 14px;
+			}
+
+			.file-input {
+				padding: 12px;
+				border-radius: 12px;
+				background: var(--surface-subtle);
+				box-shadow: inset 0 0 0 1px var(--line);
+			}
+
+			details {
+				border-radius: 12px;
+				padding: 16px;
+				background: var(--surface-subtle);
+				box-shadow: inset 0 0 0 1px var(--line);
+			}
+
+			summary {
+				cursor: pointer;
+				font-weight: 600;
+				line-height: 1.24;
+			}
+
+			.ok {
+				color: var(--good);
+			}
+			.warn {
+				color: var(--warn);
+			}
+			.bad {
+				color: var(--bad);
+			}
+
+			.footer-note {
+				margin-top: 16px;
+				font-size: 12px;
+				color: var(--text-soft);
+				line-height: 1.5;
+				letter-spacing: -0.01em;
+			}
+
+			.page-footer {
+				margin-top: 28px;
+				padding: 8px 4px 0;
+				font-size: 12px;
+				color: var(--text-soft);
+				line-height: 1.5;
+				letter-spacing: -0.01em;
+				text-align: center;
+			}
+
+			.page-footer a {
+				color: var(--link);
+				text-decoration: none;
+			}
+
+			.page-footer a:hover {
+				text-decoration: underline;
+			}
+
+			.drag-overlay {
+				position: fixed;
+				inset: 20px;
+				z-index: 50;
+				display: grid;
+				place-items: center;
+				padding: 24px;
+				border-radius: 20px;
+				border: 2px dashed rgba(0, 113, 227, 0.34);
+				background: rgba(245, 245, 247, 0.88);
+				backdrop-filter: saturate(180%) blur(20px);
+				color: var(--text);
+				text-align: center;
+				pointer-events: none;
+				opacity: 0;
+				visibility: hidden;
+				transform: scale(0.985);
+				transition:
+					opacity 0.16s ease,
+					visibility 0.16s ease,
+					transform 0.16s ease;
+			}
+
+			.drag-overlay strong {
+				display: block;
+				margin-bottom: 8px;
+				font-family:
+					"SF Pro Display",
+					"SF Pro Text",
+					-apple-system,
+					BlinkMacSystemFont,
+					"Helvetica Neue",
+					Helvetica,
+					Arial,
+					sans-serif;
+				font-size: clamp(1.6rem, 3vw, 2.25rem);
+				font-weight: 600;
+				line-height: 1.14;
+				letter-spacing: -0.024em;
+			}
+
+			.drag-overlay span {
+				font-size: 14px;
+				line-height: 1.43;
+				letter-spacing: -0.016em;
+				color: var(--text-soft);
+			}
+
+			body.is-file-dragging .drag-overlay {
+				opacity: 1;
+				visibility: visible;
+				transform: scale(1);
+			}
+
+			::-webkit-scrollbar {
+				height: 10px;
+				width: 10px;
+			}
+
+			::-webkit-scrollbar-thumb {
+				background: rgba(29, 29, 31, 0.18);
+				border-radius: 999px;
+			}
+
+			::-webkit-scrollbar-track {
+				background: transparent;
+			}
+
+			@media (max-width: 1100px) {
+				.hero,
+				.grid,
+				.charts-2,
+				.stats {
+					grid-template-columns: 1fr;
+				}
+				.controls {
+					position: static;
+				}
+				.hero-primary {
+					min-height: auto;
+				}
+				.chart {
+					height: 360px;
+				}
+			}
+
+			@media (max-width: 720px) {
+				.wrap {
+					padding: 20px 16px 32px;
+				}
+
+				.card {
+					padding: 22px;
+				}
+
+				.inline,
+				.triple,
+				.stats {
+					grid-template-columns: 1fr;
+				}
+
+				.section-actions button {
+					width: 100%;
+				}
+
+				.drag-overlay {
+					inset: 12px;
+					padding: 20px;
+				}
+
+				table {
+					min-width: 560px;
+				}
+			}
+
+			@media (max-width: 420px) {
+				table {
+					min-width: 480px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="dropOverlay" class="drag-overlay" aria-hidden="true">
+			<div>
+				<strong>拖曳 .json 到這裡</strong>
+				<span>放開滑鼠後會直接載入並更新分析結果。</span>
+			</div>
+		</div>
+		<div class="wrap">
+			<section class="hero">
+				<div class="card hero-primary">
+					<h1 class="title">macOS 螢幕使用時間分析</h1>
+					<p class="subtitle">
+						匯出 <span class="mono">knowledgeC.db</span> 裡的 <span class="mono">/app/usage</span> 資料成 JSON， 再把檔案拖進這個頁面，就能看某天用了哪些 App、多長時間、什麼時間切換，以及簡單的統計分析。
+					</p>
+					<div class="pill-row">
+						<span class="pill">不上傳資料</span>
+						<span class="pill">可依日期篩選</span>
+					</div>
+				</div>
+				<div class="card hero-secondary">
+					<h2>使用流程</h2>
+					<ol class="subtitle" style="padding-left: 20px; margin: 0;">
+						<li>進到設定搜尋 「允許應用程式取用所有使用者檔案」（Full Disk Access）並允許你的終端機軟體存取。</li>
+						<li>在終端機安裝 sqlite3。</li>
+						<li>執行頁面裡提供的 bash 指令，把資料匯出到桌面。</li>
+						<li>把桌面的 JSON 拖曳到這個頁面任意地方。</li>
+						<li>選日期、過濾短 session、搜尋 App。</li>
+					</ol>
+					<div class="footer-note">毛哥EM 製作。不上傳任何資料到伺服器，所有處理都在瀏覽器本地進行。</div>
+				</div>
+			</section>
+
+			<div class="grid">
+				<aside class="controls">
+					<div class="card">
+						<h2>1. Terminal 指令</h2>
+						<label for="exportDate">匯出日期</label>
+						<input id="exportDate" type="date" />
+						<div class="section-actions">
+							<button id="genCommandBtn" type="button">產生指令</button>
+							<button id="copyCommandBtn" class="secondary" type="button">複製指令</button>
+						</div>
+						<div style="margin-top: 12px;"></div>
+						<pre id="commandBox"></pre>
+						<p id="commandStatus" class="footer-note" aria-live="polite"></p>
+						<div class="footer-note">
+							這段會把指定日期的 App 使用紀錄匯出成一個 JSON 檔到你的桌面，例如 <span class="mono">app_usage_2026-04-14.json</span>。
+						</div>
+					</div>
+
+					<div class="card">
+						<h2>2. 上傳資料</h2>
+						<div class="file-input">
+							<input id="fileInput" type="file" accept="application/json,.json" />
+						</div>
+						<div class="section-actions">
+							<button id="loadSampleBtn" class="secondary" type="button">載入範例資料</button>
+							<button id="clearBtn" class="secondary" type="button">清空</button>
+						</div>
+						<p id="fileStatus" class="footer-note">尚未載入資料。</p>
+					</div>
+
+					<div class="card">
+						<h2>3. 篩選</h2>
+						<label for="dateFilter">顯示日期</label>
+						<select id="dateFilter"></select>
+
+						<label for="searchInput" style="margin-top: 12px;">搜尋 App / bundle id</label>
+						<input id="searchInput" type="text" placeholder="例如 Notes、Safari、com.apple" />
+
+						<div class="inline" style="margin-top: 12px;">
+							<div>
+								<label for="minDurationInput">最短秒數</label>
+								<input id="minDurationInput" type="number" min="0" step="1" value="0" />
+							</div>
+							<div>
+								<label for="sortSelect">Summary 排序</label>
+								<select id="sortSelect">
+									<option value="total_desc">總時長 ↓</option>
+									<option value="total_asc">總時長 ↑</option>
+									<option value="name_asc">名稱 A→Z</option>
+									<option value="sessions_desc">Session 數 ↓</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="section-actions">
+							<button id="applyBtn" type="button">套用篩選</button>
+						</div>
+						<p class="footer-note">很多 1 秒、2 秒的切換通常只是噪音，調高最短秒數會更乾淨。</p>
+					</div>
+
+					<div class="card">
+						<h2>4. 說明</h2>
+						<details open>
+							<summary>這個 JSON 長什麼樣？</summary>
+							<div style="height: 12px;"></div>
+							<pre>[
+  &lbrace;
+    "start_time": "2026-04-14 18:59:21",
+    "end_time": "2026-04-14 18:59:52",
+    "duration_sec": 31,
+    "bundle_id": "com.apple.Notes"
+  &rbrace;
+]</pre>
+						</details>
+						<div style="height: 12px;"></div>
+						<details>
+							<summary>匯出失敗常見原因</summary>
+							<div class="footer-note">最常見是 Terminal 沒有 Full Disk Access。到 macOS 的「系統設定 → 隱私權與安全性 → 完整磁碟取用權限」把你正在用的 Terminal 打開。</div>
+						</details>
+					</div>
+				</aside>
+
+				<main class="content-grid">
+					<section class="card">
+						<h2>總覽</h2>
+						<div class="stats">
+							<div class="stat">
+								<div class="k">日期</div>
+								<div id="statDate" class="v">-</div>
+							</div>
+							<div class="stat">
+								<div class="k">Sessions</div>
+								<div id="statSessions" class="v">0</div>
+							</div>
+							<div class="stat">
+								<div class="k">Apps</div>
+								<div id="statApps" class="v">0</div>
+							</div>
+							<div class="stat">
+								<div class="k">總分鐘</div>
+								<div id="statMinutes" class="v">0</div>
+							</div>
+						</div>
+						<div class="footer-note" id="rangeNote">尚無資料。</div>
+					</section>
+
+					<section class="charts-2">
+						<div class="card card-dark">
+							<h2>時間軸</h2>
+							<div id="timelineChart" class="chart"></div>
+							<div class="footer-note">滾輪縮放，拖曳平移，按住 Shift 再滾輪可左右移動。</div>
+						</div>
+						<div class="card card-dark">
+							<h2>各 App 總使用時間</h2>
+							<div id="summaryChart" class="chart"></div>
+						</div>
+					</section>
+
+					<section class="card">
+						<h2>App Summary</h2>
+						<div class="table-wrap">
+							<table>
+								<thead>
+									<tr>
+										<th>App</th>
+										<th>Sessions</th>
+										<th>總秒數</th>
+										<th>總分鐘</th>
+										<th>平均秒數</th>
+										<th>第一次開始</th>
+										<th>最後結束</th>
+									</tr>
+								</thead>
+								<tbody id="summaryBody"></tbody>
+							</table>
+						</div>
+					</section>
+
+					<section class="card">
+						<h2>Sessions 明細</h2>
+						<div class="table-wrap table-wrap-scroll">
+							<table>
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>開始</th>
+										<th>結束</th>
+										<th>秒數</th>
+										<th>App</th>
+									</tr>
+								</thead>
+								<tbody id="sessionsBody"></tbody>
+							</table>
+						</div>
+					</section>
+				</main>
+			</div>
+
+			<footer class="page-footer">
+				毛哥EM 製作
+				<a href="https://github.com/elvisdragonmao/website/blob/main/src/pages/code/screen-time.astro" target="_blank" rel="noreferrer">GitHub</a>
+			</footer>
+		</div>
+
+		<script is:inline>
+			function initDashboard() {
+				const timelineChart = window.echarts.init(document.getElementById("timelineChart"));
+				const summaryChart = window.echarts.init(document.getElementById("summaryChart"));
+				const els = {
+					dropOverlay: document.getElementById("dropOverlay"),
+					exportDate: document.getElementById("exportDate"),
+					genCommandBtn: document.getElementById("genCommandBtn"),
+					copyCommandBtn: document.getElementById("copyCommandBtn"),
+					commandBox: document.getElementById("commandBox"),
+					commandStatus: document.getElementById("commandStatus"),
+					fileInput: document.getElementById("fileInput"),
+					fileStatus: document.getElementById("fileStatus"),
+					loadSampleBtn: document.getElementById("loadSampleBtn"),
+					clearBtn: document.getElementById("clearBtn"),
+					dateFilter: document.getElementById("dateFilter"),
+					searchInput: document.getElementById("searchInput"),
+					minDurationInput: document.getElementById("minDurationInput"),
+					sortSelect: document.getElementById("sortSelect"),
+					applyBtn: document.getElementById("applyBtn"),
+					statDate: document.getElementById("statDate"),
+					statSessions: document.getElementById("statSessions"),
+					statApps: document.getElementById("statApps"),
+					statMinutes: document.getElementById("statMinutes"),
+					rangeNote: document.getElementById("rangeNote"),
+					summaryBody: document.getElementById("summaryBody"),
+					sessionsBody: document.getElementById("sessionsBody")
+				};
+
+				let rawData = [];
+				let filteredData = [];
+				let fileStatusResetTimer = null;
+				let commandStatusResetTimer = null;
+				let dragDepth = 0;
+
+				const APPLE_EPOCH_OFFSET = 978307200;
+				const chartTokens = {
+					accent: "#0071e3",
+					text: "rgba(255,255,255,0.72)",
+					textStrong: "#ffffff",
+					line: "rgba(255,255,255,0.12)",
+					stroke: "rgba(255,255,255,0.18)",
+					tooltipBg: "rgba(29,29,31,0.96)"
+				};
+
+				function todayStr() {
+					const d = new Date();
+					const yyyy = d.getFullYear();
+					const mm = String(d.getMonth() + 1).padStart(2, "0");
+					const dd = String(d.getDate()).padStart(2, "0");
+					return `${yyyy}-${mm}-${dd}`;
+				}
+
+				function formatLocalDateTime(date) {
+					const yyyy = date.getFullYear();
+					const mm = String(date.getMonth() + 1).padStart(2, "0");
+					const dd = String(date.getDate()).padStart(2, "0");
+					const hh = String(date.getHours()).padStart(2, "0");
+					const mi = String(date.getMinutes()).padStart(2, "0");
+					const ss = String(date.getSeconds()).padStart(2, "0");
+					return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+				}
+
+				function generateExportCommand(date) {
+					const safeDate = date || todayStr();
+					return `# 1) 如果還沒裝 sqlite3，可先安裝\n# macOS (Homebrew):\nbrew install sqlite\n\n# 2) 匯出 ${safeDate} 的 App 使用紀錄到桌面 JSON 檔\nd="${safeDate}"\nout=\"$HOME/Desktop/app_usage_${safeDate}.json\"\nsqlite3 -readonly \"$HOME/Library/Application Support/Knowledge/knowledgeC.db\" <<SQL > \"$out\"\n.mode json\nSELECT\n  DATETIME(ZSTARTDATE + ${APPLE_EPOCH_OFFSET}, 'unixepoch', 'localtime') AS start_time,\n  DATETIME(ZENDDATE + ${APPLE_EPOCH_OFFSET}, 'unixepoch', 'localtime') AS end_time,\n  ROUND(ZENDDATE - ZSTARTDATE, 1) AS duration_sec,\n  ZVALUESTRING AS bundle_id\nFROM ZOBJECT\nWHERE ZSTREAMNAME = '/app/usage'\n  AND date(DATETIME(ZSTARTDATE + ${APPLE_EPOCH_OFFSET}, 'unixepoch', 'localtime')) = date('$d')\nORDER BY ZSTARTDATE;\nSQL\n\necho \"Exported to: $out\"\nopen \"$HOME/Desktop\"`;
+				}
+
+				function parseMaybeNumber(v) {
+					const n = Number(v);
+					return Number.isFinite(n) ? n : 0;
+				}
+
+				function setFileStatus(html) {
+					if (fileStatusResetTimer) {
+						clearTimeout(fileStatusResetTimer);
+						fileStatusResetTimer = null;
+					}
+					els.fileStatus.innerHTML = html;
+				}
+
+				function setCommandStatus(html) {
+					if (commandStatusResetTimer) {
+						clearTimeout(commandStatusResetTimer);
+						commandStatusResetTimer = null;
+					}
+					els.commandStatus.innerHTML = html;
+				}
+
+				function flashFileStatus(html, duration = 2000) {
+					const previous = els.fileStatus.innerHTML;
+					if (fileStatusResetTimer) clearTimeout(fileStatusResetTimer);
+					els.fileStatus.innerHTML = html;
+					fileStatusResetTimer = window.setTimeout(() => {
+						if (els.fileStatus.innerHTML === html) {
+							els.fileStatus.innerHTML = previous;
+						}
+						fileStatusResetTimer = null;
+					}, duration);
+				}
+
+				function flashCommandStatus(html, duration = 2000) {
+					const previous = els.commandStatus.innerHTML;
+					if (commandStatusResetTimer) clearTimeout(commandStatusResetTimer);
+					els.commandStatus.innerHTML = html;
+					commandStatusResetTimer = window.setTimeout(() => {
+						if (els.commandStatus.innerHTML === html) {
+							els.commandStatus.innerHTML = previous;
+						}
+						commandStatusResetTimer = null;
+					}, duration);
+				}
+
+				function isFileDrag(event) {
+					return Array.from(event.dataTransfer?.types || []).includes("Files");
+				}
+
+				function setFileDragActive(active) {
+					document.body.classList.toggle("is-file-dragging", active);
+					els.dropOverlay.setAttribute("aria-hidden", String(!active));
+				}
+
+				async function loadJsonFile(file, label = `已載入 ${file.name}`) {
+					if (!file) return;
+					const fileName = String(file.name || "").toLowerCase();
+					const isJson = file.type === "application/json" || fileName.endsWith(".json");
+					if (!isJson) {
+						setFileStatus('<span class="warn">請拖曳或選擇 .json 檔案。</span>');
+						return;
+					}
+
+					try {
+						const text = await file.text();
+						const data = JSON.parse(text);
+						if (!Array.isArray(data)) throw new Error("JSON 根層必須是陣列");
+						setData(data, label);
+					} catch (err) {
+						setFileStatus(`<span class="bad">讀取失敗：</span> ${escapeHtml(err.message || String(err))}`);
+					}
+				}
+
+				function parseRow(row) {
+					const start = new Date(String(row.start_time).replace(" ", "T"));
+					const end = new Date(String(row.end_time).replace(" ", "T"));
+					const duration = parseMaybeNumber(row.duration_sec);
+					const bundle = String(row.bundle_id || "unknown");
+					return {
+						...row,
+						start_time: formatLocalDateTime(start),
+						end_time: formatLocalDateTime(end),
+						duration_sec: duration,
+						bundle_id: bundle,
+						startDate: start,
+						endDate: end,
+						date: row.start_time ? String(row.start_time).slice(0, 10) : "",
+						appName: bundle.split(".").pop() || bundle
+					};
+				}
+
+				function uniqueDates(data) {
+					return [...new Set(data.map(r => r.date).filter(Boolean))].sort();
+				}
+
+				function populateDateFilter(dates) {
+					els.dateFilter.innerHTML = "";
+					if (!dates.length) {
+						const opt = document.createElement("option");
+						opt.value = "";
+						opt.textContent = "尚無日期";
+						els.dateFilter.appendChild(opt);
+						return;
+					}
+					for (const d of dates) {
+						const opt = document.createElement("option");
+						opt.value = d;
+						opt.textContent = d;
+						els.dateFilter.appendChild(opt);
+					}
+				}
+
+				function aggregateSummary(rows) {
+					const map = new Map();
+					for (const row of rows) {
+						const key = row.bundle_id;
+						if (!map.has(key)) {
+							map.set(key, {
+								bundle_id: key,
+								appName: row.appName,
+								sessions: 0,
+								total_sec: 0,
+								first_start: row.start_time,
+								last_end: row.end_time
+							});
+						}
+						const item = map.get(key);
+						item.sessions += 1;
+						item.total_sec += row.duration_sec;
+						if (row.startDate < new Date(item.first_start.replace(" ", "T"))) item.first_start = row.start_time;
+						if (row.endDate > new Date(item.last_end.replace(" ", "T"))) item.last_end = row.end_time;
+					}
+					return [...map.values()].map(item => ({
+						...item,
+						total_min: +(item.total_sec / 60).toFixed(1),
+						avg_sec: +(item.total_sec / item.sessions).toFixed(1)
+					}));
+				}
+
+				function sortSummary(summary, sortValue) {
+					const arr = [...summary];
+					switch (sortValue) {
+						case "total_asc":
+							arr.sort((a, b) => a.total_sec - b.total_sec);
+							break;
+						case "name_asc":
+							arr.sort((a, b) => a.appName.localeCompare(b.appName));
+							break;
+						case "sessions_desc":
+							arr.sort((a, b) => b.sessions - a.sessions || b.total_sec - a.total_sec);
+							break;
+						case "total_desc":
+						default:
+							arr.sort((a, b) => b.total_sec - a.total_sec);
+							break;
+					}
+					return arr;
+				}
+
+				function escapeHtml(str) {
+					return String(str).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+				}
+
+				function renderSummaryTable(summary) {
+					if (!summary.length) {
+						els.summaryBody.innerHTML = '<tr><td colspan="7" class="muted">沒有符合條件的資料。</td></tr>';
+						return;
+					}
+					els.summaryBody.innerHTML = summary
+						.map(
+							item => `
+        <tr>
+          <td class="name-cell">
+            <div><strong>${escapeHtml(item.appName)}</strong></div>
+            <div class="muted small mono">${escapeHtml(item.bundle_id)}</div>
+					</td>
+          <td>${item.sessions}</td>
+          <td>${item.total_sec.toFixed(1)}</td>
+          <td>${item.total_min.toFixed(1)}</td>
+          <td>${item.avg_sec.toFixed(1)}</td>
+          <td class="mono small">${escapeHtml(item.first_start)}</td>
+          <td class="mono small">${escapeHtml(item.last_end)}</td>
+        </tr>
+      `
+						)
+						.join("");
+				}
+
+				function renderSessionsTable(rows) {
+					if (!rows.length) {
+						els.sessionsBody.innerHTML = '<tr><td colspan="5" class="muted">沒有符合條件的資料。</td></tr>';
+						return;
+					}
+					els.sessionsBody.innerHTML = rows
+						.map(
+							(row, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td class="mono small">${escapeHtml(row.start_time)}</td>
+          <td class="mono small">${escapeHtml(row.end_time)}</td>
+          <td>${row.duration_sec.toFixed(1)}</td>
+          <td><div><strong>${escapeHtml(row.appName)}</strong></div><div class="muted small mono">${escapeHtml(row.bundle_id)}</div></td>
+        </tr>
+      `
+						)
+						.join("");
+				}
+
+				function renderStats(rows, summary, dateValue) {
+					els.statDate.textContent = dateValue || "-";
+					els.statSessions.textContent = String(rows.length);
+					els.statApps.textContent = String(summary.length);
+					const totalSec = rows.reduce((acc, row) => acc + row.duration_sec, 0);
+					els.statMinutes.textContent = (totalSec / 60).toFixed(1);
+					if (rows.length) {
+						const start = rows[0].start_time;
+						const end = rows[rows.length - 1].end_time;
+						els.rangeNote.textContent = `資料範圍：${start} → ${end}`;
+					} else {
+						els.rangeNote.textContent = "沒有符合條件的資料。";
+					}
+				}
+
+				function renderSummaryChart(summary) {
+					const top = summary.slice(0, 12);
+					summaryChart.setOption({
+						backgroundColor: "transparent",
+						animation: true,
+						grid: { left: 90, right: 20, top: 20, bottom: 30 },
+						tooltip: {
+							backgroundColor: chartTokens.tooltipBg,
+							borderWidth: 0,
+							textStyle: { color: chartTokens.textStrong },
+							trigger: "axis",
+							axisPointer: { type: "shadow" },
+							formatter(params) {
+								const p = params[0];
+								return `${p.name}<br>總分鐘: ${Number(p.value).toFixed(1)}`;
+							}
+						},
+						xAxis: {
+							type: "value",
+							name: "分鐘",
+							nameTextStyle: { color: chartTokens.text },
+							axisLabel: { color: chartTokens.text },
+							splitLine: { lineStyle: { color: chartTokens.line } }
+						},
+						yAxis: {
+							type: "category",
+							data: top.map(x => x.appName),
+							axisLabel: { color: chartTokens.textStrong },
+							axisLine: { lineStyle: { color: chartTokens.line } }
+						},
+						series: [
+							{
+								type: "bar",
+								data: top.map(x => x.total_min),
+								roundCap: true,
+								barMaxWidth: 20,
+								itemStyle: {
+									color: chartTokens.accent,
+									borderRadius: 999
+								}
+							}
+						]
+					});
+				}
+
+				function renderTimelineChart(rows) {
+					if (!rows.length) {
+						timelineChart.clear();
+						timelineChart.setOption({
+							title: {
+								text: "沒有符合條件的資料",
+								left: "center",
+								top: "middle",
+								textStyle: { color: chartTokens.text, fontSize: 16, fontWeight: "normal" }
+							}
+						});
+						return;
+					}
+
+					timelineChart.clear();
+
+					const apps = [...new Set(rows.map(r => r.appName))];
+					const startMs = Math.min(...rows.map(r => r.startDate.getTime()));
+					const endMs = Math.max(...rows.map(r => r.endDate.getTime()));
+					const data = rows.map(r => ({
+						name: r.appName,
+						value: [r.appName, r.startDate.getTime(), r.endDate.getTime(), r.duration_sec, r.bundle_id]
+					}));
+
+					timelineChart.setOption({
+						backgroundColor: "transparent",
+						tooltip: {
+							backgroundColor: chartTokens.tooltipBg,
+							borderWidth: 0,
+							textStyle: { color: chartTokens.textStrong },
+							formatter(param) {
+								const v = param.data.value;
+								return [
+									`<strong>${v[0]}</strong>`,
+									`<span class="mono">${new Date(v[1]).toLocaleString()}</span>`,
+									`→ <span class="mono">${new Date(v[2]).toLocaleString()}</span>`,
+									`秒數: ${Number(v[3]).toFixed(1)}`,
+									`<span class="mono">${v[4]}</span>`
+								].join("<br>");
+							}
+						},
+						grid: { left: 90, right: 20, top: 20, bottom: 50 },
+						dataZoom: [
+							{
+								type: "inside",
+								xAxisIndex: 0,
+								filterMode: "weakFilter",
+								zoomOnMouseWheel: true,
+								moveOnMouseMove: true,
+								moveOnMouseWheel: "shift",
+								preventDefaultMouseMove: true
+							}
+						],
+						xAxis: {
+							min: startMs,
+							max: endMs,
+							type: "time",
+							axisLabel: { color: chartTokens.text },
+							axisLine: { lineStyle: { color: chartTokens.line } },
+							splitLine: { lineStyle: { color: chartTokens.line } }
+						},
+						yAxis: {
+							type: "category",
+							data: apps,
+							axisLabel: { color: chartTokens.textStrong },
+							axisLine: { lineStyle: { color: chartTokens.line } }
+						},
+						series: [
+							{
+								type: "custom",
+								renderItem(params, api) {
+									const category = api.value(0);
+									const start = api.coord([api.value(1), category]);
+									const end = api.coord([api.value(2), category]);
+									const height = api.size([0, 1])[1] * 0.6;
+									return {
+										type: "rect",
+										shape: {
+											x: start[0],
+											y: start[1] - height / 2,
+											width: Math.max(2, end[0] - start[0]),
+											height
+										},
+										style: api.style({
+											fill: chartTokens.accent,
+											opacity: 0.9,
+											stroke: chartTokens.stroke,
+											lineWidth: 1,
+											borderRadius: 6
+										})
+									};
+								},
+								encode: { x: [1, 2], y: 0 },
+								data
+							}
+						]
+					});
+				}
+
+				function applyFilters() {
+					const selectedDate = els.dateFilter.value;
+					const keyword = els.searchInput.value.trim().toLowerCase();
+					const minDuration = parseMaybeNumber(els.minDurationInput.value);
+
+					filteredData = rawData
+						.filter(row => {
+							if (selectedDate && row.date !== selectedDate) return false;
+							if (row.duration_sec < minDuration) return false;
+							if (keyword) {
+								const hay = `${row.appName} ${row.bundle_id}`.toLowerCase();
+								if (!hay.includes(keyword)) return false;
+							}
+							return true;
+						})
+						.sort((a, b) => a.startDate - b.startDate);
+
+					const summary = sortSummary(aggregateSummary(filteredData), els.sortSelect.value);
+					renderStats(filteredData, summary, selectedDate);
+					renderSummaryTable(summary);
+					renderSessionsTable(filteredData);
+					renderSummaryChart(summary);
+					renderTimelineChart(filteredData);
+				}
+
+				function setData(rows, label = "已載入資料") {
+					rawData = rows.map(parseRow).filter(r => r.date && !Number.isNaN(r.startDate.getTime()) && !Number.isNaN(r.endDate.getTime()));
+					const dates = uniqueDates(rawData);
+					populateDateFilter(dates);
+					if (dates.length) els.dateFilter.value = dates[0];
+					setFileStatus(`<span class="ok">${label}</span><br>${rawData.length} 筆 session，${dates.length} 個日期。`);
+					applyFilters();
+				}
+
+				function loadSample() {
+					const sample = [
+						{ start_time: "2026-04-14 09:00:00", end_time: "2026-04-14 09:25:00", duration_sec: 1500, bundle_id: "com.microsoft.VSCode" },
+						{ start_time: "2026-04-14 09:26:00", end_time: "2026-04-14 09:40:00", duration_sec: 840, bundle_id: "com.apple.Notes" },
+						{ start_time: "2026-04-14 09:41:00", end_time: "2026-04-14 10:10:00", duration_sec: 1740, bundle_id: "com.google.Chrome" },
+						{ start_time: "2026-04-14 10:11:00", end_time: "2026-04-14 10:50:00", duration_sec: 2340, bundle_id: "com.microsoft.VSCode" },
+						{ start_time: "2026-04-14 11:00:00", end_time: "2026-04-14 11:06:30", duration_sec: 390, bundle_id: "com.apple.MobileSMS" },
+						{ start_time: "2026-04-14 13:00:00", end_time: "2026-04-14 13:35:00", duration_sec: 2100, bundle_id: "com.apple.Safari" },
+						{ start_time: "2026-04-14 13:36:00", end_time: "2026-04-14 13:37:30", duration_sec: 90, bundle_id: "com.apple.Notes" },
+						{ start_time: "2026-04-15 08:50:00", end_time: "2026-04-15 09:20:00", duration_sec: 1800, bundle_id: "com.microsoft.VSCode" },
+						{ start_time: "2026-04-15 09:22:00", end_time: "2026-04-15 09:45:00", duration_sec: 1380, bundle_id: "com.apple.Safari" },
+						{ start_time: "2026-04-15 10:00:00", end_time: "2026-04-15 10:02:00", duration_sec: 120, bundle_id: "com.apple.Notes" }
+					];
+					setData(sample, "已載入範例資料");
+				}
+
+				function clearAll() {
+					rawData = [];
+					filteredData = [];
+					els.fileInput.value = "";
+					els.searchInput.value = "";
+					els.minDurationInput.value = "0";
+					setFileStatus("尚未載入資料。");
+					populateDateFilter([]);
+					renderStats([], [], "");
+					renderSummaryTable([]);
+					renderSessionsTable([]);
+					renderSummaryChart([]);
+					renderTimelineChart([]);
+				}
+
+				els.exportDate.value = todayStr();
+				els.commandBox.textContent = generateExportCommand(els.exportDate.value);
+
+				els.genCommandBtn.addEventListener("click", () => {
+					els.commandBox.textContent = generateExportCommand(els.exportDate.value);
+				});
+
+				els.copyCommandBtn.addEventListener("click", async () => {
+					try {
+						await navigator.clipboard.writeText(els.commandBox.textContent);
+						flashCommandStatus('<span class="ok">已複製 terminal 指令到剪貼簿。</span>');
+					} catch {
+						flashCommandStatus('<span class="warn">複製失敗，請手動選取指令。</span>');
+					}
+				});
+
+				els.fileInput.addEventListener("change", async e => {
+					const file = e.target.files?.[0];
+					if (!file) return;
+					await loadJsonFile(file, `已載入 ${file.name}`);
+				});
+
+				window.addEventListener("dragenter", e => {
+					if (!isFileDrag(e)) return;
+					e.preventDefault();
+					dragDepth += 1;
+					setFileDragActive(true);
+				});
+
+				window.addEventListener("dragover", e => {
+					if (!isFileDrag(e)) return;
+					e.preventDefault();
+					e.dataTransfer.dropEffect = "copy";
+				});
+
+				window.addEventListener("dragleave", e => {
+					if (!isFileDrag(e)) return;
+					e.preventDefault();
+					dragDepth = Math.max(0, dragDepth - 1);
+					if (dragDepth === 0) setFileDragActive(false);
+				});
+
+				window.addEventListener("dragend", () => {
+					dragDepth = 0;
+					setFileDragActive(false);
+				});
+
+				window.addEventListener("drop", async e => {
+					if (!isFileDrag(e)) return;
+					e.preventDefault();
+					dragDepth = 0;
+					setFileDragActive(false);
+					const files = Array.from(e.dataTransfer?.files || []);
+					const file =
+						files.find(item =>
+							String(item.name || "")
+								.toLowerCase()
+								.endsWith(".json")
+						) || files[0];
+					if (!file) return;
+					await loadJsonFile(file, `已拖曳載入 ${file.name}`);
+				});
+
+				els.loadSampleBtn.addEventListener("click", loadSample);
+				els.clearBtn.addEventListener("click", clearAll);
+				els.applyBtn.addEventListener("click", applyFilters);
+				els.searchInput.addEventListener("keydown", e => {
+					if (e.key === "Enter") applyFilters();
+				});
+				els.minDurationInput.addEventListener("keydown", e => {
+					if (e.key === "Enter") applyFilters();
+				});
+				els.sortSelect.addEventListener("change", applyFilters);
+				els.dateFilter.addEventListener("change", applyFilters);
+
+				window.addEventListener("resize", () => {
+					timelineChart.resize();
+					summaryChart.resize();
+				});
+
+				clearAll();
+				setCommandStatus("");
+			}
+
+			let chartAttempts = 0;
+			function waitForEcharts() {
+				if (window.echarts) {
+					initDashboard();
+				} else if (++chartAttempts < 100) {
+					setTimeout(waitForEcharts, 50);
+				}
+                else { document.getElementById("fileStatus").textContent = "圖表程式載入失敗，請檢查網路後重新整理。"; }
+			}
+
+			waitForEcharts();
+		</script>
+	</body>
+</html>

@@ -1,0 +1,332 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html>
+	<head>
+		<Head path="code/EM-SFW" title="鏡頭畫面 | 毛哥EM的基地" description="鏡頭檢視工具，讓視訊畫面不再顛倒/模糊/切割" theme="#21c3e0" />
+		<style is:global>
+			* {
+				padding: 0;
+				margin: 0;
+			}
+
+			body,
+			html {
+				font-family: sans-serif;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				background-color: #202124;
+			}
+
+			canvas {
+				display: none;
+				-moz-transform: scaleX(-1);
+				-webkit-transform: scaleX(-1);
+				-o-transform: scaleX(-1);
+				transform: scaleX(-1);
+			}
+
+			a {
+				color: #c1eff6;
+				text-decoration: none;
+			}
+
+			.settings-box {
+				height: 450px;
+				width: 400px;
+				background: #21c3e0;
+				border-radius: 20px;
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				margin: auto;
+				box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+			}
+
+			.header {
+				position: relative;
+				display: block;
+				float: left;
+				font-family: "Arimo", sans-serif;
+			}
+
+			h3 {
+				color: #fff;
+				font-size: 2.5em;
+				margin: 45px 0 0 50px;
+			}
+
+			h4 {
+				position: inherit;
+				width: 97%;
+				text-align: right;
+				color: #fff;
+				margin-top: 5px;
+				font-size: 2em;
+				cursor: pointer;
+			}
+
+			.choose {
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+			}
+
+			p {
+				color: #c1eff6;
+				font-weight: 700;
+				margin-left: 50px;
+				font-size: 18px;
+				display: flex;
+				align-items: center;
+			}
+
+			hr {
+				margin-top: 10px;
+				border: 1px solid rgba(124, 226, 255, 0.3);
+				margin-left: 50px;
+			}
+
+			.hover {
+				background: #61d5ee;
+			}
+
+			.selected {
+				background: #1ab0ca;
+			}
+
+			.toggle {
+				margin: 5px 40px;
+				position: relative;
+				width: 77px;
+				user-select: none;
+			}
+
+			.toggle-checkbox {
+				position: absolute;
+				left: -9999px;
+			}
+
+			.toggle-label {
+				display: block;
+				overflow: hidden;
+				cursor: pointer;
+				border-radius: 18px;
+			}
+
+			.toggle-inner {
+				display: block;
+				width: 200%;
+				margin-left: -100%;
+				transition: margin 0.3s ease-in 0s;
+			}
+
+			.toggle-inner:before,
+			.toggle-inner:after {
+				display: block;
+				float: left;
+				width: 50%;
+				height: 34px;
+				padding: 0;
+				line-height: 34px;
+				font-size: 14px;
+				color: white;
+				box-sizing: border-box;
+				font-weight: 600;
+			}
+
+			.toggle-inner:before {
+				content: "開啟";
+				padding-left: 10px;
+				background-color: #1ab0ca;
+				color: #ffffff;
+			}
+
+			.toggle-inner:after {
+				content: "關閉";
+				padding-right: 13px;
+				background-color: #ddd;
+				color: #999999;
+				text-align: right;
+			}
+
+			.toggle-switch {
+				display: block;
+				width: 27px;
+				height: 27px;
+				margin: 5px;
+				background: #ffffff;
+				position: absolute;
+				bottom: -2px;
+				right: 40px;
+				border-radius: 50%;
+				transition: all 0.3s ease-in 0s;
+			}
+
+			.toggle-checkbox:checked + .toggle-label .toggle-inner {
+				margin-left: 0;
+			}
+
+			.toggle-checkbox:checked + .toggle-label .toggle-switch {
+				right: 0px;
+			}
+
+			.bar {
+				height: 4px;
+				width: 80px;
+				border-radius: 4px;
+				background: #1397b3;
+				margin: 20px 0px 20px 50px;
+				font-size: 18px;
+				display: flex;
+				align-items: center;
+			}
+
+			/*https://codepen.io/joshbivens/pen/vNYXzV*/
+		</style>
+	</head>
+
+	<body id="content">
+		<div id="app"></div>
+		<div class="settings-box">
+			<h4 onclick="box.style.display = 'none';status = 0;">✖</h4>
+			<div class="header">
+				<h3>EM-SFW</h3>
+			</div>
+			<div class="choose">
+				<p>鏡頭檢視工具 <a href="https://elvismao.com/">毛哥EM製作</a></p>
+			</div>
+			<div class="bar"></div>
+			<div class="choose">
+				<p>若有更改視窗大小請重新載入</p>
+			</div>
+			<div class="choose">
+				<p>按<code>z</code>開啟/關閉此選單&nbsp;|&nbsp;<a href="https://emtech.cc/p/EM-SFW/" target="_blank">使用教學</a></p>
+			</div>
+			<hr />
+			<div class="choose">
+				<p>隱藏超出畫面</p>
+				<div class="toggle">
+					<input
+						id="overflow"
+						class="toggle-checkbox"
+						type="checkbox"
+						checked
+						onclick="if(overflow==1){overflow=0;document.getElementById('content').style.overflow = 'scroll'} else {overflow=1;document.getElementById('content').style.overflow = 'hidden';}"
+					/>
+					<label for="overflow" class="toggle-label">
+						<span class="toggle-inner"></span>
+						<span class="toggle-switch"></span>
+					</label>
+				</div>
+			</div>
+			<div class="choose">
+				<p>強制拉成視窗大小</p>
+				<div class="toggle">
+					<input
+						id="window"
+						class="toggle-checkbox"
+						type="checkbox"
+						onclick="if(mode==1){mode=0;document.getElementById('vid').style.display = 'none';document.getElementById('canvas').style.display = 'block';} else {mode=1;document.getElementById('vid').style.display = 'block';document.getElementById('canvas').style.display = 'none';}"
+					/>
+					<label for="window" class="toggle-label">
+						<span class="toggle-inner"></span>
+						<span class="toggle-switch"></span>
+					</label>
+				</div>
+			</div>
+			<div class="choose">
+				<p>垂直翻轉</p>
+				<div class="toggle">
+					<input id="yFlip" class="toggle-checkbox" type="checkbox" />
+					<label for="yFlip" class="toggle-label">
+						<span class="toggle-inner"></span>
+						<span class="toggle-switch"></span>
+					</label>
+				</div>
+			</div>
+			<div class="choose">
+				<p>水平翻轉</p>
+				<div class="toggle">
+					<input id="xFlip" class="toggle-checkbox" type="checkbox" />
+					<label for="xFlip" class="toggle-label">
+						<span class="toggle-inner"></span>
+						<span class="toggle-switch"></span>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<script is:inline>
+			var status = 1,
+				mode = 1,
+				overflow = 1;
+			const app = document.querySelector("#app");
+			const video = document.createElement("video");
+			video.id = "vid";
+			video.autoplay = true;
+			video.muted = true;
+			video.playsInline = true;
+			video.width = innerWidth;
+			video.height = innerHeight;
+			const canvas = document.createElement("canvas");
+			canvas.id = "canvas";
+			canvas.width = innerWidth;
+			canvas.height = innerHeight;
+			app.append(video, canvas);
+			let stream, frame;
+			function draw() {
+				const ctx = canvas.getContext("2d");
+				if (video.readyState >= 2) {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					ctx.save();
+					ctx.translate(canvas.width, 0);
+					ctx.scale(-1, 1);
+					ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+					ctx.restore();
+				}
+				frame = requestAnimationFrame(draw);
+			}
+			async function startCamera() {
+				try {
+					if (!navigator.mediaDevices?.getUserMedia) throw new Error("Camera unavailable");
+					stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "user" } });
+					video.srcObject = stream;
+					await video.play();
+					draw();
+				} catch {
+					const message = document.createElement("p");
+					message.setAttribute("role", "status");
+					message.textContent = "無法開啟鏡頭。請允許相機權限，並確認此頁使用 HTTPS 或 localhost。";
+					message.style.cssText = "position:fixed;bottom:1rem;left:1rem;right:1rem;color:white;background:#222;padding:1rem;z-index:10";
+					app.append(message);
+				}
+			}
+			startCamera();
+			window.addEventListener(
+				"pagehide",
+				() => {
+					cancelAnimationFrame(frame);
+					stream?.getTracks().forEach(track => track.stop());
+				},
+				{ once: true }
+			);
+			document.addEventListener("keydown", event => {
+				if (event.key.toLowerCase() === "z") {
+					const box = document.querySelector(".settings-box");
+					status = status == 1 ? 0 : 1;
+					box.style.display = status ? "block" : "none";
+				}
+			});
+			document.querySelectorAll("#xFlip, #yFlip").forEach(input =>
+				input.addEventListener("change", () => {
+					app.style.transform = `scale(${document.querySelector("#xFlip").checked ? -1 : 1}, ${document.querySelector("#yFlip").checked ? -1 : 1})`;
+				})
+			);
+		</script>
+	</body>
+</html>

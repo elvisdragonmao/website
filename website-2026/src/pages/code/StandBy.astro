@@ -1,0 +1,799 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html>
+	<head>
+		<Head path="StandBy" title="iOS StandBy By EM" description="iOS StandBy By EM" theme="#000" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<style is:global>
+			/* @font-face {
+                font-family: "San Francisco";
+                src: local("San Francisco"), url("SF-Pro-Display-Regular.otf");
+            }
+
+            @font-face {
+                font-family: "San Francisco Rounded";
+                src: local("San Francisco Rounded"), url("SF-Pro-Rounded.ttf");
+            } */
+
+			:root {
+				--main-color: #ffffff;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				transition-property: color, scale, border-radius;
+				transition-duration: 0.3s;
+				user-select: none;
+			}
+
+			body {
+				background-color: #d1d1d1;
+				color: #fff;
+				font-size: 5vw;
+				font-family: "San Francisco Rounded", "Comic Sans", "Comic Sans MS", Chalkboard, ChalkboardSE-Regular, sans-serif;
+			}
+
+			main,
+			main > section,
+			td,
+			th,
+			tr {
+				display: flex;
+			}
+
+			.digit,
+			h1,
+			h2,
+			h3,
+			td,
+			th {
+				color: var(--main-color);
+				text-align: center;
+			}
+
+			.clock,
+			td,
+			th {
+				border-radius: 50%;
+			}
+
+			.uiFont {
+				font-family: -apple-system, "San Francisco", system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+			}
+
+			main {
+				height: 100svh;
+				flex-flow: column nowrap;
+				scroll-snap-type: y mandatory;
+				overflow: auto;
+				transition: 0.3s;
+				background-color: #212121;
+				-ms-overflow-style: none;
+				scrollbar-width: none;
+			}
+
+			.setting section {
+				scale: 0.8;
+				border-radius: 2rem;
+			}
+
+			main > section {
+				background-color: #000;
+				flex: none;
+				width: 100%;
+				height: 100vh;
+				scroll-snap-align: center;
+				justify-content: space-around;
+				align-items: center;
+				overflow: hidden;
+			}
+
+			.column {
+				flex-flow: column nowrap;
+			}
+
+			h1 {
+				font-size: 2.5em;
+				line-height: 1.4;
+				background: -webkit-linear-gradient(0deg, #be22ff, #ff279c, #ff981f, #be22ff, #ff279c, #ff981f, #be22ff, #ff279c, #ff981f);
+				-webkit-background-clip: text;
+				background-clip: text;
+				-webkit-text-fill-color: transparent;
+				background-size: 300% 300%;
+				-webkit-animation: 20s linear infinite AnimationName;
+				-moz-animation: 20s linear infinite AnimationName;
+				animation: 20s linear infinite AnimationName;
+			}
+
+			@keyframes AnimationName {
+				0%,
+				100% {
+					background-position: 0 50%;
+				}
+
+				50% {
+					background-position: 100% 50%;
+				}
+			}
+
+			h2 {
+				font-size: 0.7em;
+			}
+
+			h3 {
+				margin-top: 0.3em;
+				font-size: 0.3em;
+			}
+
+			/* !header */
+			#header {
+				position: relative;
+			}
+
+			nav {
+				position: absolute;
+				top: 1rem;
+				right: 1rem;
+			}
+
+			button {
+				backdrop-filter: blur(3px);
+				background-color: #262626;
+				border: 0.1rem solid rgba(255, 255, 255, 0.1);
+				border-radius: 6px;
+				box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+				cursor: pointer;
+				transition:
+					background-color 600ms,
+					border-color 600ms;
+				color: #fff;
+				font-size: 1.5rem;
+				width: 3rem;
+				height: 3rem;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin-bottom: 1rem;
+				font-family: "San Francisco Rounded", "Comic Sans", "Comic Sans MS", Chalkboard, ChalkboardSE-Regular, sans-serif;
+			}
+
+			button:hover {
+				background-color: #2e2e2e;
+				border: 0.1rem solid rgba(255, 255, 255, 0.415);
+			}
+
+			/* !time */
+			#time {
+				background: #000;
+				position: relative;
+			}
+
+			.time {
+				z-index: 2;
+				mix-blend-mode: plus-lighter;
+				font-size: 4em;
+				color: #ffffffff;
+				font-weight: 600;
+				transform: scaleY(0.85);
+			}
+
+			.timeBg {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: 0 0;
+				filter: hue-rotate(-50deg) brightness(1.5);
+				z-index: 1;
+			}
+
+			#color,
+			.clock {
+				position: relative;
+			}
+
+			td,
+			th {
+				font-size: 0.55em;
+				padding: 0.06em;
+				width: 5vw;
+				height: 5vw;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.weekend {
+				color: gray;
+			}
+
+			#callenderMonth {
+				color: red;
+				text-transform: uppercase;
+				font-weight: 500;
+				font-size: 0.8em;
+				margin-left: 0.4em;
+			}
+
+			.clock {
+				width: 7em;
+				height: 7em;
+				--s: 0.35em;
+				--o: 0px;
+				--w: 0.1deg;
+				--n: 60;
+				--c: rgb(136, 136, 136);
+				--w5: 0.1deg;
+				--n5: 12;
+				--c5: rgb(255, 255, 255);
+			}
+
+			.clockCenter,
+			.clockCenterCenter {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				width: 0.45em;
+				height: 0.45em;
+				background: #ffaf3f;
+				border: 0.1em solid #fff;
+				border-radius: 50%;
+				display: block;
+			}
+
+			.clockCenterCenter {
+				background: #000;
+				border: none;
+				width: 0.15em;
+				height: 0.15em;
+				z-index: 10;
+			}
+
+			.clock::after,
+			.clock::before {
+				transform: rotate(0.98deg);
+				content: "";
+				position: absolute;
+				top: calc(-1 * var(--s) - var(--o));
+				bottom: calc(-1 * var(--s) - var(--o));
+				left: calc(-1 * var(--s) - var(--o));
+				right: calc(-1 * var(--s) - var(--o));
+				border-radius: inherit;
+				background:
+					repeating-conic-gradient(from calc(-1 * var(--w) / 2), var(--c) 0 calc(var(--w) - 2deg), transparent calc(var(--w)) calc(360deg / var(--n) - 2deg), var(--c) calc(360deg / var(--n))),
+					repeating-conic-gradient(from calc(-1 * var(--w) / 2), var(--c) 0 calc(var(--w) - 2deg), transparent calc(var(--w)) calc(360deg / var(--n) - 2deg), var(--c) calc(360deg / var(--n))),
+					repeating-conic-gradient(from calc(-1 * var(--w) / 2), var(--c) 0 calc(var(--w) - 2deg), transparent calc(var(--w)) calc(360deg / var(--n) - 2deg), var(--c) calc(360deg / var(--n))),
+					repeating-conic-gradient(from calc(-1 * var(--w) / 2), var(--c) 0 calc(var(--w) - 2deg), transparent calc(var(--w)) calc(360deg / var(--n) - 2deg), var(--c) calc(360deg / var(--n))),
+					repeating-conic-gradient(from calc(-1 * var(--w) / 2), var(--c) 0 calc(var(--w) - 2deg), transparent calc(var(--w)) calc(360deg / var(--n) - 2deg), var(--c) calc(360deg / var(--n))),
+					repeating-conic-gradient(from calc(-1 * var(--w) / 2), var(--c) 0 calc(var(--w) - 2deg), transparent calc(var(--w)) calc(360deg / var(--n) - 2deg), var(--c) calc(360deg / var(--n)));
+				-webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--s)), #fff calc(100% - var(--s)));
+				mask: radial-gradient(farthest-side, transparent calc(100% - var(--s)), #fff calc(100% - var(--s)));
+			}
+
+			.clock::after {
+				background:
+					repeating-conic-gradient(from calc(-1 * var(--w5) / 2), var(--c5) 0 calc(var(--w5) - 2deg), transparent calc(var(--w5)) calc(360deg / var(--n5) - 2deg), var(--c5) calc(360deg / var(--n5))),
+					repeating-conic-gradient(from calc(-1 * var(--w5) / 2), var(--c5) 0 calc(var(--w5) - 2deg), transparent calc(var(--w5)) calc(360deg / var(--n5) - 2deg), var(--c5) calc(360deg / var(--n5))),
+					repeating-conic-gradient(from calc(-1 * var(--w5) / 2), var(--c5) 0 calc(var(--w5) - 2deg), transparent calc(var(--w5)) calc(360deg / var(--n5) - 2deg), var(--c5) calc(360deg / var(--n5))),
+					repeating-conic-gradient(from calc(-1 * var(--w5) / 2), var(--c5) 0 calc(var(--w5) - 2deg), transparent calc(var(--w5)) calc(360deg / var(--n5) - 2deg), var(--c5) calc(360deg / var(--n5))),
+					repeating-conic-gradient(from calc(-1 * var(--w5) / 2), var(--c5) 0 calc(var(--w5) - 2deg), transparent calc(var(--w5)) calc(360deg / var(--n5) - 2deg), var(--c5) calc(360deg / var(--n5))),
+					repeating-conic-gradient(from calc(-1 * var(--w5) / 2), var(--c5) 0 calc(var(--w5) - 2deg), transparent calc(var(--w5)) calc(360deg / var(--n5) - 2deg), var(--c5) calc(360deg / var(--n5)));
+				-webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--s)), #fff calc(100% - var(--s)));
+				mask: radial-gradient(farthest-side, transparent calc(100% - var(--s)), #fff calc(100% - var(--s)));
+			}
+
+			.hour-hand,
+			.minute-hand,
+			.second-hand {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				background-color: #fff;
+				transform-origin: top center;
+			}
+
+			#color::after,
+			.digit {
+				position: absolute;
+				transform: translate(-50%, -50%);
+			}
+
+			.hour-hand,
+			.minute-hand {
+				width: 10px;
+				height: 27%;
+				margin-left: -5px;
+				border-radius: 5px;
+			}
+
+			.minute-hand {
+				height: 46%;
+			}
+
+			.hour-hand::after,
+			.minute-hand::after {
+				transform: translateY(-0.7em);
+				display: block;
+				content: "";
+				width: 2px;
+				margin-left: 33.333333%;
+				height: 40%;
+				background-color: #fff;
+			}
+
+			.second-hand {
+				width: 2px;
+				height: 65%;
+				margin-left: -1px;
+				background-color: #ffaf3f;
+				border-radius: 2px 2px 0 0;
+				z-index: 2;
+				transition: transform 0.2s;
+			}
+
+			.digit {
+				top: calc(50% - 0.5em);
+				left: calc(50% - 0.5em);
+				width: 1em;
+				height: 1em;
+				line-height: 1em;
+				font-size: 0.8em;
+				color: var(--main-color);
+				transform: rotate(calc(var(--deg) * 1deg)) translateY(-3.5em);
+				transform-origin: center center;
+			}
+
+			/* !image */
+
+			#image {
+				padding: 1rem;
+				background-size: cover;
+				background-position: center;
+				flex-direction: column;
+				justify-content: space-between;
+				align-items: flex-end;
+			}
+
+			.image-time {
+				mix-blend-mode: plus-lighter;
+				color: hsla(0, 0%, 100%, 0.7);
+				font-size: 2em;
+			}
+
+			.box {
+				text-align: right;
+				width: 55vw;
+			}
+
+			.author {
+				font-size: 1.2em;
+				transform: scaleY(0.8);
+				text-overflow: ellipsis;
+			}
+
+			.caption {
+				font-size: 0.5em;
+				line-height: 1em;
+			}
+
+			.caption a {
+				color: #9a9a9a61;
+				text-decoration: none;
+				mix-blend-mode: plus-lighter;
+			}
+
+			.caption span {
+				transition: all 0.3s;
+				display: inline-block;
+			}
+
+			a:hover span {
+				transform: translateX(0.1em);
+			}
+
+			/* !music */
+			#music {
+				background-image: url(https://i1.sndcdn.com/artworks-joPz3SL4l6GWVX00-dl2csw-t500x500.jpg);
+				background-size: cover;
+				background-position: center;
+			}
+
+			#music img {
+				width: 40vw;
+				height: 40vw;
+				border-radius: 2rem;
+				box-shadow: 0 0 2.5rem #000000d2;
+			}
+
+			#music > div {
+				backdrop-filter: blur(1em);
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 1em;
+				text-align: center;
+				gap: 1em;
+			}
+
+			#music > div > div {
+				flex-grow: 1;
+			}
+
+			#music h3 {
+				font-size: 0.8em;
+			}
+
+			#music h4 {
+				font-size: 0.5em;
+				mix-blend-mode: plus-lighter;
+				color: #ffffffa3;
+			}
+
+			.prograss {
+				margin-top: 0.5em;
+				width: 100%;
+				height: 0.25em;
+				background-color: #e7e7e76f;
+				mix-blend-mode: plus-lighter;
+				border-radius: 0.125em;
+			}
+
+			.timePrograss {
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				color: #e7e7e76f;
+				mix-blend-mode: plus-lighter;
+				font-size: 0.4em;
+				margin-top: 0.2em;
+			}
+
+			.controlPlay {
+				font-size: 1em;
+				margin-top: 0.15em;
+			}
+
+			/* !color picker */
+			.color-picker,
+			.progress-bar {
+				position: fixed;
+				transition: 0.3s;
+			}
+
+			.digit::before {
+				content: attr(data-digit);
+				display: block;
+				transform: rotate(calc(var(--deg) * -1deg));
+			}
+
+			.color-picker {
+				flex-wrap: wrap;
+				justify-content: center;
+				bottom: -2.5vmax;
+				left: 0;
+				width: 100%;
+				opacity: 0;
+				display: flex;
+			}
+
+			.setting .color-picker {
+				z-index: 5;
+				opacity: 1;
+				bottom: 0.15em;
+			}
+
+			.color-picker .color-option {
+				width: 2.5vmax;
+				height: 2.5vmax;
+				margin: 1vmax;
+				cursor: pointer;
+				border-radius: 50%;
+				box-shadow: 0 0 1vmax #00000062;
+				overflow: hidden;
+			}
+
+			.color-picker input[type="color"] {
+				display: block;
+				border: none;
+				width: 5vw;
+				height: 5vw;
+				outline: 0;
+				cursor: pointer;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -55%);
+			}
+
+			.setting .progress-bar {
+				right: 5%;
+			}
+
+			.progress-bar {
+				top: 50%;
+				transform: translateY(-50%);
+				right: -2rem;
+			}
+
+			.progress {
+				z-index: 5;
+				width: 0.5rem;
+				height: 0.5rem;
+				margin: 1vmax;
+				border-radius: 50%;
+				background-color: #646464;
+				box-shadow: 0 0 3px rgba(0, 0, 0);
+				transition: 0.3s;
+			}
+
+			.now {
+				background-color: #fff;
+			}
+
+			#color::after {
+				content: "+";
+				font-size: 0.5em;
+				top: 50%;
+				left: 50%;
+				pointer-events: none;
+			}
+
+			main::-webkit-scrollbar {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="color-picker">
+			<div class="color-option" style="background-color: #7aaaf1" onclick="changeFontColor('#7aaaf1')"></div>
+			<div class="color-option" style="background-color: #8683ff" onclick="changeFontColor('#8683ff')"></div>
+			<div class="color-option" style="background-color: #e683bc" onclick="changeFontColor('#e683bc')"></div>
+			<div class="color-option" style="background-color: #ff788c" onclick="changeFontColor('#ff788c')"></div>
+			<div class="color-option" style="background-color: #ff8d7b" onclick="changeFontColor('#ff8d7b')"></div>
+			<div class="color-option" style="background-color: #f8d175" onclick="changeFontColor('#f8d175')"></div>
+			<div class="color-option" style="background-color: #9ac78f" onclick="changeFontColor('#9ac78f')"></div>
+			<div class="color-option" style="background-color: #7dc4ca" onclick="changeFontColor('#7dc4ca')"></div>
+			<div class="color-option" style="background-color: #ffffff" onclick="changeFontColor('#FFFFFF')"></div>
+			<div class="color-option" style="background-color: #565c6a" onclick="changeFontColor('#565c6a')"></div>
+			<div class="color-option" style="background-color: #6b5762" onclick="changeFontColor('#6b5762')"></div>
+			<div class="color-option" id="color"><input type="color" onchange="document.getElementById('color').style.backgroundColor=this.value;changeFontColor(this.value)" /></div>
+		</div>
+		<div class="progress-bar">
+			<div class="progress now"></div>
+			<div class="progress"></div>
+			<div class="progress"></div>
+			<div class="progress"></div>
+			<div class="progress"></div>
+		</div>
+		<main>
+			<section id="header" class="column">
+				<div class="uiFont">
+					<h1>StandBy</h1>
+					<h2>Web Version by EM</h2>
+					<h3 id="status">Everything should be okay</h3>
+					<h3>Long press to change color</h3>
+				</div>
+				<nav><button>中</button><button>?</button></nav>
+			</section>
+			<section id="time" class="uiFont">
+				<div class="time"></div>
+				<div class="timeBg"></div>
+			</section>
+			<section id="callender">
+				<div class="clock">
+					<div class="hour-hand"></div>
+					<div class="minute-hand"></div>
+					<div class="second-hand"></div>
+					<div class="clockCenter"></div>
+					<div class="clockCenterCenter"></div>
+					<div class="digit" style="--deg: 0" data-digit="12"></div>
+					<div class="digit" style="--deg: 30" data-digit="1"></div>
+					<div class="digit" style="--deg: 60" data-digit="2"></div>
+					<div class="digit" style="--deg: 90" data-digit="3"></div>
+					<div class="digit" style="--deg: 120" data-digit="4"></div>
+					<div class="digit" style="--deg: 150" data-digit="5"></div>
+					<div class="digit" style="--deg: 180" data-digit="6"></div>
+					<div class="digit" style="--deg: 210" data-digit="7"></div>
+					<div class="digit" style="--deg: 240" data-digit="8"></div>
+					<div class="digit" style="--deg: 270" data-digit="9"></div>
+					<div class="digit" style="--deg: 300" data-digit="10"></div>
+					<div class="digit" style="--deg: 330" data-digit="11"></div>
+				</div>
+
+				<div id="callenderBox">
+					<div id="callenderMonth"></div>
+				</div>
+			</section>
+			<section id="image">
+				<div class="image-time uiFont"></div>
+				<div class="box uiFont">
+					<div class="author"></div>
+					<div class="caption"></div>
+				</div>
+			</section>
+			<section id="music">
+				<div>
+					<img src="https://i1.sndcdn.com/artworks-joPz3SL4l6GWVX00-dl2csw-t500x500.jpg" alt="" />
+					<div>
+						<h3>Home</h3>
+						<h4>Pleeg</h4>
+						<div class="controlPlay uiFont">⏪︎&nbsp;&nbsp;▶&nbsp;&nbsp;⏩︎</div>
+						<div class="prograss"></div>
+						<div class="timePrograss">
+							<div>0:00</div>
+							<div>-2:49</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+		<script is:inline>
+			const currentDate = new Date();
+			const currentMonth = currentDate.getMonth();
+			const currentYear = currentDate.getFullYear();
+			const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+			const weekdays = ["S", "M", "T", "W", "T", "F", "S"];
+			const table = document.createElement("table");
+			const thead = document.createElement("thead");
+			const headerRow = document.createElement("tr");
+			for (let i = 0; i < 7; i++) {
+				const th = document.createElement("th");
+				th.textContent = weekdays[i];
+				if (weekdays[i] == "S") th.classList.add("weekend");
+				headerRow.appendChild(th);
+			}
+			thead.appendChild(headerRow);
+			table.appendChild(thead);
+			const tbody = document.createElement("tbody");
+			const startingDay = new Date(currentYear, currentMonth, 1).getDay();
+			const numRows = Math.ceil((daysInMonth + startingDay) / 7);
+			let dayCount = 1;
+			for (let i = 0; i < numRows; i++) {
+				const row = document.createElement("tr");
+				for (let j = 0; j < 7; j++) {
+					const cell = document.createElement("td");
+					if (i === 0 && j < startingDay) {
+						cell.textContent = "";
+					} else if (dayCount > daysInMonth) {
+						cell.textContent = "";
+					} else {
+						cell.textContent = dayCount;
+						if (dayCount == currentDate.getDate()) cell.style.backgroundColor = "#FF0000";
+						dayCount++;
+					}
+					row.appendChild(cell);
+				}
+				tbody.appendChild(row);
+			}
+			table.appendChild(tbody);
+			document.getElementById("callenderBox").appendChild(table);
+			const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+			const callenderMonthElement = document.getElementById("callenderMonth");
+			callenderMonthElement.textContent = monthNames[currentMonth];
+
+			//clock
+			function moveClockHands() {
+				const now = new Date();
+				const hours = now.getHours();
+				const minutes = now.getMinutes();
+				const seconds = now.getSeconds();
+				const hourHand = document.querySelector(".hour-hand");
+				const minuteHand = document.querySelector(".minute-hand");
+				const secondHand = document.querySelector(".second-hand");
+				const hourRotation = hours * 30 + minutes * 0.5 + 180;
+				const minuteRotation = (minutes + seconds / 60) * 6 + 180;
+				const secondRotation = seconds * 6 + 180 + (hours * 60 + minutes) * 360;
+
+				hourHand.style.transform = `rotate(${hourRotation}deg) translateY(.5em)`;
+				minuteHand.style.transform = `rotate(${minuteRotation}deg) translateY(.5em)`;
+				secondHand.style.transform = `rotate(${secondRotation}deg) translateY(-.5em)`;
+
+				//digital clock
+				var digitalTime = ("0" + now.getHours()).slice(-2) + ":" + ("0" + now.getMinutes()).slice(-2) + ":" + ("0" + now.getSeconds()).slice(-2);
+
+				document.querySelector(".time").innerHTML = digitalTime;
+				document.querySelector(".image-time").innerHTML = digitalTime;
+				setTimeout(moveClockHands, 1000);
+			}
+
+			moveClockHands();
+			//ios device
+			// Function to check if the user agent string indicates an iOS device
+			// Example usage
+			if (!/iphone|ipad|ipod|macintosh|apple watch/.test(window.navigator.userAgent.toLowerCase()))
+				document.getElementById("status").innerHTML = "This is not an iOS Device, some function may not work properly";
+			document.getElementById("status").style.color = "red";
+
+			//settings
+			let pressTimer;
+
+			function startPressTimer() {
+				var elem = document.documentElement; // Assuming you want to make the entire document full screen
+				if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+					if (elem.requestFullscreen) {
+						elem.requestFullscreen().catch(() => {});
+					} else if (elem.webkitRequestFullscreen) {
+						elem.webkitRequestFullscreen();
+					} else if (elem.msRequestFullscreen) {
+						elem.msRequestFullscreen();
+					}
+				}
+				pressTimer = setTimeout(setShow, 300); // Adjust the duration as needed
+				console.log("a");
+			}
+			const setShow = () => {
+				document.body.classList.toggle("setting");
+			};
+
+			function cancelPressTimer() {
+				clearTimeout(pressTimer);
+			}
+
+			document.addEventListener("touchstart", startPressTimer);
+			document.addEventListener("touchend", cancelPressTimer);
+			document.addEventListener("mousedown", startPressTimer);
+			document.addEventListener("mouseup", cancelPressTimer);
+
+			//color{
+			function changeFontColor(color) {
+				document.documentElement.style.setProperty("--main-color", color);
+				if (color === "#FFFFFF") {
+					document.getElementById("time").style.background = "black";
+					document.querySelector(".timeBg").style.background = "black";
+					document.querySelector(".time").style.color = "white";
+				} else {
+					document.getElementById("time").style.background = " var(--main-color)";
+					document.querySelector(".timeBg").style.background = "linear-gradient(-45deg, transparent 20%, var(--main-color))";
+					document.querySelector(".time").style.color = "#ffffff33";
+				}
+			}
+
+			//scroll y
+			//scroll event
+			var man = document.querySelector("main"),
+				last;
+			man.addEventListener("scroll", () => {
+				var a = Math.round(man.scrollTop / window.innerHeight);
+				if (a == last) return;
+				var elements = document.querySelectorAll(".progress");
+				elements.forEach(function (element) {
+					element.classList.remove("now");
+				});
+				elements[a]?.classList.add("now");
+				last = a;
+			});
+
+			//image
+			const imageElement = document.getElementById("image");
+			const authorElement = document.querySelector(".author");
+			const captionElement = document.querySelector(".caption");
+			fetch(`https://api.unsplash.com/photos/random?client_id=fJ9Q7JkDZO6JvR6XU4kq7vATcQ9mdO0BGwcJwgYS7M0`)
+				.then(response => {
+					if (!response.ok) throw new Error("Image unavailable");
+					return response.json();
+				})
+				.then(data => {
+					imageElement.style.backgroundImage = `url(${data.urls.full})`;
+					// Assuming data is an object containing the description and alt_description properties
+					if (data.description !== null) {
+						authorElement.textContent = data.description.split("More")[0].split("more")[0].split("IG")[0].split("Follow on")[0].split("Photo by")[0].split("by")[0].split("Instagram")[0];
+					} else {
+						authorElement.textContent = data.alt_description;
+					}
+					captionElement.innerHTML = `<a href="${data.links.html}" target="_blank">${data.user.name}, ${data.user.location}<span>❯</span></a>`;
+				})
+				.catch(() => {
+					authorElement.textContent = "Photo unavailable";
+					captionElement.textContent = "The clock is still available offline.";
+				});
+		</script>
+	</body>
+</html>

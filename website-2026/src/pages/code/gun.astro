@@ -1,0 +1,77 @@
+---
+
+---
+
+<html lang="zh-tw">
+	<head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>JavaScript & CSS 陀螺儀使圖片三維翻轉</title>
+		<style is:global>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-direction: column;
+				background-color: black;
+				color: #fff;
+			}
+
+			/* img {
+                width: 100%;
+            } */
+			#xyz-img {
+				font-size: 50vw;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="ro"></div>
+		<div id="xyz-img">🔫</div>
+		<script is:inline>
+			document.addEventListener("click", async () => {
+                requestFullScreen();
+                if (typeof window.DeviceOrientationEvent?.requestPermission === "function") {
+                    try {
+                        const permission = await DeviceOrientationEvent.requestPermission();
+                        if (permission !== "granted") document.getElementById("ro").textContent = "請允許裝置方向感測器權限。";
+                    } catch { document.getElementById("ro").textContent = "無法取得裝置方向感測器權限。"; }
+                }
+            });
+			let elem = document.documentElement; // get the root element of the document
+			function requestFullScreen() {
+				if (elem.requestFullscreen) {
+					elem.requestFullscreen().catch(() => {});
+				} else if (elem.webkitRequestFullscreen) {
+					elem.webkitRequestFullscreen();
+				} else if (elem.msRequestFullscreen) {
+					elem.msRequestFullscreen();
+				}
+			}
+			document.addEventListener("DOMContentLoaded", function () {
+				var xyz_img = document.getElementById("xyz-img");
+				if (window.DeviceOrientationEvent) {
+					window.addEventListener(
+						"deviceorientation",
+						function (event) {
+							if (!Number.isFinite(event.alpha)) return;
+							xyz_img.style.transform = "rotateZ(" + (event.alpha - 90) + "deg)";
+							document.getElementById("ro").innerHTML = Math.round(event.alpha);
+						},
+						false
+					);
+				} else {
+					document.querySelector("body").innerHTML = "瀏覽器不支援";
+				}
+			});
+		</script>
+	</body>
+</html>

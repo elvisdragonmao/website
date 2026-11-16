@@ -1,0 +1,301 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-TW">
+	<head>
+		<Head
+			path="code/format-text"
+			title="文本格式化大師 - 輕鬆整理文本 | 毛哥EM的基地"
+			theme="#749BC2"
+			description="這個網站讓你可以輕鬆地去除空白，換行，或特定符號。讓你的文字變得更乾淨、更易閱讀，也可以讓你輕鬆將網路或論文加入筆記中。"
+		/>
+		<style is:global>
+			:root {
+				--color-primary: #f6f4eb;
+				--color-secondary: #91c8e4;
+				--color-light: #749bc2;
+				--color-dark: #4682a9;
+			}
+
+			* {
+				box-sizing: border-box;
+				padding: 0;
+				margin: 0;
+			}
+
+			body {
+				font-family:
+					system-ui,
+					-apple-system,
+					BlinkMacSystemFont,
+					"Segoe UI",
+					Roboto,
+					Oxygen,
+					Ubuntu,
+					Cantarell,
+					"Open Sans",
+					"Helvetica Neue",
+					sans-serif;
+				background: #fbfaf5;
+				font-size: 1.5rem;
+				text-align: center;
+			}
+
+			main {
+				min-height: 100svh;
+				width: 100%;
+				max-width: 800px;
+				margin: 2rem auto;
+			}
+
+			h1 {
+				text-align: center;
+				color: var(--color-dark);
+				font-size: 2rem;
+				font-weight: 900;
+			}
+
+			h2 {
+				text-align: center;
+				color: var(--color-light);
+				font-size: 1.5rem;
+				margin: 0.5rem 0;
+			}
+
+			button,
+			input,
+			textarea {
+				background: transparent;
+				border: none;
+				border-radius: 0.5rem;
+				color: var(--color-light);
+				font-size: 1rem;
+				cursor: pointer;
+				vertical-align: middle;
+			}
+
+			div {
+				text-align: center;
+				margin: 1rem auto;
+				line-height: 1.5;
+			}
+
+			button {
+				background: var(--color-dark);
+				color: var(--color-primary);
+				margin: 0.5rem auto;
+				padding: 0.5rem;
+				font-family:
+					system-ui,
+					-apple-system,
+					BlinkMacSystemFont,
+					"Segoe UI",
+					Roboto,
+					Oxygen,
+					Ubuntu,
+					Cantarell,
+					"Open Sans",
+					"Helvetica Neue",
+					sans-serif;
+			}
+
+			span {
+				display: block;
+				margin-top: 0.5em;
+			}
+
+			textarea {
+				display: block;
+				resize: vertical;
+				width: 100%;
+				border: 3px solid var(--color-secondary);
+				padding: 0.5rem;
+				margin-top: 1.5rem;
+				color: var(--color-dark);
+				font-family:
+					system-ui,
+					-apple-system,
+					BlinkMacSystemFont,
+					"Segoe UI",
+					Roboto,
+					Oxygen,
+					Ubuntu,
+					Cantarell,
+					"Open Sans",
+					"Helvetica Neue",
+					sans-serif;
+				cursor: text;
+			}
+
+			input {
+				background: #f6f4eb;
+				height: 2rem;
+				padding: 0 0.5rem;
+			}
+
+			input[type="checkbox"] {
+				width: 1.25rem;
+				height: 1.25rem;
+			}
+			input[type="text"] {
+				width: 5rem;
+			}
+			textarea:focus {
+				outline: none;
+			}
+
+			input:focus {
+				outline: none;
+			}
+
+			p,
+			footer {
+				font-size: 1rem;
+				margin-top: 1rem;
+			}
+
+			label {
+				margin-right: 0.5rem;
+				cursor: pointer;
+			}
+
+			.success {
+				position: fixed;
+				padding: 0.5rem 5rem 0.5rem 1rem;
+				background: rgb(127, 207, 6);
+				color: #fff;
+				border-radius: 0.5rem;
+				right: 2rem;
+				bottom: 3rem;
+				animation: fade 3s ease-in-out;
+			}
+
+			@media screen and (max-width: 800px) {
+				.success {
+					right: 1rem;
+					bottom: 1rem;
+					padding: 0.5rem 1rem;
+				}
+			}
+
+			@keyframes fade {
+				0% {
+					transform: translateY(2rem);
+					opacity: 0;
+				}
+
+				15%,
+				85% {
+					opacity: 1;
+					transform: translateY(0rem);
+				}
+
+				100% {
+					transform: translateY(-2rem);
+					opacity: 0;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>文本格式化大師</h1>
+			<h2>輕鬆整理文本</h2>
+			<div>
+				<input type="checkbox" id="br" />
+				<label for="br">移除換行</label>
+				<input type="checkbox" id="space" />
+				<label for="space">移除空白</label><br />
+				<input type="checkbox" id="replaceBrWithSpace" checked />
+				<label for="replaceBrWithSpace">空白取代換行</label>
+				<input type="checkbox" id="spaces" checked />
+				<label for="spaces">移除多重空白</label>
+				<br />
+				<input type="checkbox" id="period" checked />
+				<label for="period">. 後補上空白</label>
+				<br />
+				<input type="checkbox" id="lowerCase" />
+				<label for="lowerCase">轉換為小寫</label>
+				<label for="replacement">以</label>
+				<input type="text" id="replacement" />
+				<label for="del">取代</label>
+				<input type="text" id="del" />
+			</div>
+			<button onclick="autoPaste()">貼上</button>
+			<button onclick="format()">格式化並複製</button>
+			<textarea rows="10"></textarea>
+			<p>
+				這個網站讓你可以輕鬆地去除空白，換行，或特定符號。讓你的文字變得更乾淨、更易閱讀，也可以讓你輕鬆將網路或論文加入筆記中。點擊「格式化並複製」按鈕或是按下 Ctrl +
+				Enter，即可將整理好的文字複製到剪貼簿中。
+			</p>
+
+			<footer>毛哥EM製作</footer>
+		</main>
+		<script is:inline>
+			const format = async () => {
+				let text = document.querySelector("textarea").value;
+				if (document.querySelector("#br").checked) {
+					text = text.replace(/\n/g, "");
+				}
+				if (document.querySelector("#space").checked) {
+					text = text.replace(/\s/g, "");
+				}
+				if (document.querySelector("#replaceBrWithSpace").checked) {
+					text = text.replace(/\n/g, " ");
+				}
+				if (document.querySelector("#lowerCase").checked) {
+					text = text.toLowerCase();
+				}
+				if (document.querySelector("#period").checked) {
+					text = text.replace(/\.([^\s])/g, ". $1");
+				}
+				const search = document.querySelector("#del").value;
+				if (search) {
+					text = text.split(search).join(document.querySelector("#replacement").value);
+				}
+				if (document.querySelector("#spaces").checked) {
+					text = text.replace(/\s+/g, " ");
+				}
+				document.querySelector("textarea").value = text;
+				document.querySelector("textarea").select();
+				let copied = false;
+				try {
+					if (navigator.clipboard?.writeText) {
+						await navigator.clipboard.writeText(text);
+						copied = true;
+					} else copied = document.execCommand("copy");
+				} catch {
+					copied = document.execCommand("copy");
+				}
+
+				const successDiv = document.createElement("div");
+				successDiv.classList.add("success");
+				successDiv.innerText = copied ? "✅  複製成功" : "已完成格式化，請手動複製選取的文字";
+				document.querySelector("main").appendChild(successDiv);
+				setTimeout(() => {
+					successDiv.remove();
+				}, 3000);
+			};
+
+			const autoPaste = () => {
+				if (!navigator.clipboard?.readText) return;
+				navigator.clipboard
+					.readText()
+					.then(text => {
+						document.querySelector("textarea").value = text;
+					})
+					.catch(() => {
+						/* Manual paste remains available when permission is denied. */
+					});
+			};
+
+			// ctrl + enter to format and copy
+			document.addEventListener("keydown", e => {
+				if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+					format();
+				}
+			});
+		</script>
+	</body>
+</html>

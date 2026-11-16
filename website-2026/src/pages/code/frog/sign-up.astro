@@ -1,0 +1,52 @@
+---
+import "@assets/code/frog.css";
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-Hant">
+	<head>
+		<Head path="code/frog/sign-up/" title="新增學生 - 大眼蛙教練點名系統" description="快速紀錄出缺席" theme="#00BFFF" />
+	</head>
+	<body>
+		<main>
+			<h1><a href="/code/frog/">大眼蛙教練點名系統</a></h1>
+			<p>新增學生</p>
+			<input type="text" class="form-control" id="name" />
+			<button type="button" id="sendOrder">新增</button>
+			<p>
+				<a href="/">毛哥EM</a>製作<br />
+				送出後請稍等數秒 勿重複新增
+			</p>
+		</main>
+		<script is:inline>
+			const input = document.querySelector("#name");
+			const button = document.querySelector("#sendOrder");
+			const status = document.createElement("p");
+			status.setAttribute("role", "status");
+			button.after(status);
+			button.addEventListener("click", async () => {
+				const name = input.value.replace(/\s+/g, "");
+				if (!name) {
+					input.setCustomValidity("請輸入姓名");
+					input.reportValidity();
+					return;
+				}
+				button.disabled = true;
+				status.textContent = "新增中…";
+				try {
+					const url = "https://script.google.com/macros/s/AKfycbyNU2bnrNC1vecUKgWB4lx1D8CePpjQ2MYcnELUtrWSbbqJ-rQ-JvKbngQhZ3NrjXyR/exec";
+					const response = await fetch(`${url}?${new URLSearchParams({ name })}`, { signal: AbortSignal.timeout(15000) });
+					if (!response.ok) throw new Error("Request failed");
+					await response.json();
+					status.textContent = "新增成功！";
+					input.value = "";
+				} catch {
+					status.textContent = "新增未完成，請檢查網路後重試。";
+				} finally {
+					button.disabled = false;
+				}
+			});
+			input.addEventListener("input", () => input.setCustomValidity(""));
+		</script>
+	</body>
+</html>

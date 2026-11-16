@@ -1,0 +1,69 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-Hant">
+	<head>
+		<Head path="code/weekly" title="旌旗青年週報下載器" description="輕鬆下載旌旗青年週報 PDF 檔" theme="#00adb5" favicon={false} />
+		<link href="https://www.bannerch.org/templates/fortune_bannerch/favicon.png" rel="icon" type="image/x-icon" />
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="https://pages-themes.github.io/cayman/assets/css/style.css" media="screen" />
+		<script type="text/javascript">
+			function goTo() {
+				const input = document.querySelector("#date");
+				if (!input.reportValidity()) return;
+				const date = input.value;
+				const link = "https://www.bannerch.org/images/media/weekly/" + date.slice(0, 4) + "/weekly-" + date.replaceAll("-", "") + ".pdf";
+				window.open(link, "_blank", "noopener");
+			}
+		</script>
+	</head>
+	<body>
+		<section class="page-header">
+			<h1 class="project-name">旌旗青年週報下載器</h1>
+			<h2 class="project-tagline">請輸入日期</h2>
+			<form name="myForm">
+				<input type="date" name="myDate" id="date" required class="btn" />
+			</form>
+			<input type="button" value="輸入" class="btn" onclick="goTo()" />
+			<h2 class="project-tagline" style="margin: 0rem"><a href="../" style="color: white">回首頁</a></h2>
+		</section>
+		<section class="main-content">
+			<a class="anchor" href="../../" aria-hidden="true"><span class="octicon octicon-link">回首頁</span></a>
+			<h1>
+				<a id="welcome" class="anchor" href="#welcome" aria-hidden="true"><span class="octicon octicon-link"></span></a>關於此網站
+			</h1>
+			<p>
+				上次維護日期:2022/6/25<br />點擊上方連結即可直接下載上週或本週報彩色完整的pdf檔。之前青年官網及直播只有提供圖片檔，較不方便利用。<br
+				/>周間時當週週報教會可能還未釋出，若無法下載（出現404）請過一陣子再試。若持續無法使用，請與我聯絡，可能旌旗教會修改了檔案的命名方式。
+			</p>
+			<h1>
+				<a id="direct" class="anchor" href="#direct" aria-hidden="true"><span class="octicon octicon-link"></span></a>當週週報連結
+			</h1>
+			<p>
+				如果你平常只需要獲取當周週報，可直接到以下網址，永久有效。歡迎設為書籤<br /><a href="/code/weekly/redirect/">/code/weekly/redirect/</a>
+			</p>
+			<h1>
+				<a id="aboutMe" class="anchor" href="#aboutMe" aria-hidden="true"><span class="octicon octicon-link"></span></a>ios捷徑（稍後更新連結）
+			</h1>
+			<p>
+				若你使用的是ios裝置，你可以使用我製作的捷徑腳本來快速獲取當天、上一次、或指定日期的週報。<br
+				/>需要注意的是:若未曾匯入非官方的捷徑，須至設定/捷徑開啟"允許加入不受信任的捷徑"。此網站及捷徑皆為開源項目，歡迎到GitHub查看。
+			</p>
+			<p>
+				如果你覺得這個網頁有幫助到你，歡迎將它分享出去（<a
+					href="javascript: void(window.open('https://lineit.line.me/share/ui?url=' .concat(encodeURIComponent(location.href)) ));"
+					title="分享給 LINE 好友"
+				>
+					Line分享按我
+				</a>）
+			</p>
+
+			<footer class="site-footer">
+				<p>本網站由<a href="https://github.com/elvisdragonmao">毛哥EM(Edit Mr.)</a>製作，若有任何問題歡迎<a href="mailto:elvismao.070512@gmail.com">與我聯絡</a><br />也歡迎幫我買杯咖啡</p>
+				<a href="mailto:elvismao.070512@gmail.com"><img src="https://img.shields.io/badge/-elvismao.070512@gmail.com-D14836?style=flat-square&logo=Gmail&logoColor=white" /></a>
+				<a href="https://www.paypal.me/elvismao"><img src="https://img.shields.io/badge/-elvismao.070512@gmail.com-169BD7?style=flat-square&logo=PayPal&logoColor=white" /></a>
+			</footer>
+		</section>
+	</body>
+</html>

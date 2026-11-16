@@ -1,0 +1,28 @@
+---
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	theme?: string;
+	path?: string;
+	i18n?: string[];
+	favicon?: boolean;
+	ga?: boolean;
+}
+const { title = "Elvis Mao", description, image, theme = "#080909", favicon = true } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const shareImage = image ? new URL(image, Astro.site ?? Astro.url.origin) : undefined;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+<meta name="theme-color" content={theme} />
+<link rel="canonical" href={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonical} />
+{description && <meta property="og:description" content={description} />}
+{shareImage && <meta property="og:image" content={shareImage} />}
+{favicon && <link rel="icon" type="image/svg+xml" href="/favicon.svg" />}

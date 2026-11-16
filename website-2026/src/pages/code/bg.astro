@@ -1,0 +1,115 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-Hant">
+	<head>
+		<Head path="code/bg" title="背景顏色 | 毛哥EM的基地" description="自由更改背景顏色或製作漸層" theme="#FFF" />
+		<meta property="og:locale" content="zh-TW" />
+		<style is:global>
+			html,
+			body {
+				background-color: #ffffff;
+				padding: 0;
+				margin: 0;
+				/* Or any color / image you want */
+			}
+
+			input {
+				display: block;
+				width: 6rem;
+			}
+
+			div {
+				position: fixed;
+				right: 0;
+				bottom: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: flex-end;
+			}
+
+			body {
+				min-height: 100lvh;
+				background: linear-gradient(90deg, #090979, #00d4ff);
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<input type="color" id="c1" value="#090979" /><input type="text" id="c1Hex" value="#090979" />
+			<input type="color" id="c2" value="#00d4ff" /><input type="text" id="c2Hex" value="#00d4ff" />
+			<input type="checkbox" name="" id="gra" />
+			<input type="range" name="" id="deg" min="0" max="360" />
+		</div>
+		<script is:inline>
+			// when any of the input changed, update the background color. If the checkbox is checked, use gradient color. Update the hex if uses color picker, update the color picker if uses hex.
+
+			// get the elements
+			let c1 = document.querySelector("#c1");
+			let c2 = document.querySelector("#c2");
+			let c1Hex = document.querySelector("#c1Hex");
+			let c2Hex = document.querySelector("#c2Hex");
+			let gra = document.querySelector("#gra");
+			let body = document.querySelector("body");
+			let range = document.querySelector("#deg");
+
+			// add event listener
+			c1.addEventListener("change", updateColor);
+			c2.addEventListener("change", updateColor);
+			c1Hex.addEventListener("change", updateColorHex);
+			c2Hex.addEventListener("change", updateColorHex);
+			gra.addEventListener("change", updateColor);
+			range.addEventListener("change", updateColor);
+			// update color
+
+			function updateColor() {
+				if (gra.checked) {
+					body.style.background = `linear-gradient(${range.value}deg, ${c1.value}, ${c2.value})`;
+				} else {
+					body.style.background = c1.value;
+				}
+				c1Hex.value = c1.value;
+				c2Hex.value = c2.value;
+			}
+
+			// update color hex
+
+			function updateColorHex() {
+				if (!/^#[\da-f]{6}$/i.test(c1Hex.value) || !/^#[\da-f]{6}$/i.test(c2Hex.value)) return;
+				c1.value = c1Hex.value;
+				c2.value = c2Hex.value;
+				updateColor();
+			}
+
+			//long press anywhere for full screen, both pc and mobile. Short press anywhere for showing and hiding the control panel.
+
+			let timer;
+			let div = document.querySelector("div");
+			body.addEventListener("mousedown", () => {
+				timer = setTimeout(() => {
+					body.requestFullscreen?.().catch(() => {});
+				}, 1000);
+			});
+			body.addEventListener("mouseup", () => {
+				clearTimeout(timer);
+			});
+			body.addEventListener("touchstart", () => {
+				timer = setTimeout(() => {
+					body.requestFullscreen?.().catch(() => {});
+				}, 1000);
+			});
+			body.addEventListener("touchend", () => {
+				clearTimeout(timer);
+			});
+			body.addEventListener("dblclick", () => {
+				if (div.style.display == "none") {
+					div.style.display = "flex";
+				} else {
+					div.style.display = "none";
+				}
+			});
+		</script>
+	</body>
+</html>

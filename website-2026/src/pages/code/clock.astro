@@ -1,0 +1,110 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-Hant">
+	<head>
+		<Head path="code/clock" title="數位時鐘 | 毛哥EM的基地" description="大字體數位時鐘與漸層文字" theme="#1C1C2B" />
+		<meta property="og:locale" content="zh-TW" />
+		<style is:global>
+			@import url("https://font.emtech.cc/fonts/JetBrainsMono");
+
+			:root {
+				--clock-bg: #1c1c2b;
+				--clock-gradient: linear-gradient(120deg, rgb(250, 179, 135), rgb(203, 166, 247));
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				min-height: 100vh;
+				background: var(--clock-bg);
+				font-family: "JetBrainsMono", monospace;
+			}
+
+			.clock-wrap {
+				width: 100%;
+				max-width: 100vw;
+				height: 100vh;
+				padding: clamp(1rem, 3vw, 2.25rem);
+				display: grid;
+				place-items: center;
+				text-align: center;
+				overflow: hidden;
+			}
+
+			.clock {
+				margin: 0;
+				font-size: 20vmin;
+				display: inline-block;
+				font-weight: 700;
+				letter-spacing: 0;
+				line-height: 1;
+				color: transparent;
+				background: var(--clock-gradient);
+				-webkit-background-clip: text;
+				background-clip: text;
+				white-space: nowrap;
+			}
+		</style>
+	</head>
+	<body>
+		<main class="clock-wrap">
+			<h1 class="clock" id="clock" aria-live="polite">00:00:00</h1>
+		</main>
+		<script is:inline>
+			const clock = document.getElementById("clock");
+			const clockWrap = document.querySelector(".clock-wrap");
+
+			const fitClock = () => {
+				if (!clock || !clockWrap) return;
+
+				const style = window.getComputedStyle(clockWrap);
+				const padX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+				const padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+				const maxWidth = clockWrap.clientWidth - padX;
+				const maxHeight = clockWrap.clientHeight - padY;
+				let low = 1;
+				let high = 2000;
+				let best = 1;
+
+				while (low <= high) {
+					const size = Math.floor((low + high) / 2);
+					clock.style.fontSize = `${size}px`;
+
+					const rect = clock.getBoundingClientRect();
+					if (rect.width <= maxWidth && rect.height <= maxHeight) {
+						best = size;
+						low = size + 1;
+					} else {
+						high = size - 1;
+					}
+				}
+
+				clock.style.fontSize = `${Math.floor(best * 0.98)}px`;
+			};
+
+			const updateClock = () => {
+				const now = new Date();
+				const time = now.toLocaleTimeString("zh-TW", {
+					hour12: false,
+					hour: "2-digit",
+					minute: "2-digit",
+					second: "2-digit"
+				});
+
+				if (clock) {
+					clock.textContent = time;
+					fitClock();
+				}
+			};
+
+			updateClock();
+			setInterval(updateClock, 1000);
+			window.addEventListener("resize", fitClock);
+		</script>
+	</body>
+</html>

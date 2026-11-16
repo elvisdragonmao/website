@@ -1,0 +1,79 @@
+---
+import "@assets/code/frog.css";
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-Hant">
+	<head>
+		<Head path="code/frog/search/" title="主選單 - 大眼蛙教練點名系統" description="快速紀錄出缺席" theme="#00BFFF" />
+	</head>
+	<body>
+		<main>
+			<h1><a href="/code/frog/">大眼蛙教練點名系統</a></h1>
+			<p>紀錄查詢</p>
+			<input type="text" id="name" />
+			<button type="button" id="send">查詢</button>
+			<table class="table table-striped" style="display: none">
+				<thead>
+					<tr>
+						<th>姓名</th>
+						<th>報到時間</th>
+						<th>剩下課堂</th>
+					</tr>
+				</thead>
+				<tbody id="dataView"></tbody>
+			</table>
+			<p>
+				<a href="/">毛哥EM</a>製作<br />
+				送出後請稍等數秒
+			</p>
+		</main>
+		<script is:inline>
+			const input = document.querySelector("#name");
+			const button = document.querySelector("#send");
+			const status = document.createElement("p");
+			status.setAttribute("role", "status");
+			button.after(status);
+			button.addEventListener("click", async () => {
+				const name = input.value.trim();
+				if (!name) {
+					input.setCustomValidity("請輸入姓名");
+					input.reportValidity();
+					return;
+				}
+				button.disabled = true;
+				status.textContent = "查詢中…";
+				document.querySelector("table").style.display = "none";
+				try {
+					const response = await fetch("https://script.google.com/macros/s/AKfycbw3SOF6xE1jJpO9sOtn69rWH5tQR2AzfZ0pPlSoQ0UWioa3JhzYSU7V6rCyGjtGAj2B6A/exec", {
+						method: "POST",
+						body: new URLSearchParams({ name }),
+						signal: AbortSignal.timeout(15000)
+					});
+					if (!response.ok) throw new Error("Request failed");
+					const results = await response.json();
+					if (!Array.isArray(results)) throw new Error("Invalid response");
+					const tbody = document.querySelector("#dataView");
+					tbody.replaceChildren();
+					for (const result of results) {
+						const [student, time, remain] = result.data;
+						const row = document.createElement("tr");
+						for (const text of [student, new Date(time).toLocaleString("zh-TW"), remain]) {
+							const cell = document.createElement("td");
+							cell.textContent = String(text);
+							row.append(cell);
+						}
+						tbody.append(row);
+					}
+					document.querySelector("table").style.display = results.length ? "table" : "none";
+					status.textContent = results.length ? `找到 ${results.length} 筆紀錄` : "查無資料";
+				} catch {
+					status.textContent = "無法查詢紀錄，請稍後再試。";
+				} finally {
+					button.disabled = false;
+				}
+			});
+			input.addEventListener("input", () => input.setCustomValidity(""));
+		</script>
+	</body>
+</html>

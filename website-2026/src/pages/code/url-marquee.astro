@@ -1,0 +1,81 @@
+---
+import Head from "@components/Head.astro";
+---
+
+<html lang="zh-Hant">
+	<head>
+		<Head path="code/url-marquee" title="網址跑馬燈 | 毛哥EM的基地" description="在網址放跑馬燈" theme="#000" />
+		<meta property="og:locale" content="zh-TW" />
+		<style is:global>
+			body {
+				font-size: 1rem;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				height: 100vh;
+				font-family: sans-serif;
+				background-color: #000;
+				color: #fff;
+				margin: 0;
+			}
+			div {
+				margin-bottom: 1rem;
+			}
+			label {
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>網址跑馬燈</h1>
+			<p>By 毛哥EM 🤓👆</p>
+			<p><a href="https://emtech.cc/p/url-marquee">關於此專案</a></p>
+			<div>
+				<input type="radio" name="animation" value="▁▂▃▄▅▆▇█▇▆▅▄▃▂" id="wave" checked />
+				<label for="wave">▁▂▃▄▅▆▇█▇▆▅▄▃▂</label>
+			</div>
+			<div>
+				<input type="radio" name="animation" value="💀💀🔥🔥👆🤓👇" id="nerd" />
+				<label for="nerd">💀💀🔥🔥👆🤓👇</label>
+			</div>
+			<div>
+				<input type="radio" name="animation" value=". .. ... .... ... .. ." id="dots" />
+				<label for="dots">. .. ... .... ... .. .</label>
+			</div>
+			<div>
+				<input type="radio" name="animation" value=". o O o . o O o " id="balls" />
+				<label for="balls">. o O o .</label>
+			</div>
+			<div>
+				<input type="radio" name="animation" value="⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏" id="spinner" />
+				<label for="spinner">⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏</label>
+			</div>
+		</main>
+		<script>
+			let text = "▁▂▃▄▅▆▇█▇▆▅▄▃▂";
+            try { text = decodeURIComponent(window.location.hash.slice(1)) || text; } catch {}
+			let chars = Array.from(text);
+			let i = 0;
+
+			const animation = setInterval(() => {
+				const rotated = chars.slice(i).join("") + chars.slice(0, i).join("");
+				const url = new URL(window.location.href);
+                url.hash = rotated;
+                history.replaceState(null, "", url);
+				i = (i + 1) % chars.length;
+			}, 50);
+
+            window.addEventListener("pagehide", () => clearInterval(animation));
+			const radios = document.querySelectorAll('input[name="animation"]');
+			radios.forEach(radio => {
+				radio.addEventListener("change", e => {
+					text = (e.target as HTMLInputElement).value;
+					chars = Array.from(text);
+					i = 0;
+				});
+			});
+		</script>
+	</body>
+</html>
