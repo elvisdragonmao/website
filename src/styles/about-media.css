@@ -288,12 +288,6 @@
 	.about-page .about-facet {
 		padding-inline: 19px;
 	}
-	.about-page .about-facet h2 {
-		font-size: 12px;
-		left: 10px;
-		padding-inline: 6px;
-		max-width: calc(100% - 20px);
-	}
 	.about-page .facet-touch {
 		grid-template-columns: 1fr;
 	}
