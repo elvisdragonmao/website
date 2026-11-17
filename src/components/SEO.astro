@@ -32,6 +32,7 @@ const graph = noindex
 <meta name="author" content={siteIdentity.personName} />
 <meta name="robots" content={noindex ? "noindex" : "index, follow, max-image-preview:large"} />
 <link rel="canonical" href={canonical} />
+<link rel="sitemap" type="application/xml" href={new URL("/sitemap-index.xml", site).href} />
 {alternateLocales.length > 1 && alternateLocales.map(value => <link rel="alternate" hreflang={value} href={new URL(localizePath(Astro.url.pathname, value), site).href} />)}
 {alternateLocales.length > 1 && <link rel="alternate" hreflang="x-default" href={new URL(localizePath(Astro.url.pathname, "en"), site).href} />}
 <meta property="og:type" content="website" />
