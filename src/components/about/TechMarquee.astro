@@ -1,0 +1,24 @@
+---
+import { stackIcons } from "../../data/stack";
+const lanes = [stackIcons.slice(0, 7), stackIcons.slice(7)];
+---
+
+<div class="stack-marquee" role="img" aria-label={stackIcons.map(icon => icon.label).join(", ")}>
+	{
+		lanes.map((icons, i) => (
+			<div class:list={["stack-lane", { reverse: i === 1 }]} aria-hidden="true">
+				<div class="stack-track">
+					{[0, 1].map(() => (
+						<div class="stack-group">
+							{icons.map(icon => (
+								<div class="stack-mark">
+									<pre>{icon.art}</pre>
+								</div>
+							))}
+						</div>
+					))}
+				</div>
+			</div>
+		))
+	}
+</div>

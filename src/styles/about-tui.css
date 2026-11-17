@@ -1,0 +1,387 @@
+/* Responsive btop-inspired glyph frames. */
+.about-page[data-about-theme] {
+	--panel-bg: #080909;
+	--panel-ink: #739f9b;
+	padding-top: 28px;
+}
+:where(.about-page[data-about-theme]) .about-hero {
+	margin-bottom: 48px;
+}
+:where(.about-page[data-about-theme]) .about-facets {
+	gap: 28px 24px;
+	align-items: stretch;
+}
+.tui-panel {
+	position: relative;
+	isolation: isolate;
+	background: var(--panel-bg);
+}
+.tui-panel::before {
+	content: "";
+	position: absolute;
+	inset: 5px 1px;
+	border: 1px solid var(--panel-ink);
+	border-radius: 9px;
+	pointer-events: none;
+}
+[data-frames-ready] .tui-panel::before {
+	display: none;
+}
+.tui-frame {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	color: var(--panel-ink);
+	z-index: 1;
+}
+.tui-frame text {
+	font:
+		14px "IBM Plex Mono",
+		monospace;
+	fill: currentColor;
+	white-space: pre;
+}
+:where(.about-page[data-about-theme]) .about-facet {
+	padding: 34px 25px 26px;
+	min-height: 246px;
+}
+:where(.about-page[data-about-theme]) .about-facet h2,
+:where(.about-page[data-about-theme]) .about-section > h2,
+:where(.about-page[data-about-theme]) .about-section-heading h2 {
+	position: absolute;
+	left: 17px;
+	top: -5px;
+	max-width: calc(100% - 34px);
+	margin: 0;
+	padding: 0 9px;
+	background: var(--panel-bg);
+	color: var(--panel-ink);
+	font-size: 14px;
+	line-height: 24px;
+	letter-spacing: 0;
+	z-index: 2;
+}
+:where(.about-page[data-about-theme]) .about-facet p {
+	font-size: 13px;
+	line-height: 1.8;
+}
+:where(.about-page[data-about-theme]) .facet-touch {
+	display: grid;
+	grid-template-columns: 1.1fr 0.9fr;
+	gap: 22px;
+	align-items: center;
+	--panel-ink: #d6e77a;
+}
+:where(.about-page[data-about-theme]) .facet-touch p {
+	font-size: 14px;
+}
+:where(.about-page[data-about-theme]) .facet-furry {
+	--panel-ink: #caa8dc;
+}
+:where(.about-page[data-about-theme]) .facet-stack {
+	--panel-ink: #7ac8d2;
+}
+:where(.about-page[data-about-theme]) .facet-source {
+	--panel-ink: #d6e77a;
+}
+:where(.about-page[data-about-theme]) .facet-debate {
+	--panel-ink: #be9d77;
+	display: flex;
+	align-items: center;
+}
+:where(.about-page[data-about-theme]) .facet-debate p {
+	font-size: 16px;
+	line-height: 1.85;
+}
+:where(.about-page[data-about-theme]) .facet-music {
+	--panel-ink: #caa8dc;
+}
+:where(.about-page[data-about-theme]) .facet-camera {
+	--panel-ink: #94b1c0;
+}
+:where(.about-page[data-about-theme]) .facet-broadcast {
+	--panel-ink: #d6e77a;
+}
+:where(.about-page[data-about-theme]) .about-art {
+	margin-bottom: 18px;
+}
+:where(.about-page[data-about-theme]) .about-art-portrait,
+:where(.about-page[data-about-theme]) .about-art-touch {
+	margin-bottom: 0;
+}
+:where(.about-page[data-about-theme]) .about-font-metric {
+	margin-top: 30px;
+}
+:where(.about-page[data-about-theme]) .about-font-metric span {
+	font-size: 52px;
+}
+:where(.about-page[data-about-theme]) .about-section {
+	padding: 42px 28px 28px;
+	margin-bottom: 42px;
+}
+:where(.about-page[data-about-theme]) .about-section-heading {
+	height: 0;
+}
+:where(.about-page[data-about-theme]) .about-section-heading .about-link {
+	position: absolute;
+	top: -3px;
+	right: 21px;
+	padding-inline: 8px;
+	background: var(--panel-bg);
+	font-size: 12px;
+	z-index: 2;
+}
+:where(.about-page[data-about-theme]) .about-experience-list li {
+	position: relative;
+	grid-template-columns: 17ch 1fr;
+	padding: 9px 0 9px 24px;
+	gap: 20px;
+	font-size: 13px;
+}
+:where(.about-page[data-about-theme]) .about-experience-list li::before,
+:where(.about-page[data-about-theme]) .research-current li::before {
+	content: "├─";
+	position: absolute;
+	left: 0;
+	color: #55766c;
+}
+:where(.about-page[data-about-theme]) .about-experience-list li:last-child::before,
+:where(.about-page[data-about-theme]) .research-current li:last-child::before {
+	content: "└─";
+}
+:where(.about-page[data-about-theme]) .research-interests {
+	margin-top: 0;
+	margin-bottom: 28px;
+}
+:where(.about-page[data-about-theme]) .research-publication {
+	padding-left: 20px;
+	border-left: 1px solid #3e6358;
+}
+:where(.about-page[data-about-theme]) .research-current {
+	margin-top: 32px;
+}
+:where(.about-page[data-about-theme]) .research-current li {
+	position: relative;
+	padding-left: 25px;
+	font-size: 13px;
+}
+:where(.about-page[data-about-theme]) .about-statement {
+	margin-block: 72px;
+	padding: 53px 34px 36px;
+	--panel-ink: #a1b4a2;
+}
+.terminal-window-controls {
+	position: absolute;
+	/* The ASCII rails sit 8px down and 4px in: leave the same visual inset. */
+	top: 24px;
+	left: 20px;
+	display: flex;
+	gap: 7px;
+}
+.terminal-window-controls i {
+	width: 5px;
+	height: 5px;
+	background: #78958a;
+}
+.about-page .about-statement p {
+	font-size: clamp(16px, 1.55vw, 22px);
+	line-height: 1.85;
+}
+.about-page .about-statement .terminal-line {
+	position: relative;
+	display: block;
+	padding-left: 25px;
+	margin: 0;
+	color: var(--ink);
+}
+.about-page .terminal-line + .terminal-line {
+	margin-top: 13px;
+}
+.terminal-line::before {
+	content: ">";
+	position: absolute;
+	left: 0;
+	color: var(--about-green);
+}
+.about-page .terminal-line .terminal-source {
+	display: block;
+	margin: 0;
+	color: inherit;
+}
+.about-page .terminal-typing .terminal-source {
+	color: transparent;
+}
+.about-page .terminal-line .terminal-output {
+	position: absolute;
+	inset: 0 0 auto 25px;
+	display: block;
+	margin: 0;
+	white-space: pre-wrap;
+	color: #d4dfd6;
+}
+.terminal-output[data-cursor="true"]::after {
+	content: "▋";
+	color: var(--about-green);
+}
+:where(.about-page[data-about-theme]) .talks-section {
+	--panel-ink: #d6e77a;
+	padding: 25px 16px 17px;
+}
+:where(.about-page[data-about-theme]) .talks-controls {
+	margin: 0 8px 16px;
+}
+.talks-console .talks-app-title {
+	margin: 0;
+	padding: 4px 12px;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.5;
+	letter-spacing: 0;
+	background: var(--about-green);
+	color: #080909;
+}
+:where(.about-page[data-about-theme]) .talks-table-scroll {
+	max-height: 420px;
+	border-top: 0;
+}
+:where(.about-page[data-about-theme]) .talks-console :is(td, th) {
+	padding-block: 5px;
+	font-size: 12px;
+	line-height: 1.6;
+}
+.talks-keybar {
+	display: flex;
+	margin-top: 8px;
+	gap: 2px;
+}
+.talks-keybar button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	flex: 1;
+	padding: 2px 4px;
+	border: 0;
+	background: #7ac8d2;
+	color: #080909;
+	font: inherit;
+	font-size: 11px;
+	cursor: pointer;
+}
+.talks-keybar button[aria-pressed="true"] {
+	background: #d6e77a;
+}
+.talks-keybar kbd {
+	font: inherit;
+	color: #264f50;
+}
+.talks-keybar button:last-child {
+	flex: 0.5;
+}
+:where(.about-page[data-about-theme]) .awards-groups {
+	gap: 32px 40px;
+}
+:where(.about-page[data-about-theme]) .awards-year ul {
+	gap: 10px;
+}
+
+@media (max-width: 1100px) {
+	:where(.about-page[data-about-theme]) .about-facet h2 {
+		font-size: 12px;
+	}
+	:where(.about-page[data-about-theme]) .about-facet {
+		grid-column: span 6;
+	}
+	:where(.about-page[data-about-theme]) .facet-touch {
+		grid-column: 1 / -1;
+	}
+	:where(.about-page[data-about-theme]) .facet-broadcast {
+		grid-column: 1 / -1;
+	}
+}
+@media (max-width: 900px) {
+	[data-about-theme] .about-facet {
+		grid-column: 1 / -1;
+	}
+}
+@media (max-width: 700px) {
+	.about-page[data-about-theme] {
+		padding-top: 88px;
+	}
+	:where(.about-page[data-about-theme]) .about-hero {
+		margin-bottom: 34px;
+	}
+	:where(.about-page[data-about-theme]) .about-facets {
+		gap: 24px;
+	}
+	:where(.about-page[data-about-theme]) .about-facet {
+		grid-column: 1 / -1;
+		padding: 30px 23px 25px;
+		min-height: 0;
+	}
+	:where(.about-page[data-about-theme]) .about-facet h2,
+	:where(.about-page[data-about-theme]) .about-section > h2,
+	:where(.about-page[data-about-theme]) .about-section-heading h2 {
+		font-size: 12px;
+	}
+	:where(.about-page[data-about-theme]) .facet-touch {
+		display: flex;
+		flex-direction: column-reverse;
+	}
+	:where(.about-page[data-about-theme]) .facet-touch .about-art {
+		width: 100%;
+		height: 170px;
+	}
+	:where(.about-page[data-about-theme]) .facet-furry {
+		display: block;
+	}
+	:where(.about-page[data-about-theme]) .facet-furry .about-art {
+		margin-bottom: 18px;
+	}
+	:where(.about-page[data-about-theme]) .facet-debate p {
+		font-size: 14px;
+	}
+	:where(.about-page[data-about-theme]) .about-section {
+		padding: 36px 22px 24px;
+		margin-bottom: 32px;
+	}
+	:where(.about-page[data-about-theme]) .about-experience-list li {
+		grid-template-columns: 1fr;
+		gap: 3px;
+		padding-left: 22px;
+	}
+	:where(.about-page[data-about-theme]) .about-statement {
+		margin-block: 48px;
+		padding: 48px 22px 26px;
+	}
+	.about-page .about-statement p {
+		font-size: 16px;
+	}
+	.about-page .about-statement .terminal-line {
+		padding-left: 18px;
+	}
+	.about-page .terminal-line .terminal-output {
+		left: 18px;
+	}
+	:where(.about-page[data-about-theme]) .talks-section {
+		padding: 24px 10px 12px;
+	}
+	:where(.about-page[data-about-theme]) .talks-controls {
+		margin-inline: 6px;
+	}
+	.talks-keybar {
+		flex-wrap: wrap;
+		gap: 3px;
+	}
+	.talks-keybar button {
+		flex-basis: 28%;
+	}
+	.talks-keybar button:last-child {
+		flex: 1;
+	}
+	:where(.about-page[data-about-theme]) .talks-console :is(td, th) {
+		padding: 0;
+	}
+}

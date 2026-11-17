@@ -1,0 +1,52 @@
+---
+import { getLocale, t, type Locale } from "../i18n";
+interface Props {
+	locale?: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const titleLines = t(locale, "newsletter.title").split("\n");
+---
+
+<section class="newsletter-panel" aria-labelledby="newsletter-title">
+	<h3 id="newsletter-title">
+		{
+			titleLines.map((line, index) => (
+				<>
+					{index > 0 && <br />}
+					{line}
+				</>
+			))
+		}
+	</h3>
+	<form
+		id="newsletter-form"
+		data-newsletter
+		data-opening-message={t(locale, "newsletter.opening")}
+		action="https://docs.google.com/forms/d/e/1FAIpQLSeITLO_J8DsxypUmCL8Ubd4n_2WpiFI5hCnmtUY-TrKYys2Iw/formResponse"
+		method="post"
+		target="_blank"
+		data-astro-reload
+	>
+		<label class="sr-only" for="newsletter-name">{t(locale, "newsletter.name")}</label>
+		<div class="newsletter-input-row">
+			<input id="newsletter-name" name="entry.1211740646" type="text" autocomplete="name" placeholder={t(locale, "newsletter.name")} required />
+		</div>
+		<label class="sr-only" for="newsletter-email">{t(locale, "newsletter.email")}</label>
+		<div class="newsletter-input-row">
+			<input
+				id="newsletter-email"
+				name="entry.1272945868"
+				type="email"
+				autocomplete="email"
+				placeholder={t(locale, "newsletter.emailPlaceholder")}
+				required
+				aria-describedby="newsletter-caption newsletter-status"
+			/>
+		</div>
+		<button class="newsletter-submit" type="submit">{t(locale, "newsletter.subscribe")}</button>
+		<input type="hidden" name="entry.488472312" value="elvismao.com" />
+		<input type="hidden" name="entry.1137316312" value="" />
+		<output id="newsletter-status" data-status role="status" aria-live="polite"></output>
+	</form>
+	<p id="newsletter-caption" class="newsletter-caption"><span>{t(locale, "newsletter.caption")}</span><br />{t(locale, "newsletter.frequency")}</p>
+</section>

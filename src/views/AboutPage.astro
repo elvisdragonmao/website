@@ -1,0 +1,208 @@
+---
+import Layout from "../layouts/Layout.astro";
+import AsciiArt from "../components/about/AsciiArt.astro";
+import ImageArt from "../components/about/ImageArt.astro";
+import Footer from "../components/Footer.astro";
+import PeopleField from "../components/about/PeopleField.astro";
+import TechMarquee from "../components/about/TechMarquee.astro";
+import ContactBlue from "../components/about/ContactBlue.astro";
+import "@fontsource/ibm-plex-mono/500-italic.css";
+import TalksMonitor from "../components/about/TalksMonitor.astro";
+import { getAboutData } from "../data/about-localized";
+import { aboutText } from "../i18n/about";
+import { getLocale, localizePath, type Locale } from "../i18n/index";
+import "../styles/about.css";
+import "../styles/about-tui.css";
+import "../styles/about-media.css";
+import "../styles/about-apps.css";
+import "../styles/about-people.css";
+import "../styles/about-type.css";
+import "../styles/about-contact.css";
+import "../styles/about-reveal.css";
+
+interface Props {
+	locale: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const text = (key: Parameters<typeof aboutText>[1]) => aboutText(locale, key);
+const { experiences, awards, otherRecognition } = getAboutData(locale);
+---
+
+<Layout locale={locale} title={text("seoTitle")} description={text("seoDescription")}>
+	<main id="main" class="about-page" data-about-theme="btop">
+		<header class="about-hero">
+			<div class="about-identity">
+				<h1>Elvis Dragon Mao</h1>
+				<p class="about-alias">{text("alias")}</p>
+				<p class="about-roles">{text("roles")}</p>
+				<div class="about-profile-links">
+					<a href="https://resume.elvismao.com/" target="_blank" rel="noopener noreferrer">{text("resume")} <span class="link-arrow" aria-hidden="true">↗</span></a>
+					<a href="https://emtech.cc/p/now/" target="_blank" rel="noopener noreferrer">/now <span class="link-arrow" aria-hidden="true">↗</span></a>
+				</div>
+			</div>
+			<ImageArt kind="portrait" />
+		</header>
+
+		<div class="about-facets about-workspace">
+			<section class="about-facet tui-panel facet-touch">
+				<div>
+					<h2>{text("touchTitle")}</h2>
+					<p>{text("touchDescription")}</p>
+					<a class="about-link" href="#research">{text("researchLink")} <span class="link-arrow" aria-hidden="true">↗</span></a>
+				</div>
+				<AsciiArt kind="touch" />
+			</section>
+			<section class="about-facet tui-panel facet-furry">
+				<ImageArt kind="furry" />
+				<h2>{text("furryTitle")}</h2>
+				<p>{text("furryBefore")}<a href="https://emtech.cc/p/furry-intro/" target="_blank" rel="noopener noreferrer">{text("furryLink")}</a>{text("furryAfter")}</p>
+			</section>
+			<section class="about-facet tui-panel facet-stack">
+				<TechMarquee />
+				<h2>{text("stackTitle")}</h2>
+				<p>{text("stackDescription")}</p>
+				<a class="about-link" href={localizePath("/work/", locale)}>{text("workLink")} <span class="link-arrow" aria-hidden="true">↗</span></a>
+			</section>
+			<section class="about-facet tui-panel facet-source">
+				<AsciiArt kind="type" />
+				<h2>{text("sourceTitle")}</h2>
+				<p>{text("sourceBefore")}<strong>emfont</strong>{text("sourceAfter")}</p>
+				<p class="about-font-metric">{text("sourceMetric")}</p>
+				<a class="about-link" href="https://font.emtech.cc/" target="_blank" rel="noopener noreferrer">emfont <span class="link-arrow" aria-hidden="true">↗</span></a>
+				<a class="about-link source-github" href="https://github.com/elvisdragonmao/emfont" target="_blank" rel="noopener noreferrer">
+					{text("github")}
+					<span class="link-arrow" aria-hidden="true">↗</span>
+				</a>
+			</section>
+			<section class="about-facet tui-panel facet-music">
+				<ImageArt kind="music" />
+				<h2>{text("musicTitle")}</h2>
+				<div class="facet-caption">
+					<p>{text("musicDescription")}</p><a class="about-link" href="https://www.last.fm/user/elvisdragonmao" target="_blank" rel="noopener noreferrer">
+						Last.fm <span class="link-arrow" aria-hidden="true">↗</span>
+					</a>
+				</div>
+			</section>
+			<section class="about-facet tui-panel facet-hardware">
+				<AsciiArt kind="hardware" />
+				<h2>{text("hardwareTitle")}</h2>
+				<p>{text("hardwareDescription")}</p>
+			</section>
+			<section class="about-facet tui-panel facet-motto">
+				<AsciiArt kind="motto" />
+				<h2>{text("motto")}</h2>
+				<canvas class="motto-type" data-motto-type aria-hidden="true"></canvas>
+				<p class="motto-copy"><span>{text("mottoFirst")}</span><span>{text("mottoSecond")}</span><span>{text("mottoThird")}</span></p>
+			</section>
+			<section class="about-facet tui-panel facet-camera">
+				<PeopleField locale={locale} />
+				<h2>{text("cameraTitle")}</h2>
+				<p>{text("cameraDescription")}</p>
+			</section>
+			<section class="about-facet tui-panel facet-debate">
+				<ImageArt kind="debate" />
+				<h2>{text("debateTitle")}</h2>
+				<p>{text("debateDescription")}</p>
+			</section>
+			<section class="about-facet tui-panel facet-broadcast">
+				<AsciiArt kind="broadcast" />
+				<h2>{text("broadcastTitle")}</h2>
+				<p>{text("broadcastDescription")}</p>
+			</section>
+
+			<section class="about-statement terminal-window tui-panel" data-typing-terminal>
+				<div class="terminal-window-controls" aria-hidden="true"><i></i><i></i><i></i></div>
+				<p>
+					<span class="terminal-line"><span class="terminal-source">{text("statementFirst")}</span></span>
+					<span class="terminal-line"><span class="terminal-source">{text("statementSecond")}</span></span>
+					<span class="terminal-line"><span class="terminal-source">{text("statementThird")}</span></span>
+				</p>
+			</section>
+
+			<section class="about-section tui-panel about-experience" aria-labelledby="experience-title">
+				<div class="about-section-heading">
+					<h2 id="experience-title">{text("experience")}</h2>
+					<a class="about-link" href="https://resume.elvismao.com/" target="_blank" rel="noopener noreferrer">{text("fullCV")} <span class="link-arrow" aria-hidden="true">↗</span></a>
+				</div>
+				<ol class="about-experience-list">
+					{
+						experiences.map(item => (
+							<li>
+								<span class="experience-years">{item.years}</span>
+								<span class="experience-role">
+									{item.role}
+									{item.organization && <span class="experience-organization"> — {item.organization}</span>}
+								</span>
+							</li>
+						))
+					}
+				</ol>
+			</section>
+
+			<section id="research" class="about-section tui-panel about-research" aria-labelledby="research-title">
+				<h2 id="research-title">{text("research")}</h2>
+				<p class="research-interests">{text("interests")}</p>
+				<article class="research-publication">
+					<h3><a href={localizePath("/work/omniobserve/", locale)}>{text("paper")}</a></h3>
+					<p>Shih-Kai Hong, Ethel Yu-Tsen Hsiao, Yi-Jie Chen, Jason Zhi-Jun Chang, <strong>Elvis Dragon Mao</strong>, and Grace Yu-Chun Yen.</p>
+					<p class="research-venue">{text("poster")}</p>
+				</article>
+				<div class="research-current">
+					<h3>{text("currentResearch")}</h3>
+					<ul>
+						<li>{text("policeResearch")}</li>
+						<li>{text("fursuitResearch")}</li>
+					</ul>
+				</div>
+			</section>
+
+			<TalksMonitor locale={locale} />
+
+			<section class="about-section tui-panel about-awards" aria-labelledby="awards-title">
+				<h2 id="awards-title">{text("awards")}</h2>
+				<div class="awards-groups">
+					{
+						awards.map(group => (
+							<details class="awards-year" open>
+								<summary>
+									{group.year}
+									<span class="award-count">{group.items.length}</span>
+								</summary>
+								<ul>
+									{group.items.map(item => (
+										<li>
+											<strong>{item.title}</strong>
+											{item.context && (
+												<span>
+													{" "}
+													— {item.context}
+													{"project" in item && (
+														<>
+															{" "}
+															<em>{item.project}</em>
+														</>
+													)}
+												</span>
+											)}
+										</li>
+									))}
+								</ul>
+							</details>
+						))
+					}
+					<details class="awards-year" open>
+						<summary>{text("otherAwards")}<span class="award-count">{otherRecognition.length}</span></summary>
+						<ul>{otherRecognition.map(item => <li>{item}</li>)}</ul>
+					</details>
+				</div>
+			</section>
+
+			<ContactBlue locale={locale} />
+			<Footer locale={locale} newsletter ascii />
+		</div>
+	</main>
+</Layout>
+
+<script>
+	import "../scripts/about";
+</script>

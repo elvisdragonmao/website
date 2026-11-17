@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/counter-call" title="叫號系統 | 毛哥EM的基地" description="簡易叫號系統" theme="#FFF" />
+		<Head locale="zh-Hant" title="叫號系統 | 毛哥EM的基地" description="簡易叫號系統" theme="#FFF" />
 		<style is:global>
 			* {
 				box-sizing: border-box;
@@ -159,7 +159,6 @@ import Head from "@components/Head.astro";
 		<script is:inline>
 			let currentNumber = 1;
 			let counters = [];
-			let startNumber = 1;
 
 			// 新增：用來記錄每個櫃檯上次變成空閒的時間
 			let freeSince = [];
@@ -168,6 +167,10 @@ import Head from "@components/Head.astro";
 				const newStart = parseInt(document.getElementById("startNumberInput").value);
 				const newCount = parseInt(document.getElementById("counterCountInput").value);
 
+				if (!Number.isInteger(newStart) || newStart < 1 || !Number.isInteger(newCount) || newCount < 1 || newCount > 100) {
+					alert("請輸入有效的起始號碼，櫃檯數須為 1–100。 ");
+					return;
+				}
 				if (newStart > currentNumber) {
 					currentNumber = newStart;
 				}
@@ -207,9 +210,11 @@ import Head from "@components/Head.astro";
 					alert("所有櫃檯都在忙碌中！");
 					return;
 				}
-				const msg = new SpeechSynthesisUtterance(`請 ${currentNumber} 號，到 ${bestIndex + 1}號櫃檯`);
-				msg.lang = "zh-TW"; // 設定語言為中文（台灣）
-				speechSynthesis.speak(msg);
+				if ("speechSynthesis" in window && "SpeechSynthesisUtterance" in window) {
+					const msg = new SpeechSynthesisUtterance(`請 ${currentNumber} 號，到 ${bestIndex + 1}號櫃檯`);
+					msg.lang = "zh-TW"; // 設定語言為中文（台灣）
+					speechSynthesis.speak(msg);
+				}
 
 				counters[bestIndex] = currentNumber++;
 				freeSince[bestIndex] = null; // 現在這櫃檯正在服務中
@@ -242,9 +247,6 @@ import Head from "@components/Head.astro";
 
 			window.onload = () => {
 				applySettings();
-				// 初始化櫃檯狀態
-				const start = parseInt(document.getElementById("startNumberInput").value);
-				const count = parseInt(document.getElementById("counterCountInput").value);
 			};
 		</script>
 	</body>

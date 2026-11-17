@@ -4,8 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="en">
 	<head>
-		<meta charset="UTF-8" />
-		<Head path="code/plaques" title="Plaques Guesser" description="Plaques Guesser" theme="#111" />
+		<Head locale="en" title="Plaques Guesser" description="Plaques Guesser" theme="#111" />
 		<style is:global>
 			* {
 				box-sizing: border-box;
@@ -134,7 +133,7 @@ import Head from "@components/Head.astro";
 			</section>
 		</main>
 
-		<script>
+		<script is:inline>
 			const box = document.getElementById("box");
 			const info = document.getElementById("info");
 			const goal = document.getElementById("target");

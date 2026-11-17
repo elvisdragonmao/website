@@ -1,0 +1,29 @@
+---
+import { aboutText } from "../../i18n/about";
+import { getLocale, type Locale } from "../../i18n/index";
+interface Props {
+	locale?: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const walker = " o \n/|\\\n/ \\";
+---
+
+<div
+	class="people-field"
+	data-people-field
+	role="group"
+	aria-label={aboutText(locale, "people")}
+	data-color-person={aboutText(locale, "colorPerson")}
+	data-colored-person={aboutText(locale, "coloredPerson")}
+	data-colored-status={aboutText(locale, "coloredStatus")}
+>
+	<pre class="people-reticle" data-people-reticle aria-hidden="true">+ </pre>
+	{
+		Array.from({ length: 8 }, (_, i) => (
+			<button type="button" class="ascii-walker" data-walker={i} aria-label={aboutText(locale, "colorPerson", { number: i + 1 })}>
+				<span aria-hidden="true">{walker}</span>
+			</button>
+		))
+	}
+	<output class="sr-only" data-people-status aria-live="polite"></output>
+</div>

@@ -1,0 +1,91 @@
+.stack-marquee {
+	margin: 0 -13px 18px;
+	overflow: hidden;
+	mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.stack-lane {
+	overflow: hidden;
+}
+.stack-lane + .stack-lane {
+	margin-top: 8px;
+}
+.stack-track {
+	display: flex;
+	width: max-content;
+}
+.stack-group {
+	display: flex;
+	gap: 15px;
+	padding-right: 15px;
+}
+.stack-mark {
+	width: 94px;
+	flex: 0 0 94px;
+	text-align: center;
+	color: #70a9ad;
+}
+.about-page .stack-mark pre {
+	font:
+		5.5px/5.5px "IBM Plex Mono",
+		monospace;
+	white-space: pre;
+	letter-spacing: 0;
+}
+
+.stack-mark:nth-child(3n) {
+	color: #aaa5cc;
+}
+.stack-lane.reverse .stack-mark {
+	color: #9dbf8b;
+}
+.about-page .facet-stack {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+.motto-type {
+	position: absolute;
+	inset: 20px 8px;
+	width: calc(100% - 16px);
+	height: calc(100% - 40px);
+	pointer-events: none;
+	z-index: 2;
+}
+.about-page .facet-motto .motto-copy {
+	position: relative;
+}
+.about-page .facet-motto .motto-copy span {
+	display: block;
+}
+.facet-motto[data-type-ready] .motto-copy {
+	opacity: 0;
+}
+.facet-motto .about-art-motto {
+	opacity: 0.18;
+}
+@media (prefers-reduced-motion: no-preference) {
+	.stack-track {
+		animation: stack-drift 38s linear infinite;
+	}
+	.stack-lane.reverse .stack-track {
+		animation-direction: reverse;
+		animation-duration: 43s;
+	}
+	.stack-marquee:hover .stack-track {
+		animation-play-state: paused;
+	}
+}
+@keyframes stack-drift {
+	to {
+		transform: translateX(-50%);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.stack-lane {
+		overflow-x: auto;
+		scrollbar-width: thin;
+	}
+	.stack-group + .stack-group {
+		display: none;
+	}
+}

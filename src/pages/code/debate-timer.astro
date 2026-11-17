@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="en">
 	<head>
-		<Head title="Debate Timer | EM's Base" description="A beautiful and simple debate timer with sound" theme="#212121" path="code/debate-timer" />
+		<Head locale="en" title="Debate Timer | EM's Base" description="A beautiful and simple debate timer with sound" theme="#212121" />
 		<style is:global>
 			html,
 			body,
@@ -342,11 +342,31 @@ import Head from "@components/Head.astro";
 			section.ontouchstart = go;
 			let title = document.querySelector("h1");
 			let sub = document.querySelector("h2");
-			const up = new Audio("up.mp3");
-			const start = new Audio("start.mp3");
+			// The legacy audio files are missing; generate both cues locally.
+			const cue = frequency => ({
+				play() {
+					try {
+						const AudioContext = window.AudioContext;
+						if (!AudioContext) return;
+						const context = new AudioContext();
+						const tone = context.createOscillator();
+						const gain = context.createGain();
+						tone.frequency.value = frequency;
+						gain.gain.value = 0.15;
+						tone.connect(gain);
+						gain.connect(context.destination);
+						tone.start();
+						tone.stop(context.currentTime + 0.35);
+						tone.onended = () => context.close();
+					} catch {
+						/* Timer remains usable without audio output. */
+					}
+				}
+			});
+			const up = cue(880),
+				start = cue(440);
 			let length = document.getElementsByTagName("li").length * 2;
-			var history = [];
-			const lili = document.querySelectorAll("li");
+			let lili = document.querySelectorAll("li");
 			function dm() {
 				var t = document.getElementById("design");
 				if (document.designMode == "on") {
@@ -368,14 +388,34 @@ import Head from "@components/Head.astro";
 				});
 			});
 			function flow() {
-				var text = document.getElementById("flow").value;
-				text = text.split("\n");
+				var text = document
+					.getElementById("flow")
+					.value.split("\n")
+					.map(line => line.trim())
+					.filter(Boolean);
+				if (!text.length) return;
+				clearInterval(interval);
+				status = 0;
 				length = text.length * 2;
 				var ul = document.querySelector("ul");
 				ul.innerHTML = "";
-				for (var i = 1; i < text.length; i++) {
-					ul.insertAdjacentHTML("beforeend", `<li class="enter"><div id="stage${i}"></div><div class="show ${i}">` + text[i - 1] + "</div>" + text[i - 1] + "</li>");
+				for (var i = 1; i <= text.length; i++) {
+					const li = document.createElement("li");
+					li.className = "enter";
+					const stage = document.createElement("div");
+					stage.id = `stage${i}`;
+					const show = document.createElement("div");
+					show.className = `show ${i}`;
+					show.textContent = text[i - 1];
+					const index = i;
+					show.addEventListener("click", () => {
+						status = index * 2 - 1;
+						go();
+					});
+					li.append(stage, show, document.createTextNode(text[i - 1]));
+					ul.append(li);
 				}
+				lili = document.querySelectorAll("li");
 			}
 			function fadeOut(a, b) {
 				var fade = document.getElementById(a);
@@ -398,13 +438,6 @@ import Head from "@components/Head.astro";
 					}
 				}, 5);
 			}
-			async function asyncFunction() {
-				return new Promise((resolve, reject) => {
-					setTimeout(() => {
-						resolve("Hello, World!");
-					}, 500);
-				});
-			}
 			document.addEventListener("keyup", event => {
 				if (event.key === " " && document.designMode === "off") {
 					go();
@@ -418,9 +451,9 @@ import Head from "@components/Head.astro";
 				clearInterval(interval);
 				console.log(status);
 				if (document.designMode == "on") return;
-				if (status > length) {
+				if (status >= length + 1) {
 					fadeOut("t", "The End");
-					fadeOut("s", "Thank you for comming");
+					fadeOut("s", "Thank you for coming");
 					return;
 				}
 				status++;
@@ -448,10 +481,10 @@ import Head from "@components/Head.astro";
 					fadeOut("s", "Ready");
 				} else {
 					fadeOut("s", "Timing");
-					if (s.indexOf("speech") > -1 || s.indexOf("argument") > -1) startTimer(document.getElementById("speech").value);
-					else if (s.indexOf("Preparation") > -1) startTimer(document.getElementById("preparation").value);
-					else if (s.indexOf("cross") > -1 || s.indexOf("exam") > -1) startTimer(document.getElementById("cross").value);
-					else if (s.indexOf("Summary") > -1 || s.indexOf("Rebuttal") > -1) startTimer(document.getElementById("rebuttal").value);
+					if (s.toLowerCase().indexOf("speech") > -1 || /argument/i.test(s)) startTimer(document.getElementById("speech").value);
+					else if (/preparation/i.test(s)) startTimer(document.getElementById("preparation").value);
+					else if (/cross|exam/i.test(s)) startTimer(document.getElementById("cross").value);
+					else if (/summary|rebuttal/i.test(s)) startTimer(document.getElementById("rebuttal").value);
 					else alert("can’t understand" + s);
 				}
 			}
@@ -459,6 +492,10 @@ import Head from "@components/Head.astro";
 
 			function startTimer(t) {
 				const max = parseFloat(t) * 60;
+				if (!Number.isFinite(max) || max <= 0) {
+					sub.innerText = "Enter a positive duration in settings";
+					return;
+				}
 				let time = max;
 				var a = document.getElementById("stage" + (status - 1) / 2);
 				a.style.display = "block";

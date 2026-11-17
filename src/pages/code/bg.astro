@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/bg" title="背景顏色 | 毛哥EM的基地" description="自由更改背景顏色或製作漸層" theme="#FFF" />
+		<Head locale="zh-Hant" title="背景顏色 | 毛哥EM的基地" description="自由更改背景顏色或製作漸層" theme="#FFF" />
 		<meta property="og:locale" content="zh-TW" />
 		<style is:global>
 			html,
@@ -77,13 +77,10 @@ import Head from "@components/Head.astro";
 			// update color hex
 
 			function updateColorHex() {
-				if (gra.checked) {
-					body.style.background = `linear-gradient(${range.value}deg, ${c1.value}, ${c2.value})`;
-				} else {
-					body.style.background = c1Hex.value;
-				}
+				if (!/^#[\da-f]{6}$/i.test(c1Hex.value) || !/^#[\da-f]{6}$/i.test(c2Hex.value)) return;
 				c1.value = c1Hex.value;
 				c2.value = c2Hex.value;
+				updateColor();
 			}
 
 			//long press anywhere for full screen, both pc and mobile. Short press anywhere for showing and hiding the control panel.
@@ -92,7 +89,7 @@ import Head from "@components/Head.astro";
 			let div = document.querySelector("div");
 			body.addEventListener("mousedown", () => {
 				timer = setTimeout(() => {
-					body.requestFullscreen();
+					body.requestFullscreen?.().catch(() => {});
 				}, 1000);
 			});
 			body.addEventListener("mouseup", () => {
@@ -100,7 +97,7 @@ import Head from "@components/Head.astro";
 			});
 			body.addEventListener("touchstart", () => {
 				timer = setTimeout(() => {
-					body.requestFullscreen();
+					body.requestFullscreen?.().catch(() => {});
 				}, 1000);
 			});
 			body.addEventListener("touchend", () => {

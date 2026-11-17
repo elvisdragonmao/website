@@ -2,9 +2,9 @@
 import Head from "@components/Head.astro";
 ---
 
-<html>
+<html lang="zh-Hant">
 	<head>
-		<Head path="code/signCheck" title="毛哥EM 檔案簽名檢查 | 毛哥EM的基地" description="毛哥EM 檔案簽名檢查，確保檔案沒有經過竄改。" theme="#292d36" />
+		<Head locale="zh-Hant" title="毛哥EM 檔案簽名檢查 | 毛哥EM的基地" description="毛哥EM 檔案簽名檢查，確保檔案沒有經過竄改。" theme="#292d36" />
 		<style is:global>
 			/** @format */
 
@@ -157,43 +157,47 @@ WQIDAQAB
 			}
 
 			const signatureBase64 = new URLSearchParams(window.location.search).get("sign");
-			// check if the signature is provided in the URL
-			if (!signatureBase64) {
-				resultText.textContent = "此連結無效，請重新點擊毛哥EM提供的連結。";
-				resultText.classList = "invalid";
-				throw new Error("No signature provided in the URL.");
+			let signature = null;
+			try {
+				if (!signatureBase64) throw new Error("此連結無效，請重新點擊毛哥EM提供的連結。");
+				if (!window.crypto?.subtle) throw new Error("你的瀏覽器不支援 Web Cryptography API，請使用最新版的瀏覽器。");
+				signature = Uint8Array.from(atob(signatureBase64), c => c.charCodeAt(0));
+				if (!signature.length) throw new Error("簽名格式無效。");
+			} catch (error) {
+				resultText.textContent = error.message || "簽名格式無效。";
+				resultText.className = "invalid";
+				document.querySelectorAll("button").forEach(button => (button.disabled = true));
 			}
-			// check browser support
-			if (!window.crypto || !window.crypto.subtle) {
-				resultText.textContent = "你的瀏覽器不支援 Web Cryptography API，請使用最新版的瀏覽器。";
-				throw new Error("Web Cryptography API is not supported in this browser.");
-			}
-
-			const signature = new Uint8Array(
-				atob(signatureBase64)
-					.split("")
-					.map(c => c.charCodeAt(0))
-			);
 
 			async function verifySignature() {
 				const fileInput = document.getElementById("fileInput");
 				const file = fileInput.files[0];
-				const fileData = await file.arrayBuffer();
+				if (!signature || !file) {
+					resultText.textContent = "請先選擇要檢查的檔案。";
+					return;
+				}
+				try {
+					const fileData = await file.arrayBuffer();
 
-				// Convert PEM to ArrayBuffer
-				const publicKeyArrayBuffer = pemToArrayBuffer(publicKeyPem);
+					// Convert PEM to ArrayBuffer
+					const publicKeyArrayBuffer = pemToArrayBuffer(publicKeyPem);
 
-				// Import the public key in SPKI format (which is the usual format for RSA public keys)
-				const publicKey = await crypto.subtle.importKey("spki", publicKeyArrayBuffer, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
+					// Import the public key in SPKI format (which is the usual format for RSA public keys)
+					const publicKey = await crypto.subtle.importKey("spki", publicKeyArrayBuffer, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
 
-				// Verify the signature
-				const isValid = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", publicKey, signature, fileData);
+					// Verify the signature
+					const isValid = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", publicKey, signature, fileData);
 
-				resultText.textContent = isValid ? "簽名有效。" : "簽名無效，請確保點擊的連結正確或是檔案可能已經被竄改。";
-				resultText.classList = isValid ? "valid" : "invalid";
+					resultText.textContent = isValid ? "簽名有效。" : "簽名無效，請確保點擊的連結正確或是檔案可能已經被竄改。";
+					resultText.className = isValid ? "valid" : "invalid";
+				} catch {
+					resultText.textContent = "無法檢查此檔案或簽名，請確認連結與檔案。";
+					resultText.className = "invalid";
+				}
 			}
 
 			async function downloadSign() {
+				if (!signature) return;
 				const file = new Blob([signature], {
 					type: "application/octet-stream"
 				});

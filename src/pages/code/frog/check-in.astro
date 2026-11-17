@@ -3,78 +3,69 @@ import "@assets/code/frog.css";
 import Head from "@components/Head.astro";
 ---
 
-<head>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<script is:inline>
-		window.onload = () => {
-			let requestURL = "https://script.google.com/macros/s/AKfycbyZUPmPK7GkQQXe6UhI75xVrU3tpnopTmb9O6Ie03j23AgYvZYcj2uIaAP8mx72Dsg_/exec";
-			let request = new XMLHttpRequest();
-			request.open("GET", requestURL);
-			request.responseType = "json";
-			request.send();
-			request.onload = function () {
-				let student = request.response;
-				for (var i in student) {
-					var now = student[i];
-					var stu = now.name;
-					var left = now.left;
-					--left;
-					var but = '<button id="' + stu + '">' + stu + "</button>";
-					console.log(but);
-					$("#students").append(but);
-					var iden = "#" + stu;
-					var click = 'to("' + stu + '", ' + left + ");";
-					$(iden).attr("onclick", click);
+<html lang="zh-Hant">
+	<head>
+		<script is:inline>
+			const header = () => document.querySelector("#header");
+			const students = () => document.querySelector("#students");
+			const listURL = "https://script.google.com/macros/s/AKfycbyZUPmPK7GkQQXe6UhI75xVrU3tpnopTmb9O6Ie03j23AgYvZYcj2uIaAP8mx72Dsg_/exec";
+			const checkinURL = "https://script.google.com/macros/s/AKfycbzIzAMKQDlL1V5H0RQCBgTT7ofxo3wmfErHuo8rLHwy2sZ8YAhDDusx7dtChJewkOsj/exec";
+			async function loadStudents() {
+				header().textContent = "載入中";
+				try {
+					const response = await fetch(listURL, { signal: AbortSignal.timeout(15000) });
+					if (!response.ok) throw new Error("Request failed");
+					const list = await response.json();
+					if (!Array.isArray(list)) throw new Error("Invalid response");
+					students().replaceChildren();
+					for (const student of list) {
+						const button = document.createElement("button");
+						button.type = "button";
+						button.textContent = student.name;
+						button.addEventListener("click", () => checkIn(student, button));
+						students().append(button);
+					}
+					header().textContent = list.length ? "點擊姓名即可完成報到" : "目前沒有學生資料";
+				} catch {
+					header().textContent = "無法載入學生資料，請稍後再試。";
+					const retry = document.createElement("button");
+					retry.textContent = "重試";
+					retry.addEventListener("click", loadStudents);
+					students().replaceChildren(retry);
 				}
-				$("#header").text("點擊姓名即可完成報到");
-			};
-		};
-		function to(name, have) {
-			var currentdate = new Date();
-			var filltime =
-				currentdate.getFullYear() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getDate() + "  " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-			// 打包 要的資料
-			var course = have;
-			console.log(course);
-			var data = {
-				name: name,
-				time: filltime,
-				remain: course
-			};
-			var tag = name;
-			// 呼叫 send ajax function
-			send(data, tag, course);
-		}
-		function send(data, tag, course) {
-			$.ajax({
-				// 這邊用get type
-				type: "get",
-				// api url - google appscript 產出的 url
-				url: "https://script.google.com/macros/s/AKfycbzIzAMKQDlL1V5H0RQCBgTT7ofxo3wmfErHuo8rLHwy2sZ8YAhDDusx7dtChJewkOsj/exec",
-				// 剛剛整理好的資料帶入
-				data: data,
-				// 資料格式是JSON
-				dataType: "JSON",
-				// 成功送出 會回頭觸發下面這塊感謝
-				success: function (response) {
-					var msg = response;
-					alert("報到成功! 還剩" + course + "堂課");
+			}
+			async function checkIn(student, button) {
+				button.disabled = true;
+				const remain = Number(student.left) - 1;
+				const now = new Date();
+				const time = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}  ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+				try {
+					const params = new URLSearchParams({ name: student.name, time, remain: String(remain) });
+					const response = await fetch(`${checkinURL}?${params}`, { signal: AbortSignal.timeout(15000) });
+					if (!response.ok) throw new Error("Request failed");
+					await response.json();
+					const item = document.createElement("li");
+					item.textContent = student.name;
+					document.querySelector("#ed").prepend(item);
+					button.remove();
+					header().textContent = `${student.name} 報到成功！還剩 ${remain} 堂課`;
+				} catch {
+					header().textContent = "報到失敗，尚未確認登記，請檢查網路後重試。";
+					button.disabled = false;
 				}
-			});
-			$("#ed").prepend("<li>" + tag + "</li>");
-			var id = "#" + tag;
-			$(id).fadeOut();
-		}
-	</script>
-	<Head path="code/frog/check-in/" title="大眼蛙教練點名系統" description="快速紀錄出缺席" theme="#00BFFF" />
-</head>
-<body>
-	<main>
-		<h1><a href="/code/frog">大眼蛙教練點名系統</a></h1>
-		<p id="header">載入中</p>
-		<div id="students"></div>
-		<h2>已到學生</h2>
-		<p class="ed" id="ed"></p>
-		<p><a href="/">毛哥EM</a>製作</p>
-	</main>
-</body>
+			}
+			window.addEventListener("DOMContentLoaded", loadStudents, { once: true });
+		</script>
+		<Head locale="zh-Hant" title="大眼蛙教練點名系統" description="快速紀錄出缺席" theme="#00BFFF" />
+	</head>
+	<body>
+		<main>
+			<h1><a href="/code/frog/">大眼蛙教練點名系統</a></h1>
+			<p id="header">載入中</p>
+			<div id="students"></div>
+			<h2>已到學生</h2>
+			<p class="ed" id="ed"></p>
+			<p><a href="/">毛哥EM</a>製作</p>
+		</main>
+	</body>
+</html>

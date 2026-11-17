@@ -2,10 +2,10 @@
 import Head from "@components/Head.astro";
 ---
 
-<html lang="zh-TW">
+<html lang="zh-Hant">
 	<head>
 		<Head
-			path="code/format-text"
+			locale="zh-Hant"
 			title="文本格式化大師 - 輕鬆整理文本 | 毛哥EM的基地"
 			theme="#749BC2"
 			description="這個網站讓你可以輕鬆地去除空白，換行，或特定符號。讓你的文字變得更乾淨、更易閱讀，也可以讓你輕鬆將網路或論文加入筆記中。"
@@ -233,7 +233,7 @@ import Head from "@components/Head.astro";
 			<footer>毛哥EM製作</footer>
 		</main>
 		<script is:inline>
-			const format = () => {
+			const format = async () => {
 				let text = document.querySelector("textarea").value;
 				if (document.querySelector("#br").checked) {
 					text = text.replace(/\n/g, "");
@@ -250,19 +250,28 @@ import Head from "@components/Head.astro";
 				if (document.querySelector("#period").checked) {
 					text = text.replace(/\.([^\s])/g, ". $1");
 				}
-				if (document.querySelector("#replacement").value) {
-					text = text.replace(new RegExp(document.querySelector("#del").value, "g"), document.querySelector("#replacement").value);
+				const search = document.querySelector("#del").value;
+				if (search) {
+					text = text.split(search).join(document.querySelector("#replacement").value);
 				}
 				if (document.querySelector("#spaces").checked) {
 					text = text.replace(/\s+/g, " ");
 				}
 				document.querySelector("textarea").value = text;
 				document.querySelector("textarea").select();
-				document.execCommand("copy");
+				let copied = false;
+				try {
+					if (navigator.clipboard?.writeText) {
+						await navigator.clipboard.writeText(text);
+						copied = true;
+					} else copied = document.execCommand("copy");
+				} catch {
+					copied = document.execCommand("copy");
+				}
 
 				const successDiv = document.createElement("div");
 				successDiv.classList.add("success");
-				successDiv.innerText = "✅  複製成功";
+				successDiv.innerText = copied ? "✅  複製成功" : "已完成格式化，請手動複製選取的文字";
 				document.querySelector("main").appendChild(successDiv);
 				setTimeout(() => {
 					successDiv.remove();
@@ -270,17 +279,20 @@ import Head from "@components/Head.astro";
 			};
 
 			const autoPaste = () => {
-				document.querySelector("textarea").value = "";
-				navigator.clipboard.readText().then(text => {
-					document.querySelector("textarea").value = text;
-				});
+				if (!navigator.clipboard?.readText) return;
+				navigator.clipboard
+					.readText()
+					.then(text => {
+						document.querySelector("textarea").value = text;
+					})
+					.catch(() => {
+						/* Manual paste remains available when permission is denied. */
+					});
 			};
-
-			autoPaste();
 
 			// ctrl + enter to format and copy
 			document.addEventListener("keydown", e => {
-				if (e.ctrlKey && e.key === "Enter") {
+				if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
 					format();
 				}
 			});

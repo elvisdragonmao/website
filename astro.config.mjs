@@ -1,39 +1,29 @@
-// @ts-check
 import sitemap from "@astrojs/sitemap";
-import { filterSitemapByDefaultLocale, i18n } from "astro-i18n-aut/integration";
 import { defineConfig } from "astro/config";
+import { compatibilityRedirects } from "./scripts/routing.mjs";
 
-const defaultLocale = "en";
-const locales = {
-	en: "en-US", // the `defaultLocale` value must present in `locales` keys
-	"zh-Hant": "zh-Hant",
-	"zh-Hans": "zh-Hans"
+/** @type {import("astro").AstroIntegration} */
+const coverLab = {
+	name: "em-cover-lab",
+	hooks: {
+		"astro:config:setup": ({ command, injectRoute }) => {
+			if (command === "dev") {
+				injectRoute({
+					pattern: "/cover-lab",
+					entrypoint: new URL("./src/dev/pages/cover-lab.astro", import.meta.url)
+				});
+				injectRoute({ pattern: "/loading-lab", entrypoint: new URL("./src/dev/pages/loading-lab.astro", import.meta.url) });
+			}
+		}
+	}
 };
 
 export default defineConfig({
 	site: "https://elvismao.com",
 	trailingSlash: "always",
-	build: {
-		format: "directory"
-	},
-	redirects: {
-		"/zh": {
-			status: 301,
-			destination: "/zh-Hant/"
-		}
-	},
-	integrations: [
-		i18n({
-			locales,
-			defaultLocale,
-			redirectDefaultLocale: true
-		}),
-		sitemap({
-			i18n: {
-				locales,
-				defaultLocale
-			},
-			filter: filterSitemapByDefaultLocale({ defaultLocale })
-		})
-	]
+	output: "static",
+	i18n: { locales: ["en", "zh-Hant", "zh-Hans"], defaultLocale: "en", routing: { prefixDefaultLocale: false } },
+	server: { port: 4326 },
+	redirects: compatibilityRedirects,
+	integrations: [coverLab, sitemap({ filter: page => !new URL(page).pathname.endsWith("/404/"), i18n: { defaultLocale: "en", locales: { en: "en", "zh-Hant": "zh-Hant", "zh-Hans": "zh-Hans" } } })]
 });

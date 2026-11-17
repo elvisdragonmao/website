@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/bg" title="網址跑馬燈 | 毛哥EM的基地" description="在網址放跑馬燈" theme="#000" />
+		<Head locale="zh-Hant" title="網址跑馬燈 | 毛哥EM的基地" description="在網址放跑馬燈" theme="#000" />
 		<meta property="og:locale" content="zh-TW" />
 		<style is:global>
 			body {
@@ -55,15 +55,21 @@ import Head from "@components/Head.astro";
 		</main>
 		<script>
 			let text = "▁▂▃▄▅▆▇█▇▆▅▄▃▂";
+			try {
+				text = decodeURIComponent(window.location.hash.slice(1)) || text;
+			} catch {}
 			let chars = Array.from(text);
 			let i = 0;
 
-			setInterval(() => {
+			const animation = setInterval(() => {
 				const rotated = chars.slice(i).join("") + chars.slice(0, i).join("");
-				history.replaceState(null, "", "/code/url-marquee/" + rotated);
+				const url = new URL(window.location.href);
+				url.hash = rotated;
+				history.replaceState(null, "", url);
 				i = (i + 1) % chars.length;
 			}, 50);
 
+			window.addEventListener("pagehide", () => clearInterval(animation));
 			const radios = document.querySelectorAll('input[name="animation"]');
 			radios.forEach(radio => {
 				radio.addEventListener("change", e => {

@@ -1,42 +1,50 @@
 ---
-import envelope from "@assets/img/icon/envelope-regular.svg";
-import github from "@assets/img/icon/github.svg";
-import telegram from "@assets/img/icon/telegram.svg";
-import instagram from "@assets/img/icon/instagram.svg";
+import Icon from "./Icon.astro";
+import Newsletter from "./Newsletter.astro";
+import "../styles/ascii-footer.css";
+import { getLocale, localizePath, t, type Locale } from "../i18n";
+interface Props {
+	compact?: boolean;
+	newsletter?: boolean;
+	ascii?: boolean;
+	locale?: Locale;
+}
+const { compact = false, newsletter = false, ascii = false } = Astro.props;
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const studioLines = t(locale, "footer.studio").split("\n");
 ---
 
-<footer>
-	<div class="social-links">
-		<a href="mailto:info@elvismao.com"><img src={envelope.src} alt="Mail" /></a>
-		<a href="https://github.com/elvisdragonmao" target="_blank"><img src={github.src} alt="Mail" /></a>
-		<a href="https://t.me/elvisdragonmao" target="_blank"><img src={telegram.src} alt="Telegram" /></a>
-		<a href="https://www.instagram.com/elvisdragonmao/" target="_blank"><img src={instagram.src} alt="Instagram" /></a>
+<footer class:list={["site-footer", { compact, "has-newsletter": newsletter, "ascii-footer": ascii }]}>
+	<div class="footer-main">
+		<div class="footer-note">
+			<a class="footer-name" href={localizePath("/", locale)}>Elvis Mao.</a><a class="footer-studio" href="https://linyao.tw/" target="_blank" rel="noopener noreferrer">
+				{
+					studioLines.map((line, index) => (
+						<>
+							{index > 0 && <br />}
+							{line}
+						</>
+					))
+				}
+				<Icon />
+			</a>
+		</div>
+		<nav class="footer-socials" aria-label={t(locale, "footer.socials")}>
+			<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer"><Icon name="envelope" />{t(locale, "footer.email")}<span class="link-arrow" aria-hidden="true">↗</span></a>
+			<a href="https://github.com/elvisdragonmao" target="_blank" rel="noopener noreferrer"><Icon name="github" />GitHub<span class="link-arrow" aria-hidden="true">↗</span></a>
+			<a href="https://t.me/elvisdragonmao" target="_blank" rel="noopener noreferrer"><Icon name="telegram" />Telegram<span class="link-arrow" aria-hidden="true">↗</span></a>
+			<a href="https://www.instagram.com/elvisdragonmao/" target="_blank" rel="noopener noreferrer"><Icon name="instagram" />Instagram<span class="link-arrow" aria-hidden="true">↗</span></a>
+		</nav>
+		{newsletter && <Newsletter locale={locale} />}
 	</div>
-	<div>© 2026 by Elvis Mao</div>
+	<div class="footer-fine">
+		<span>© {new Date().getFullYear()} Elvis Dragon Mao</span><div class="footer-meta">
+			<a href="https://github.com/elvisdragonmao/website" target="_blank" rel="noopener noreferrer">GitHub <span class="link-arrow" aria-hidden="true">↗</span></a><a
+				href={localizePath("/colophon/", locale)}
+			>
+				{t(locale, "footer.credits")}
+				<span class="link-arrow" aria-hidden="true">↗</span>
+			</a>
+		</div>
+	</div>
 </footer>
-
-<style is:global>
-	footer {
-		font-size: 1.3rem;
-		color: #5f5f5f;
-		text-align: right;
-	}
-
-	.social-links {
-		margin-top: 2rem;
-	}
-	.social-links img {
-		height: 1.5em;
-		display: inline-block;
-		filter: invert(1);
-		transition: 0.3s;
-	}
-
-	.social-links a {
-		margin: 0 0.8em;
-	}
-
-	.social-links a:hover img {
-		scale: 1.1;
-	}
-</style>

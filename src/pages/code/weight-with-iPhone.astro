@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="weight-with-iPhone" title="iPhone 3D Touch觸控秤 | 毛哥EM的基地" description="用你的iPhone來秤重吧" theme="#FFF" />
+		<Head locale="zh-Hant" title="iPhone 3D Touch觸控秤 | 毛哥EM的基地" description="使用支援 3D Touch 的 iPhone 讀取觸控壓力的實驗。" theme="#FFF" />
 		<style is:global>
 			* {
 				-webkit-user-select: none;
@@ -191,16 +191,77 @@ import Head from "@components/Head.astro";
 				display: none;
 				-webkit-animation: fade ease-in-out 0.5s;
 			}
+
+			html,
+			body {
+				min-height: 100svh;
+				background: #fff;
+				font-family:
+					system-ui,
+					-apple-system,
+					sans-serif;
+			}
+			#container {
+				width: min(415px, 100%);
+				height: min(760px, calc(100svh - 32px));
+				min-height: 480px;
+				margin: 16px auto;
+			}
+			#circle {
+				width: min(350px, calc(100% - 32px));
+				touch-action: none;
+				border-radius: 12px;
+				overflow: hidden;
+			}
+			#circle2 {
+				max-width: 95%;
+				max-height: 95%;
+				opacity: 0.35;
+				pointer-events: none;
+			}
+			#message {
+				width: calc(100% - 32px);
+				height: auto;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				gap: 8px;
+				line-height: 1.7;
+				z-index: 1;
+			}
+			#message p {
+				margin: 0;
+			}
+			#status {
+				color: #68707d;
+				font-size: 12px;
+			}
+			#tare {
+				border: 0;
+				padding: 0;
+				font: inherit;
+				font-size: 24px;
+				cursor: pointer;
+			}
+			#sense:focus-visible,
+			#tare:focus-visible {
+				outline: 3px solid #5355be;
+				outline-offset: -3px;
+			}
+			#weight {
+				font-variant-numeric: tabular-nums;
+			}
 		</style>
 	</head>
 	<body>
 		<div id="container">
-			<div id="logo" class=""><a target="_blank" style="text-decoration: none" href="#">3D觸控秤</a></div>
+			<div id="logo">3D 觸控秤</div>
 			<div id="circle">
 				<div id="message">
-					放置一些導電的東西，比如蘋果。<br />
-					<span style="color: #00f"><b>不要放置任何會劃傷屏幕的東西!</b></span><br />
-					如果您更改了3D Touch靈敏度，請在下方進行設置。<br />
+					<p><strong>iPhone 3D Touch 觸控壓力實驗</strong></p>
+					<p>需要支援 3D Touch 的 iPhone 與 Safari。<br />一般觸控或桌面裝置無法量測重量。</p>
+					<p>放置導電物體時，避免尖銳或可能刮傷螢幕的表面。<br />這是壓力換算實驗，不能取代電子秤。</p>
+					<p id="status" role="status" aria-live="polite">尚未偵測到壓力。</p>
 				</div>
 				<div id="circle2"></div>
 				<div id="warning" style="display: none">
@@ -211,8 +272,8 @@ import Head from "@components/Head.astro";
 			<div id="footer">
 				<div id="weight">0.00g</div>
 				<div id="controls">
-					<div id="tare">歸零</div>
-					<select id="sense">
+					<button id="tare" type="button">歸零</button>
+					<select id="sense" aria-label="3D Touch 靈敏度">
 						<option value="0">輕</option>
 						<option value="1" selected>中等</option>
 						<option value="2">重</option>
@@ -222,67 +283,66 @@ import Head from "@components/Head.astro";
 			</div>
 		</div>
 		<script is:inline>
-			var currentTouchF,
-				tare = document.getElementById("tare"),
-				warning = document.getElementById("warning");
-			function transformTare() {
-				void 0 !== currentTouchF && (tare.style.webkitTransform = "rotateX(" + 60 * currentTouchF.force + "deg)");
-			}
-			function tareTouchStart(e) {
-				e.preventDefault(), (currentTouchF = e.touches[0]), (tareForce = e.touches[0].force);
-			}
-			setInterval(transformTare, 10), tare.addEventListener("touchstart", tareTouchStart, !1);
-			var currentTouch,
-				weight = document.getElementById("weight"),
-				forceConversions = [0.8, 1, 1.2],
-				fcIndex = 1,
-				circle2 = ((tare = document.getElementById("tare")), document.getElementById("circle2")),
-				maxForce = 6.666666667,
-				tareForce = 0,
-				updater = 0,
-				numTouches = 0,
-				touches = {},
-				force = 0;
-			document.getElementById("sense").onchange = function (e) {
-				(fcIndex = this.selectedIndex), (document.cookie = "fc=" + fcIndex);
-			};
-			var fcCookie = ("; " + document.cookie).split("; fc=").pop().split(";").shift();
-			function onForceStart(e) {
-				(currentTouch = e.touches[0]), (numTouches = e.touches.length);
-			}
-			function onForceMove(e) {
-				e.preventDefault(), (currentTouch = e.touches[0]), (numTouches = e.touches.length);
-			}
-			function onForceEnded(e) {
-				e.preventDefault(),
-					setTimeout(function () {
-						(currentTouch = void 0), (force = 0), delete touches[e.changedTouches[0].identifier];
-					}, 2),
-					(numTouches = e.touches.length);
-			}
-			function onForceChange(e) {
-				e.preventDefault(), (currentTouch = e.changedTouches[0]);
-				for (var c = (force = 0); c < e.changedTouches.length; c++) touches[e.changedTouches[c].identifier] = e.changedTouches[c].force;
-				for (var t in ((numTouches = Object.keys(touches).length), touches)) touches.hasOwnProperty(t) && (force += touches[t]);
-			}
-			function weigh(e) {
-				var c = 405.257 * (e - tareForce) * forceConversions[fcIndex] + 2.056 * forceConversions[fcIndex];
-				return c < 12 && (c -= 2.056 * forceConversions[fcIndex]), c.toFixed(2);
-			}
-			function updateForce() {
-				(warning.style.display = 1 < numTouches ? "inline-block" : "none"),
-					(circle2.style.height = (force / numTouches) * 345 + "px"),
-					(circle2.style.width = (force / numTouches) * 345 + "px"),
-					(document.getElementById("container").style.webkitTransform = "rotateX(" + (force / numTouches) * -20 + "deg) scale(" + (1 - (force / numTouches) * 0.06) + ")");
-				var e = (force / numTouches) * 5 + "px";
-				0 < force && (document.body.style.boxShadow = "0px 0px  15px " + e + " rgba(0, 0, 0, 0.333) inset"), (weight.innerHTML = weigh(force) + "g");
-			}
-			(fcIndex = "" == fcCookie ? fcIndex : +fcCookie), (document.getElementById("sense").selectedIndex = fcIndex), setInterval(updateForce, 1);
-			var circle = document.getElementById("circle");
-			circle.addEventListener("touchmove", onForceMove, !1),
-				circle.addEventListener("touchstart", onForceStart, !1),
-				circle.addEventListener("touchend", onForceEnded, !1),
-				circle.addEventListener("touchforcechange", onForceChange, !1);
+			(() => {
+				const circle = document.getElementById("circle");
+				const circle2 = document.getElementById("circle2");
+				const weight = document.getElementById("weight");
+				const warning = document.getElementById("warning");
+				const status = document.getElementById("status");
+				const sense = document.getElementById("sense");
+				const conversions = [0.8, 1, 1.2];
+				const touches = new Map();
+				let tareForce = 0;
+				let forceEventsSeen = false;
+				let frame = 0;
+				try {
+					const stored = Number(localStorage.getItem("em-3d-touch-sensitivity") ?? 1);
+					if (Number.isInteger(stored) && stored >= 0 && stored <= 2) sense.value = String(stored);
+				} catch {}
+				const clampForce = value => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
+				const hasForceSupport = () => forceEventsSeen || "ontouchforcechange" in window;
+				const currentForce = () => (hasForceSupport() ? [...touches.values()].reduce((sum, value) => sum + value, 0) : 0);
+				function render() {
+					frame = 0;
+					const force = currentForce();
+					const average = touches.size ? clampForce(force / touches.size) : 0;
+					const delta = Math.max(0, force - tareForce);
+					const conversion = conversions[Number(sense.value)] ?? 1;
+					let grams = delta > 0 ? (405.257 * delta + 2.056) * conversion : 0;
+					if (grams < 12 && delta > 0) grams -= 2.056 * conversion;
+					weight.textContent = `${Math.max(0, grams).toFixed(2)}g`;
+					circle2.style.width = `${average * Math.min(345, circle.clientWidth)}px`;
+					circle2.style.height = circle2.style.width;
+					warning.style.display = touches.size > 1 ? "block" : "none";
+					status.textContent = force > 0 ? "正在讀取 3D Touch 壓力。" : "尚未偵測到壓力。";
+				}
+				function scheduleRender() {
+					if (!frame) frame = requestAnimationFrame(render);
+				}
+				function readTouches(event) {
+					if (event.cancelable) event.preventDefault();
+					if (event.type === "touchforcechange") forceEventsSeen = true;
+					touches.clear();
+					for (const touch of Array.from(event.touches || [])) touches.set(touch.identifier, clampForce(Number(touch.force)));
+					scheduleRender();
+				}
+				for (const type of ["touchstart", "touchmove", "touchforcechange", "touchend", "touchcancel"]) circle.addEventListener(type, readTouches, { passive: false });
+				document.getElementById("tare").addEventListener("click", () => {
+					tareForce = currentForce();
+					scheduleRender();
+				});
+				sense.addEventListener("change", () => {
+					try {
+						localStorage.setItem("em-3d-touch-sensitivity", sense.value);
+					} catch {}
+					scheduleRender();
+				});
+				window.addEventListener("blur", () => {
+					touches.clear();
+					scheduleRender();
+				});
+				render();
+			})();
 		</script>
 	</body>
 </html>

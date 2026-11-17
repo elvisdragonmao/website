@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/c-strategy" title="猜題策略模擬器 | 毛哥EM的基地" description="模擬不同猜題策略的平均分數" theme="#FFF" />
+		<Head locale="zh-Hant" title="猜題策略模擬器 | 毛哥EM的基地" description="模擬不同猜題策略的平均分數" theme="#FFF" />
 		<style is:global>
 			body {
 				font-family: Arial, sans-serif;
@@ -32,18 +32,17 @@ import Head from "@components/Head.astro";
 		<script is:inline>
 			function runSimulation() {
 				const numQuestions = 100; // 每張考卷 100 題
-				const numOptions = 4; // 每題有 4 個選項 (A, B, C, D)
 				const simulations = parseInt(document.getElementById("simulations").value, 10);
 
-				if (isNaN(simulations) || simulations <= 0) {
-					alert("請輸入一個正整數！");
+				if (!Number.isInteger(simulations) || simulations <= 0 || simulations > 100000) {
+					alert("請輸入 1–100000 的整數！");
 					return;
 				}
 
 				// 模擬全部猜 C
 				const guessC = simulate(numQuestions, simulations, strategyAllC);
 				// 模擬平均猜 ABCD
-				const guessRandomABCD = simulate(numQuestions, simulations, strategyRandom);
+				const guessRandomABCD = simulate(numQuestions, simulations, strategyBalanced);
 				// 模擬完全亂猜
 				const guessFullyRandom = simulate(numQuestions, simulations, strategyRandom);
 
@@ -73,7 +72,12 @@ import Head from "@components/Head.astro";
 				return correctAnswers.filter(answer => answer === guess).length;
 			}
 
-			// 策略 2: 平均猜 ABCD (亂數生成)
+			// 策略 2: 每四題輪流猜 A、B、C、D
+			function strategyBalanced(correctAnswers) {
+				return correctAnswers.filter((answer, index) => answer === index % 4).length;
+			}
+
+			// 策略 3: 完全亂猜
 			function strategyRandom(correctAnswers) {
 				return correctAnswers.filter(answer => answer === Math.floor(Math.random() * 4)).length;
 			}

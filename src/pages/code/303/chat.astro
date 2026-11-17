@@ -2,11 +2,10 @@
 import Head from "@components/Head.astro";
 ---
 
-<html lang="zh-tw">
+<html lang="zh-Hant">
 	<head>
-		<Head title="303電腦課留言系統" description="303電腦課留言系統" />
+		<Head locale="zh-Hant" title="303電腦課留言系統" description="303電腦課留言系統" />
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" media="screen" />
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	</head>
 	<body>
 		<div class="header">
@@ -43,58 +42,55 @@ import Head from "@components/Head.astro";
 			</div>
 		</center>
 		<script is:inline>
-			//var t1 = window.setInterval(hello, 2000);
-			function hello() {
-				let requestURL = "https://script.google.com/macros/s/AKfycbyBMmqH6mir6KV1Sklt3jxr4sPVsubVjYjToGZvEfdeuw9KaZgZPtpFCc3I2vCzPLFP/exec";
-				let request = new XMLHttpRequest();
-				request.open("GET", requestURL);
-				request.responseType = "text";
-				request.send();
-				request.onload = function () {
-					console.log("re");
-					$(".stuff").html(request.response);
-					window.scrollTo(0, document.querySelector(".bubble-wrap").scrollHeight);
-				};
+			const api = "https://script.google.com/macros/s/AKfycbyBMmqH6mir6KV1Sklt3jxr4sPVsubVjYjToGZvEfdeuw9KaZgZPtpFCc3I2vCzPLFP/exec";
+			const form = document.querySelector("form");
+			const button = document.querySelector("#sendOrder");
+			const status = document.createElement("p");
+			status.setAttribute("role", "status");
+			form.after(status);
+			let loading = false;
+			async function hello() {
+				if (loading) return;
+				loading = true;
+				try {
+					const response = await fetch(api, { signal: AbortSignal.timeout(15000) });
+					if (!response.ok) throw new Error("Request failed");
+					document.querySelector(".stuff").innerHTML = await response.text();
+				} catch {
+					status.textContent = "無法載入訊息，請稍後再試。";
+				} finally {
+					loading = false;
+				}
 			}
-			$(function () {
-				// 監聽 按鈕點擊
-				$("#sendOrder").click(function (e) {
-					// 姓名
-					var name = $("#name").val();
-					$("input").focus(function () {
-						$(this).css("border", "");
-					});
-					var msg = $("#msg").val();
-					// 擋住不填資料
-					if (name == "") {
-						$("#name").css("border", "1px solid #ff0000");
-					} else if (msg == "") {
-						$("#msg").css("border", "1px solid #ff0000");
-					} else {
-						var data = {
-							name: name,
-							msg: msg,
-							color: $("#color").val(),
-							bubble: $("#bubble").prop("checked")
-						};
-						$.ajax({
-							// 這邊用get type
-							type: "post",
-							// api url - google appscript 產出的 url
-							url: "https://script.google.com/macros/s/AKfycbyBMmqH6mir6KV1Sklt3jxr4sPVsubVjYjToGZvEfdeuw9KaZgZPtpFCc3I2vCzPLFP/exec",
-							// 剛剛整理好的資料帶入
-							data: data,
-							// 資料格式是JSON
-							dataType: "JSON",
-							// 成功送出 會回頭觸發下面這塊
-							success: function (response) {
-								console.log(response);
-								alert("成功!!");
-							}
-						});
-					}
-				});
-			});
+			async function sendMessage(event) {
+				event.preventDefault();
+				const name = document.querySelector("#name");
+				const msg = document.querySelector("#msg");
+				if (!name.value.trim() || !msg.value.trim()) {
+					status.textContent = "請填寫顯示名稱與訊息。";
+					return;
+				}
+				button.disabled = true;
+				status.textContent = "傳送中…";
+				const body = new URLSearchParams({ name: name.value.trim(), msg: msg.value.trim(), color: document.querySelector("#color").value, bubble: String(document.querySelector("#bubble").checked) });
+				try {
+					const response = await fetch(api, { method: "POST", body, signal: AbortSignal.timeout(15000) });
+					if (!response.ok) throw new Error("Request failed");
+					await response.json();
+					status.textContent = "發送成功！";
+					msg.value = "";
+					await hello();
+				} catch {
+					status.textContent = "訊息未完成傳送，請檢查網路後重試。";
+				} finally {
+					button.disabled = false;
+				}
+			}
+			button.addEventListener("click", sendMessage);
+			form.addEventListener("submit", sendMessage);
+			hello();
+			const refresh = window.setInterval(hello, 2000);
+			window.addEventListener("pagehide", () => window.clearInterval(refresh), { once: true });
 		</script>
 		<style is:global>
 			body,

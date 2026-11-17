@@ -1,0 +1,132 @@
+.about-page .contact-blue {
+	position: relative;
+	isolation: isolate;
+	container: contact / inline-size;
+	padding: 42px 24px 34px;
+	overflow: hidden;
+	background: radial-gradient(ellipse at 50% 0, #15357a88, transparent 72%), linear-gradient(120deg, #10152a, #102758 55%, #111a35);
+	text-align: center;
+}
+.contact-blue .about-art-contact {
+	position: absolute;
+	inset: 0;
+	height: auto;
+	margin: 0;
+	color: #517fdc;
+	opacity: 0.28;
+	pointer-events: none;
+}
+.contact-banner {
+	position: relative;
+	z-index: 2;
+	margin: 0 auto;
+	color: #d3e4ff;
+	text-shadow: 0 0 20px #79adff66;
+}
+.about-page .contact-banner pre {
+	font:
+		min(14px, 1.05cqi)/1.15 "IBM Plex Mono",
+		monospace;
+	white-space: pre;
+	letter-spacing: 0;
+	text-align: center;
+}
+.banner-split {
+	display: none;
+}
+.about-page .contact-blue > p {
+	position: relative;
+	z-index: 2;
+	margin: 12px auto 0;
+	color: #c6d6f0;
+	font-size: 14px;
+	line-height: 1.6;
+}
+.about-page .contact-blue .contact-verse {
+	width: 100%;
+	max-width: none;
+	margin: 22px 0 18px;
+	text-align: center;
+	font-size: 12px;
+	color: #879fca;
+}
+.about-page .contact-blue > a {
+	position: relative;
+	z-index: 2;
+	display: block;
+	width: fit-content;
+	margin: 16px auto 0;
+	font-size: 14px;
+	color: #a9dfff;
+}
+@container contact (max-width:560px) {
+	.contact-banner .banner-full {
+		display: none;
+	}
+	.banner-split {
+		display: grid;
+		gap: 10px;
+	}
+	.about-page .banner-split pre {
+		font-size: min(12px, 2.5cqi);
+	}
+}
+.contact-static {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 1;
+	opacity: 0.13;
+	mix-blend-mode: screen;
+	image-rendering: pixelated;
+}
+.contact-blue::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	pointer-events: none;
+	background: repeating-linear-gradient(transparent 0 3px, #030716 3px 4px);
+	opacity: 0.18;
+}
+.contact-blue::before {
+	content: "";
+	position: absolute;
+	inset: -40% 0;
+	z-index: 1;
+	pointer-events: none;
+	background: linear-gradient(transparent 42%, #a1c7ff12 49%, transparent 55%);
+}
+@media (prefers-reduced-motion: no-preference) {
+	.contact-blue::before {
+		animation: contact-scan 8s linear infinite;
+	}
+	.contact-banner {
+		animation: contact-tick 9s steps(1, end) infinite;
+	}
+}
+@keyframes contact-scan {
+	from {
+		transform: translateY(-45%);
+	}
+	to {
+		transform: translateY(45%);
+	}
+}
+@keyframes contact-tick {
+	0%,
+	91%,
+	96%,
+	100% {
+		transform: translateX(0);
+	}
+	92%,
+	95% {
+		transform: translateX(0.7px);
+	}
+	94% {
+		transform: translateX(-0.7px);
+	}
+}

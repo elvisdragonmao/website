@@ -3,17 +3,18 @@ import "@assets/code/frog.css";
 import Head from "@components/Head.astro";
 ---
 
-<head>
-	<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
-	<Head path="code/frog/" title="主選單 - 大眼蛙教練點名系統" description="快速紀錄出缺席" theme="#00BFFF" />
-</head>
-<body>
-	<main>
-		<h1>大眼蛙教練點名系統</h1>
-		<p>主選單</p>
-		<button onclick="window.location='/code/frog/check-in';">報到</button>
-		<button onclick="window.location='/code/frog/search';">查詢紀錄</button>
-		<button onclick="window.location='/code/frog/sign-up';">新增學生</button>
-		<p><a href="/">毛哥EM</a>製作</p>
-	</main>
-</body>
+<html lang="zh-Hant">
+	<head>
+		<Head locale="zh-Hant" title="主選單 - 大眼蛙教練點名系統" description="快速紀錄出缺席" theme="#00BFFF" />
+	</head>
+	<body>
+		<main>
+			<h1>大眼蛙教練點名系統</h1>
+			<p>主選單</p>
+			<button onclick="window.location='/code/frog/check-in/';">報到</button>
+			<button onclick="window.location='/code/frog/search/';">查詢紀錄</button>
+			<button onclick="window.location='/code/frog/sign-up/';">新增學生</button>
+			<p><a href="/">毛哥EM</a>製作</p>
+		</main>
+	</body>
+</html>

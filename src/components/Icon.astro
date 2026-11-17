@@ -1,0 +1,17 @@
+---
+import arrow from "@phosphor-icons/core/assets/regular/arrow-up-right.svg?raw";
+import arrowLeft from "@phosphor-icons/core/assets/regular/arrow-left.svg?raw";
+import envelope from "@phosphor-icons/core/assets/regular/envelope-simple.svg?raw";
+import github from "@phosphor-icons/core/assets/regular/github-logo.svg?raw";
+import telegram from "@phosphor-icons/core/assets/regular/telegram-logo.svg?raw";
+import instagram from "@phosphor-icons/core/assets/regular/instagram-logo.svg?raw";
+import search from "@phosphor-icons/core/assets/regular/magnifying-glass.svg?raw";
+const icons = { arrow, arrowLeft, envelope, github, telegram, instagram, search };
+interface Props {
+	name?: keyof typeof icons;
+	class?: string;
+}
+const { name = "arrow", class: className = "" } = Astro.props;
+---
+
+<span class:list={["icon", className, { "icon-arrow": name === "arrow" }]} aria-hidden="true" set:html={icons[name]} />

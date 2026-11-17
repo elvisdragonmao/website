@@ -1,0 +1,194 @@
+/* A contained footer: breakpoints follow its actual width, not the viewport. */
+.site-footer.ascii-footer.has-newsletter {
+	--ink: #eeeee7;
+	--muted: #a1ada8;
+	--cyan: #7ac8d2;
+	--accent: #7ac8d2;
+	container: ascii-footer / inline-size;
+	position: relative;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	margin: 0;
+	padding: 32px 0 4px;
+	color: var(--ink);
+	background: transparent;
+	border: 0;
+}
+.ascii-footer.has-newsletter .footer-main {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 0.65fr) minmax(0, 1.5fr);
+	gap: 24px;
+	align-items: start;
+	width: 100%;
+}
+.ascii-footer .footer-main > * {
+	min-width: 0;
+	max-width: none;
+	margin: 0;
+}
+.ascii-footer.site-footer :is(p, a, h3, input, button, output, .footer-fine, .newsletter-caption) {
+	font:
+		400 14px/1.6 "IBM Plex Mono",
+		monospace;
+	letter-spacing: 0;
+}
+.ascii-footer .footer-note {
+	padding: 0;
+}
+.ascii-footer .footer-name {
+	display: inline-block;
+	margin: 0;
+}
+.ascii-footer .footer-name::before {
+	content: "[ ";
+}
+.ascii-footer .footer-name::after {
+	content: " ]";
+}
+.ascii-footer .footer-studio {
+	display: block;
+	margin-top: 18px;
+	color: var(--muted);
+}
+.ascii-footer .footer-socials {
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 9px;
+}
+.ascii-footer .footer-socials a {
+	gap: 8px;
+	white-space: nowrap;
+}
+.ascii-footer .footer-socials a::before {
+	content: "+ ";
+	color: #899c94;
+}
+.ascii-footer .newsletter-panel {
+	container-type: inline-size;
+	grid-column: auto;
+	width: 100%;
+}
+.ascii-footer .newsletter-panel h3 {
+	margin: 0 0 16px;
+}
+.ascii-footer .newsletter-panel h3 br {
+	display: none;
+}
+.ascii-footer .newsletter-input-row {
+	position: relative;
+	background: transparent;
+	border: 0;
+	margin-bottom: 24px;
+}
+.ascii-footer .newsletter-input-row:focus-within {
+	box-shadow: none;
+}
+.ascii-footer .newsletter-input-row::before {
+	content: ">";
+	color: #a1ada8;
+	transition: color 180ms;
+}
+.ascii-footer .newsletter-input-row input {
+	padding: 4px 0 4px 12px;
+	border: 0;
+	outline: 0;
+	box-shadow: none;
+}
+.ascii-footer .newsletter-input-row input::placeholder {
+	color: #a1ada8;
+}
+.ascii-footer .newsletter-input-row input:focus-visible {
+	outline: 0;
+}
+.ascii-footer .newsletter-submit {
+	display: block;
+	border: 0;
+	padding: 0;
+	background: transparent;
+	color: var(--cyan);
+	margin-top: 20px;
+	cursor: pointer;
+}
+.ascii-footer .newsletter-submit:hover {
+	color: var(--ink);
+}
+.ascii-footer.site-footer .newsletter-caption {
+	margin-top: 16px;
+	max-width: none;
+	color: var(--muted);
+	font-size: min(14px, 4cqi);
+}
+.ascii-footer .newsletter-caption > span {
+	white-space: nowrap;
+}
+.ascii-footer .footer-fine {
+	display: flex;
+	position: relative;
+	width: 100%;
+	margin: 32px 0 0;
+	padding: 18px 0 0;
+	align-items: baseline;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px 24px;
+}
+.ascii-footer .footer-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 24px;
+	margin: 0;
+}
+.ascii-footer::before,
+.ascii-footer .footer-fine::before,
+.ascii-footer .newsletter-input-row::after {
+	content: "+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 18px;
+	overflow: hidden;
+	white-space: pre;
+	color: #60746d;
+	font:
+		14px/18px "IBM Plex Mono",
+		monospace;
+	pointer-events: none;
+}
+.ascii-footer .footer-fine::before {
+	top: -4px;
+}
+.ascii-footer .newsletter-input-row::after {
+	content: "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+	top: auto;
+	bottom: -12px;
+	transition: color 180ms;
+}
+.ascii-footer .newsletter-input-row:focus-within::before,
+.ascii-footer .newsletter-input-row:focus-within::after {
+	color: var(--cyan);
+}
+@container ascii-footer (max-width: 850px) {
+	.ascii-footer.has-newsletter .footer-main {
+		grid-template-columns: 1fr 1fr;
+	}
+	.ascii-footer .newsletter-panel {
+		grid-column: 1 / -1;
+	}
+}
+@container ascii-footer (max-width: 520px) {
+	.ascii-footer.has-newsletter .footer-main {
+		grid-template-columns: 1fr;
+	}
+	.ascii-footer .footer-socials {
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: 9px 20px;
+	}
+	.ascii-footer .footer-fine {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}

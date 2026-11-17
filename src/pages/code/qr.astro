@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/qr" title="QR Code生成器 | 毛哥EM的基地" description="世界上最強、最快、即時更新的QR Code生成器。自動抓取剪貼簿連結生成QR Code。" theme="#749BC2" />
+		<Head locale="zh-Hant" title="QR Code生成器 | 毛哥EM的基地" description="輸入文字或網址，即時產生 QR Code。可調整容錯率、從剪貼簿貼上內容，並下載 PNG 圖片。" theme="#749BC2" />
 		<style is:global>
 			:root {
 				--color-primary: #f6f4eb;
@@ -208,71 +208,51 @@ import Head from "@components/Head.astro";
 			</p>
 		</main>
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+		<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 		<script is:inline>
-			window.addEventListener("DOMContentLoaded", () => {
-				const qr = document.getElementById("qrcode");
-				const generateQRCode = () => {
-					qr.innerHTML = "";
+			const qr = document.getElementById("qrcode");
+			function generateQRCode() {
+				qr.replaceChildren();
+				if (!window.QRCode) {
+					qr.textContent = "QR Code library could not load. Please check your connection and reload.";
+					return;
+				}
+				const text = document.getElementById("text-input").value;
+				if (!text) return;
+				const size = Math.max(64, Math.min(2048, Number(document.getElementById("width-input").value) || 256));
+				try {
 					new QRCode(qr, {
-						text: document.getElementById("text-input").value,
-						width: document.getElementById("width-input").value,
-						height: document.getElementById("width-input").value,
+						text,
+						width: size,
+						height: size,
 						colorDark: document.getElementById("colorDark").value,
 						colorLight: document.getElementById("transparent").checked ? "transparent" : document.getElementById("colorLight").value,
 						correctLevel: QRCode.CorrectLevel[document.getElementById("correct-level").value]
 					});
-				};
-				const downloadQRCode = () => {
-					const canvas = qr.querySelector("canvas"); // Get the QR code canvas element
-					const link = document.createElement("a");
-					link.href = canvas.toDataURL("image/png"); // Convert canvas to data URL
-					link.download = "qrcode.png"; // Set the download file name
-					link.click(); // Trigger the download
-				};
-
-				document.querySelector(".downloadQRCode").addEventListener("click", downloadQRCode);
-				const inputElements = document.querySelectorAll("input");
-				inputElements.forEach(input => {
-					input.addEventListener("change", generateQRCode);
-				});
-				inputElements.forEach(input => {
-					input.addEventListener("input", generateQRCode);
-				});
-				document.querySelector("select").addEventListener("change", generateQRCode);
-				new QRCode(qr, {
-					text: "https://elvisdragonmao.github.io/code/qr",
-					width: document.getElementById("width-input").value,
-					height: document.getElementById("width-input").value,
-					colorDark: document.getElementById("colorDark").value,
-					colorLight: document.getElementById("transparent").checked ? "transparent" : document.getElementById("colorLight").value,
-					correctLevel: QRCode.CorrectLevel[document.getElementById("correct-level").value]
-				});
-				const useClipBoard = () => {
-					if (navigator.clipboard) {
-						navigator.clipboard
-							.readText()
-							.then(text => {
-								document.getElementById("text-input").value = text;
-								qr.innerHTML = "";
-								new QRCode(qr, {
-									text: text,
-									width: document.getElementById("width-input").value,
-									height: document.getElementById("width-input").value,
-									colorDark: document.getElementById("colorDark").value,
-									colorLight: document.getElementById("transparent").checked ? "transparent" : document.getElementById("colorLight").value,
-									correctLevel: QRCode.CorrectLevel[document.getElementById("correct-level").value]
-								});
-							})
-							.catch(error => {
-								console.error("Error reading from clipboard:", error);
-							});
-					} else {
-						console.log("Clipboard API is not supported in this browser.");
-					}
-				};
-				useClipBoard();
+				} catch {
+					qr.textContent = "Text is too long. Try shorter text or a lower correction level.";
+				}
+			}
+			document.querySelector(".downloadQRCode").addEventListener("click", () => {
+				const canvas = qr.querySelector("canvas");
+				if (!canvas) return;
+				const link = document.createElement("a");
+				link.href = canvas.toDataURL("image/png");
+				link.download = "qrcode.png";
+				link.click();
 			});
+			document.querySelectorAll("input, select").forEach(input => input.addEventListener("input", generateQRCode));
+			async function useClipBoard() {
+				if (!navigator.clipboard?.readText) return;
+				try {
+					document.getElementById("text-input").value = await navigator.clipboard.readText();
+					generateQRCode();
+				} catch {
+					/* Clipboard permission is optional; manual input remains available. */
+				}
+			}
+			document.getElementById("text-input").value = window.location.href;
+			generateQRCode();
 		</script>
 	</body>
 </html>

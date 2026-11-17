@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="en">
 	<head>
-		<Head path="code/3color" title="Golden Ratio Palette Generator" description="Golden Ratio Palette Generator" />
+		<Head locale="en" title="Golden Ratio Palette Generator" description="Golden Ratio Palette Generator" />
 		<style is:global>
 			@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
@@ -196,7 +196,7 @@ import Head from "@components/Head.astro";
 		</main>
 		<div class="copied">Copied to clipboard!</div>
 
-		<script>
+		<script is:inline>
 			const colorInput = document.getElementById("colorInput");
 			const hexInput = document.getElementById("hexInput");
 			const hexs = document.querySelectorAll(".hex");
@@ -287,6 +287,8 @@ import Head from "@components/Head.astro";
 
 			const updateColors = hex => {
 				hex = hex.startsWith("#") ? hex : "#" + hex;
+				if (!/^#(?:[\da-f]{3}|[\da-f]{6})$/i.test(hex)) return;
+				if (hex.length === 4) hex = "#" + [...hex.slice(1)].map(char => char + char).join("");
 				const hsl = hexToHSL(hex);
 				const rotated = { ...hsl, h: (hsl.h + 137.5) % 360 };
 				const lightened = { ...hsl, l: Math.min(hsl.l * 0.6, 100) };
@@ -316,13 +318,19 @@ import Head from "@components/Head.astro";
 			// copy to clipboard
 			const copiedMessage = document.querySelector(".copied");
 			const copyToClipboard = text => {
-				navigator.clipboard.writeText(text).then(() => {
-					copiedMessage.innerText = `Copied ${text}`;
-					copiedMessage.style.opacity = "1";
-					setTimeout(() => {
-						copiedMessage.style.opacity = "0";
-					}, 2000);
-				});
+				navigator.clipboard
+					.writeText(text)
+					.then(() => {
+						copiedMessage.innerText = `Copied ${text}`;
+						copiedMessage.style.opacity = "1";
+						setTimeout(() => {
+							copiedMessage.style.opacity = "0";
+						}, 2000);
+					})
+					.catch(() => {
+						copiedMessage.innerText = "Clipboard unavailable. Select and copy the hex value.";
+						copiedMessage.style.opacity = "1";
+					});
 			};
 
 			// when palette is clicked, copy hex value

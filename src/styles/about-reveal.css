@@ -1,0 +1,26 @@
+.about-page .tui-draw-path {
+	stroke-dasharray: 1;
+	stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+	.about-page[data-panel-motion-ready] [data-panel-state] {
+		transition:
+			opacity 650ms ease,
+			transform 850ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.about-page[data-panel-motion-ready] [data-panel-state="pending"] {
+		opacity: 0;
+		transform: translateY(24px);
+	}
+	.about-page[data-panel-motion-ready] [data-panel-state="entered"] {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	.about-page[data-panel-motion-ready] [data-panel-state] .tui-draw-path {
+		stroke-dashoffset: 1;
+		transition: stroke-dashoffset 1250ms cubic-bezier(0.33, 0.75, 0.3, 1) 80ms;
+	}
+	.about-page[data-panel-motion-ready] [data-panel-state="entered"] .tui-draw-path {
+		stroke-dashoffset: 0;
+	}
+}

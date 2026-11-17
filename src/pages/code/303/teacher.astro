@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head title="第65屆國三3電子畢冊" theme="#333" image="https://raw.githubusercontent.com/elvisdragonmao/2022-vtsh-graduation/main/group.webp" favicon={false} theme="#2f4154" />
+		<Head locale="zh-Hant" title="第65屆國三3電子畢冊" image="https://raw.githubusercontent.com/elvisdragonmao/2022-vtsh-graduation/main/group.webp" favicon={false} theme="#2f4154" />
 		<link rel="icon" href="https://raw.githubusercontent.com/elvisdragonmao/2022-vtsh-graduation/refs/heads/main/teacher/%E6%9D%8E%E8%8B%A5%E8%96%87.webp" />
 		<style is:global>
 			* {
@@ -291,8 +291,7 @@ import Head from "@components/Head.astro";
 			type();
 		</script>
 		<script type="module">
-			import "https://font.emtech.cc/emfont.js";
-			emfont.init();
+			import("https://font.emtech.cc/emfont.js").then(() => window.emfont?.init()).catch(() => {});
 		</script>
 	</body>
 </html>

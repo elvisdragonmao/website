@@ -1,0 +1,36 @@
+---
+import AsciiArt from "./AsciiArt.astro";
+import { aboutText } from "../../i18n/about";
+import { getLocale, type Locale } from "../../i18n/index";
+interface Props {
+	locale?: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const banner = `██╗    ██╗██╗  ██╗ █████╗ ████████╗███████╗    ██╗   ██╗██████╗     ██████╗ ██████╗  ██████╗ ██╗
+██║    ██║██║  ██║██╔══██╗╚══██╔══╝██╔════╝    ██║   ██║██╔══██╗    ██╔══██╗██╔══██╗██╔═══██╗██║
+██║ █╗ ██║███████║███████║   ██║   ███████╗    ██║   ██║██████╔╝    ██████╔╝██████╔╝██║   ██║██║
+██║███╗██║██╔══██║██╔══██║   ██║   ╚════██║    ██║   ██║██╔═══╝     ██╔══██╗██╔══██╗██║   ██║╚═╝
+╚███╔███╔╝██║  ██║██║  ██║   ██║   ███████║    ╚██████╔╝██║         ██████╔╝██║  ██║╚██████╔╝██╗
+ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝     ╚═════╝ ╚═╝         ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝`;
+const split = banner.split("\n")[0]!.indexOf("██╗   ██╗");
+const parts = [
+	banner
+		.split("\n")
+		.map(line => line.slice(0, split).trimEnd())
+		.join("\n"),
+	banner
+		.split("\n")
+		.map(line => line.slice(split))
+		.join("\n")
+];
+---
+
+<section class="about-contact contact-blue" aria-labelledby="contact-title">
+	<canvas class="contact-static" data-contact-static aria-hidden="true"></canvas>
+	<AsciiArt kind="contact" />
+	<h2 id="contact-title" class="sr-only">{aboutText(locale, "contactTitle")}</h2>
+	<div class="contact-banner" aria-hidden="true"><pre class="banner-full">{banner}</pre><div class="banner-split">{parts.map(part => <pre>{part}</pre>)}</div></div>
+	<p class="contact-verse">{aboutText(locale, "verse")}</p>
+	<p>{aboutText(locale, "contact")}</p>
+	<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer">[info@elvismao.com]</a>
+</section>

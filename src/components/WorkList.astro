@@ -1,0 +1,49 @@
+---
+import Icon from "./Icon.astro";
+import { galleryBoxFrame } from "../lib/work-box";
+import { getProjects } from "../data/projects";
+import { getLocale, localizePath, type Locale } from "../i18n";
+import "../styles/work-gallery.css";
+interface Props {
+	locale?: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const projects = getProjects(locale);
+// A readable, server-rendered glyph frame remains in place before JS measures the grid.
+const cols = 58,
+	rows = 35;
+const frame = galleryBoxFrame(cols, rows);
+---
+
+<div class="project-gallery work-box-gallery" data-work-gallery>
+	{
+		projects.map(project => (
+			<a class="project-box work-box" href={localizePath(`/work/${project.slug}/`, locale)} data-project={project.slug}>
+				<svg class="work-box-geometry" viewBox={`0 0 ${cols * 8} ${rows * 16}`} preserveAspectRatio="none" aria-hidden="true" focusable="false" data-box-outline>
+					{frame.map((row, y) => (
+						<text x="0" y={y * 16 + 12} xml:space="preserve">
+							{row}
+						</text>
+					))}
+				</svg>
+				<div class="work-box-front">
+					<div class="project-box-media work-box-media" data-work-image>
+						<img src={project.thumbnail?.src ?? project.image} alt="" width={project.thumbnail?.width ?? project.imageWidth} height={project.thumbnail?.height ?? project.imageHeight} loading="lazy" />
+					</div>
+					<div class="project-box-copy work-box-copy">
+						<span class="project-box-type">{project.card.type}</span>
+						<h3>
+							<span class="link-underline project-title-label">{project.name}</span>
+							<Icon />
+						</h3>
+						<p>{project.card.summary}</p>
+						<span class="project-box-metric">{project.card.metric}</span>
+					</div>
+				</div>
+			</a>
+		))
+	}
+</div>
+<script>
+	import "../scripts/work-gallery";
+</script>

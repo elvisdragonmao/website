@@ -2,9 +2,9 @@
 import Head from "@components/Head.astro";
 ---
 
-<html>
+<html lang="en">
 	<head>
-		<Head path="StandBy" title="iOS StandBy By EM" description="iOS StandBy By EM" theme="#000" />
+		<Head locale="en" title="iOS StandBy By EM" description="iOS StandBy By EM" theme="#000" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<style is:global>
 			/* @font-face {
@@ -719,7 +719,7 @@ import Head from "@components/Head.astro";
 				var elem = document.documentElement; // Assuming you want to make the entire document full screen
 				if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
 					if (elem.requestFullscreen) {
-						elem.requestFullscreen();
+						elem.requestFullscreen().catch(() => {});
 					} else if (elem.webkitRequestFullscreen) {
 						elem.webkitRequestFullscreen();
 					} else if (elem.msRequestFullscreen) {
@@ -767,7 +767,7 @@ import Head from "@components/Head.astro";
 				elements.forEach(function (element) {
 					element.classList.remove("now");
 				});
-				elements[a].classList.add("now");
+				elements[a]?.classList.add("now");
 				last = a;
 			});
 
@@ -776,7 +776,10 @@ import Head from "@components/Head.astro";
 			const authorElement = document.querySelector(".author");
 			const captionElement = document.querySelector(".caption");
 			fetch(`https://api.unsplash.com/photos/random?client_id=fJ9Q7JkDZO6JvR6XU4kq7vATcQ9mdO0BGwcJwgYS7M0`)
-				.then(response => response.json())
+				.then(response => {
+					if (!response.ok) throw new Error("Image unavailable");
+					return response.json();
+				})
 				.then(data => {
 					imageElement.style.backgroundImage = `url(${data.urls.full})`;
 					// Assuming data is an object containing the description and alt_description properties
@@ -787,8 +790,9 @@ import Head from "@components/Head.astro";
 					}
 					captionElement.innerHTML = `<a href="${data.links.html}" target="_blank">${data.user.name}, ${data.user.location}<span>❯</span></a>`;
 				})
-				.catch(error => {
-					console.log("Error:", error);
+				.catch(() => {
+					authorElement.textContent = "Photo unavailable";
+					captionElement.textContent = "The clock is still available offline.";
 				});
 		</script>
 	</body>

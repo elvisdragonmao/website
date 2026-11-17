@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/liff" title="LINE Flex Message Sender | 毛哥EM的基地" description="LINE Flex message 發送工具。" theme="#FFF" />
+		<Head locale="zh-Hant" title="LINE Flex Message Sender | 毛哥EM的基地" description="LINE Flex message 發送工具。" theme="#FFF" />
 		<style is:global>
 			body {
 				font-family:
@@ -63,11 +63,6 @@ import Head from "@components/Head.astro";
 				box-sizing: border-box;
 			}
 		</style>
-		<script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-		<script is:inline>
-			// VConsole will be exported to `window.VConsole` by default.
-			var vConsole = new window.VConsole();
-		</script>
 	</head>
 	<body>
 		<h1>LINE Flex Message Sender</h1>
@@ -81,62 +76,52 @@ import Head from "@components/Head.astro";
 		<button onclick="to()">Open In Line</button>
 		<button onclick="simulator()">Simulator</button>
 
-		<script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+		<p id="status" role="status" aria-live="polite"></p>
+		<script is:inline src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 		<script is:inline>
+			let ready;
+			const status = document.getElementById("status");
+			async function initialize() {
+				if (!window.liff) throw new Error("LINE SDK could not load. Check your connection and try again.");
+				if (!ready)
+					ready = liff.init({ liffId: "1656564267-XlA7y2d2" }).catch(error => {
+						ready = null;
+						throw error;
+					});
+				await ready;
+			}
 			async function sendMessage() {
-				const alt = document.getElementById("alt").value;
-				let content = document.getElementById("content").value;
-
-				// Initialize LIFF
-				await liff.init({ liffId: "1656564267-XlA7y2d2" });
-
-				// Check if LIFF is initialized
-				if (liff.isInClient()) {
-					// Send text via shareTargetPicker
-
-					// remove space and break row in content and check if ends with }}
-					const contentCheck = content.replace(/\s/g, "").replace(/\n/g, "").endsWith("}}");
-					if (!contentCheck) {
-						alert("Content is not valid. Please copy directly from Flex Message Simulator.");
-						return;
-					}
-					//check if its a vaild json
+				const button = document.querySelector(".send");
+				try {
+					const alt = document.getElementById("alt").value.trim();
+					if (!alt || alt.length > 400) throw new Error("Enter alternative text of 1–400 characters.");
+					let content;
 					try {
-						content = JSON.parse(content);
-					} catch (e) {
-						alert("Content is not valid");
-						return;
+						content = JSON.parse(document.getElementById("content").value);
+					} catch {
+						throw new Error("Content must be valid Flex Message JSON.");
 					}
-					await liff.shareTargetPicker([
-						{
-							type: "flex",
-							altText: alt,
-							contents: content
-						}
-					]);
-				} else {
-					alert("Please open this page in the LINE app to use the shareTargetPicker.");
+					// Accept either simulator output or its bubble/carousel contents.
+					if (content.type === "flex") content = content.contents;
+					if (!content || !["bubble", "carousel"].includes(content.type)) throw new Error("Content must be a bubble or carousel.");
+					button.disabled = true;
+					await initialize();
+					if (!liff.isInClient()) throw new Error("Open this page in LINE to select recipients.");
+					if (!liff.isApiAvailable("shareTargetPicker")) throw new Error("Sharing is unavailable in this LINE version or account.");
+					const result = await liff.shareTargetPicker([{ type: "flex", altText: alt, contents: content }]);
+					status.textContent = result ? "Message shared." : "Sharing cancelled.";
+				} catch (error) {
+					status.textContent = error.message || "Unable to initialize LINE. Please reopen this page in LINE.";
+				} finally {
+					button.disabled = false;
 				}
 			}
-
-			//auto pate clipbard content to content when loaded
-			window.onload = function () {
-				navigator.clipboard.readText().then(clipText => (document.getElementById("content").value = clipText));
-			};
-
-			const to = () => {
-				liff.openWindow({
-					url: "line://app/1656564267-XlA7y2d2",
-					external: false
-				});
-			};
-
-			const simulator = () => {
-				liff.openWindow({
-					url: "https://developers.line.biz/flex-simulator/",
-					external: true
-				});
-			};
+			function to() {
+				window.location.href = "https://liff.line.me/1656564267-XlA7y2d2";
+			}
+			function simulator() {
+				window.open("https://developers.line.biz/flex-simulator/", "_blank", "noopener,noreferrer");
+			}
 		</script>
 	</body>
 </html>

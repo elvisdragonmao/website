@@ -2,9 +2,9 @@
 import Head from "@components/Head.astro";
 ---
 
-<html>
+<html lang="zh-Hant">
 	<head>
-		<Head path="code/vi" title="麥克風視覺化 | 毛哥EM的基地" description="使用麥克風音訊資料進行視覺化，呈現音訊頻率的變化。" theme="#050d61" />
+		<Head locale="zh-Hant" title="麥克風視覺化 | 毛哥EM的基地" description="使用麥克風音訊資料進行視覺化，呈現音訊頻率的變化。" theme="#050d61" />
 		<style type="text/css">
 			html,
 			body {
@@ -67,25 +67,30 @@ import Head from "@components/Head.astro";
 			<rect x="0" y="0" width="100%" height="100%" fill="url(#gradient)" mask="url(#mask)"></rect>
 		</svg>
 
-		<h1>In <a href="https://codepen.io/zapplebee/full/gbNbZE/">Full Page view</a>, please allow the use of your microphone</h1>
+		<h1><button id="startVisualizer">Start microphone visualizer</button><span id="micStatus" role="status"></span></h1>
 		<script is:inline>
 			window.onload = function () {
 				"use strict";
 				var paths = document.getElementsByTagName("path");
 				var visualizer = document.getElementById("visualizer");
-				var mask = visualizer.getElementById("mask");
-				var h = document.getElementsByTagName("h1")[0];
+				var mask = document.getElementById("mask");
+				var h = document.getElementById("micStatus");
+				var startButton = document.getElementById("startVisualizer");
+				var animation, audioContext, activeStream;
 				var path;
 				var report = 0;
 
 				var soundAllowed = function (stream) {
-					//Audio stops listening in FF without // window.persistAudioStream = stream;
+					//Audio stops listening in FF without // activeStream = stream;
+					startButton.hidden = true;
 					//https://bugzilla.mozilla.org/show_bug.cgi?id=965483
 					//https://support.mozilla.org/en-US/questions/984179
-					window.persistAudioStream = stream;
+					activeStream = stream;
+					startButton.hidden = true;
 					h.innerHTML = "Thanks";
 					h.setAttribute("style", "opacity: 0;");
 					var audioContent = new AudioContext();
+					audioContext = audioContent;
 					var audioStream = audioContent.createMediaStreamSource(stream);
 					var analyser = audioContent.createAnalyser();
 					audioStream.connect(analyser);
@@ -102,7 +107,7 @@ import Head from "@components/Head.astro";
 						mask.appendChild(path);
 					}
 					var doDraw = function () {
-						requestAnimationFrame(doDraw);
+						animation = requestAnimationFrame(doDraw);
 						analyser.getByteFrequencyData(frequencyArray);
 						var adjustedLength;
 						for (var i = 0; i < 255; i++) {
@@ -114,11 +119,24 @@ import Head from "@components/Head.astro";
 				};
 
 				var soundNotAllowed = function (error) {
-					h.innerHTML = "You must allow your microphone.";
-					console.log(error);
+					h.textContent = "Microphone access was unavailable or denied. You can try again.";
+					startButton.disabled = false;
 				};
 
-				navigator.getUserMedia({ audio: true }, soundAllowed, soundNotAllowed);
+				startButton.addEventListener("click", async () => {
+					startButton.disabled = true;
+					try {
+						if (!navigator.mediaDevices?.getUserMedia) throw new Error("Microphone capture is unsupported.");
+						soundAllowed(await navigator.mediaDevices.getUserMedia({ audio: true }));
+					} catch (error) {
+						soundNotAllowed(error);
+					}
+				});
+				window.addEventListener("pagehide", () => {
+					cancelAnimationFrame(animation);
+					activeStream?.getTracks().forEach(track => track.stop());
+					audioContext?.close();
+				});
 			};
 		</script>
 	</body>

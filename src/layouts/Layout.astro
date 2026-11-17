@@ -1,0 +1,46 @@
+---
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "../styles/global.css";
+import "../styles/pages.css";
+import Nav from "../components/Nav.astro";
+import SEO from "../components/SEO.astro";
+import type { SocialImage } from "../data/seo";
+import type { SeoCollectionItem, SeoProject } from "../lib/seo";
+import { ClientRouter } from "astro:transitions";
+import "../styles/transitions.css";
+import { getLocale, type Locale } from "../i18n";
+interface Props {
+	title?: string;
+	description?: string;
+	home?: boolean;
+	noindex?: boolean;
+	locale?: Locale;
+	image?: SocialImage;
+	project?: SeoProject;
+	collection?: SeoCollectionItem[];
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const { home = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<SEO {...Astro.props} locale={locale} />
+		<meta name="theme-color" content="#080808" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)" />
+		<ClientRouter fallback="swap" />
+	</head>
+	<body class:list={[home ? "home-page" : "inner-page"]} data-art={home ? "story" : undefined}>
+		<Nav locale={locale} />
+		<slot />
+		<canvas id="route-pixels" transition:persist="route-pixels" aria-hidden="true"></canvas>
+	</body>
+</html>
+<script>
+	import "../scripts/page-experience";
+</script>

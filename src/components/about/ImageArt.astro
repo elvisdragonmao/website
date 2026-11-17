@@ -1,0 +1,44 @@
+---
+import profile from "../../assets/about/profile.webp";
+import furry from "../../assets/about/furry.webp";
+import porter from "../../assets/about/porter.webp";
+import kendrick from "../../assets/about/kendrick.webp";
+import trump from "../../assets/about/trump.webp";
+interface Props {
+	kind: "portrait" | "furry" | "music" | "debate";
+}
+const { kind } = Astro.props;
+const images = kind === "music" ? [kendrick, porter] : [kind === "portrait" ? profile : kind === "debate" ? trump : furry];
+const priority = kind === "portrait";
+---
+
+<div class:list={["about-media", `media-${kind}`]} data-image-art={kind} aria-hidden="true">
+	{kind === "portrait" && <canvas class="portrait-cloud" data-image-atmosphere />}
+	{kind === "portrait" && <canvas data-image-halo />}
+	<div class="media-images">
+		{
+			images.map((image, i) => (
+				<img
+					src={image.src}
+					width={image.width}
+					height={image.height}
+					alt=""
+					class={kind === "music" ? (i === 0 ? "music-kendrick" : "music-porter") : undefined}
+					loading={priority ? "eager" : "lazy"}
+					fetchpriority={priority ? "high" : "low"}
+					decoding="async"
+				/>
+			))
+		}
+	</div>
+	{
+		kind === "music" ? (
+			<>
+				<canvas class="music-ascii-kendrick" data-image-output="0" />
+				<canvas class="music-ascii-porter" data-image-output="1" />
+			</>
+		) : (
+			kind !== "furry" && <canvas data-image-output />
+		)
+	}
+</div>

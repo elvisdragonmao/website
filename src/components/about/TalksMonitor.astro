@@ -1,0 +1,70 @@
+---
+import { getAboutData } from "../../data/about-localized";
+import { aboutText } from "../../i18n/about";
+import { getLocale, type Locale } from "../../i18n/index";
+interface Props {
+	locale?: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const text = (key: Parameters<typeof aboutText>[1]) => aboutText(locale, key);
+const { talks } = getAboutData(locale);
+import Icon from "../Icon.astro";
+const years = [...new Set(talks.map(talk => talk.year))];
+---
+
+<section class="about-section talks-section tui-panel" aria-labelledby="talks-title" data-talks-monitor>
+	<h2 id="talks-title" class="talks-app-title">{text("talks")}</h2>
+	<div class="talks-console">
+		<div class="talks-controls">
+			<div class="talks-years" role="group" aria-label={text("filterYear")}>
+				{
+					years.map(year => (
+						<button type="button" data-talks-year={year} aria-pressed="false" aria-label={aboutText(locale, "filterYearHint", { year })}>
+							<>
+								<span>{year}</span>
+								<span class="talks-meter" aria-hidden="true">
+									{"["}
+									<span>{"|".repeat(talks.filter(t => t.year === year).length)}</span>
+									{"]"}
+								</span>
+							</>
+						</button>
+					))
+				}
+			</div>
+			<label class="talks-search">
+				<Icon name="search" /><input type="search" aria-label={text("searchTalks")} data-talks-search autocomplete="off" spellcheck="false" />
+				<output class="talks-count" data-talks-count aria-live="polite">{talks.length} / {talks.length}</output>
+			</label>
+		</div>
+		<div class="talks-table-scroll" tabindex="0" role="region" aria-labelledby="talks-title">
+			<table aria-labelledby="talks-title">
+				<thead><tr><th scope="col" class="talk-year">{text("year")}</th><th scope="col">{text("course")}</th><th scope="col">{text("venue")}</th></tr></thead>
+				<tbody>
+					{
+						talks.map((talk, index) => (
+							<tr data-talks-row data-year={talk.year} data-selected={index === 0 ? "true" : undefined} tabindex={index === 0 ? 0 : -1}>
+								<td class="talk-year">{talk.year}</td>
+								<th scope="row">{talk.title}</th>
+								<td class="talk-context">{talk.context}</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+		<div class="talks-keybar" role="group" aria-label={text("shortcuts")}>
+			{
+				years.map((year, i) => (
+					<button type="button" data-talks-year={year} aria-pressed="false">
+						<>
+							<kbd>{`F${i + 1}`}</kbd>
+							<span>{year}</span>
+						</>
+					</button>
+				))
+			}
+			<button type="button" data-talks-reset aria-label={text("reset")}><kbd>Esc</kbd></button>
+		</div>
+	</div>
+</section>

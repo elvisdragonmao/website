@@ -2,11 +2,11 @@
 import Head from "@components/Head.astro";
 ---
 
-<html lang="zh-tw">
+<html lang="zh-Hant">
 	<head>
-		<Head path="code/sysh/time/" title="西苑高中上下課及時倒數 | 毛哥EM的基地" description="即時更新的西苑高中課程時間表，方便學生和老師掌握上下課時間，避免拖堂。" theme="#00BFFF" />
+		<Head locale="zh-Hant" title="西苑高中上下課及時倒數 | 毛哥EM的基地" description="即時更新的西苑高中課程時間表，方便學生和老師掌握上下課時間，避免拖堂。" theme="#00BFFF" />
 		<link href="https://fonts.googleapis.com/css?family=Aldrich" rel="stylesheet" type="text/css" />
-		<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.3/dist/confetti.browser.min.js"></script>
+		<script is:inline src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.3/dist/confetti.browser.min.js"></script>
 		<style is:global>
 			* {
 				margin: 0;
@@ -103,7 +103,7 @@ import Head from "@components/Head.astro";
 
 			function requestFullScreen() {
 				if (elem.requestFullscreen) {
-					elem.requestFullscreen();
+					elem.requestFullscreen().catch(() => {});
 				} else if (elem.webkitRequestFullscreen) {
 					elem.webkitRequestFullscreen();
 				} else if (elem.msRequestFullscreen) {
@@ -119,7 +119,7 @@ import Head from "@components/Head.astro";
 				var minute = now.getMinutes();
 				let target, length;
 				let progress = document.querySelector(".progress");
-				if (hour >= 17 && minute >= 5) {
+				if (hour > 17 || (hour === 17 && minute >= 5)) {
 					time.innerHTML = "再見";
 					display(2, "明天見");
 				} else {
@@ -201,7 +201,7 @@ import Head from "@components/Head.astro";
 					// 將毫秒轉換為分鐘和秒數
 					var minutes = Math.floor(diff / 1000 / 60);
 					var seconds = Math.floor(diff / 1000) % 60;
-					var millisecond = (milliseconds = Math.floor((diff % 1000) / 10));
+					var millisecond = Math.floor((diff % 1000) / 10);
 					if (minutes == 0 && seconds == 0) runConfetti();
 					var chars = minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
 					if (minutes == 0) chars += ":" + millisecond.toString().padEnd(2, "0");
@@ -232,7 +232,7 @@ import Head from "@components/Head.astro";
 				}
 			}
 		</script>
-		<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.3/dist/confetti.browser.min.js"></script>
+
 		<script is:inline>
 			function runConfetti() {
 				const end = Date.now() + 10 * 1000;
@@ -242,6 +242,7 @@ import Head from "@components/Head.astro";
 					return min + Math.round(Math.random() * (max - min));
 				};
 				const canvas = document.getElementById("my-canvas");
+				if (!window.confetti) return;
 				const confettiInstance = confetti.create(canvas, {
 					resize: true
 				});

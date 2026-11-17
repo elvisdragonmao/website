@@ -2,9 +2,9 @@
 import Head from "@components/Head.astro";
 ---
 
-<html>
+<html lang="zh-Hant">
 	<head>
-		<Head path="code/EM-SFW" title="鏡頭畫面 | 毛哥EM的基地" description="鏡頭檢視工具，讓視訊畫面不再顛倒/模糊/切割" theme="#21c3e0" />
+		<Head locale="zh-Hant" title="鏡頭畫面 | 毛哥EM的基地" description="鏡頭檢視工具，讓視訊畫面不再顛倒/模糊/切割" theme="#21c3e0" />
 		<style is:global>
 			* {
 				padding: 0;
@@ -216,7 +216,7 @@ import Head from "@components/Head.astro";
 						class="toggle-checkbox"
 						type="checkbox"
 						checked
-						onclick="if(overflow==1){overflow=0;getElementById('content').style.overflow = 'scroll'} else {overflow=1;getElementById('content').style.overflow = 'hidden';}"
+						onclick="if(overflow==1){overflow=0;document.getElementById('content').style.overflow = 'scroll'} else {overflow=1;document.getElementById('content').style.overflow = 'hidden';}"
 					/>
 					<label for="overflow" class="toggle-label">
 						<span class="toggle-inner"></span>
@@ -231,7 +231,7 @@ import Head from "@components/Head.astro";
 						id="window"
 						class="toggle-checkbox"
 						type="checkbox"
-						onclick="if(mode==1){mode=0;getElementById('vid').style.display = 'none';getElementById('canvas').style.display = 'block';} else {mode=1;getElementById('vid').style.display = 'block';getElementById('canvas').style.display = 'none';}"
+						onclick="if(mode==1){mode=0;document.getElementById('vid').style.display = 'none';document.getElementById('canvas').style.display = 'block';} else {mode=1;document.getElementById('vid').style.display = 'block';document.getElementById('canvas').style.display = 'none';}"
 					/>
 					<label for="window" class="toggle-label">
 						<span class="toggle-inner"></span>
@@ -242,12 +242,7 @@ import Head from "@components/Head.astro";
 			<div class="choose">
 				<p>垂直翻轉</p>
 				<div class="toggle">
-					<input
-						id="yFlip"
-						class="toggle-checkbox"
-						type="checkbox"
-						onclick="if(yFlip==1){yFlip=0;getElementById('app').setAttribute('style', '-moz-transform:scaleY(-1);-webkit-transform:scaleY(-1);-o-transform:scaleY(-1);transform:scaleY(-1);')} else {yFlip=1;getElementById('app').setAttribute('style', '-moz-transform:scaleY(1);-webkit-transform:scaleY(1);-o-transform:scaleY(1);transform:scaleY(1);')}"
-					/>
+					<input id="yFlip" class="toggle-checkbox" type="checkbox" />
 					<label for="yFlip" class="toggle-label">
 						<span class="toggle-inner"></span>
 						<span class="toggle-switch"></span>
@@ -257,12 +252,7 @@ import Head from "@components/Head.astro";
 			<div class="choose">
 				<p>水平翻轉</p>
 				<div class="toggle">
-					<input
-						id="xFlip"
-						class="toggle-checkbox"
-						type="checkbox"
-						onclick="if(xFlip==1){xFlip=0;getElementById('app').setAttribute('style', '-moz-transform:scaleX(-1);-webkit-transform:scaleX(-1);-o-transform:scaleX(-1);transform:scaleX(-1);')} else {xFlip=1;getElementById('app').setAttribute('style', '-moz-transform:scaleX(1);-webkit-transform:scaleX(1);-o-transform:scaleX(1);transform:scaleX(1);')}"
-					/>
+					<input id="xFlip" class="toggle-checkbox" type="checkbox" />
 					<label for="xFlip" class="toggle-label">
 						<span class="toggle-inner"></span>
 						<span class="toggle-switch"></span>
@@ -272,102 +262,71 @@ import Head from "@components/Head.astro";
 		</div>
 
 		<script is:inline>
-			const constraints = {
-				audio: false,
-				video: {
-					facingMode: "user"
-				}
-			};
 			var status = 1,
 				mode = 1,
-				overflow = 1,
-				xFlip = 1,
-				yFlip = 1;
-
-			const getFrameFromVideo = (video, canvas) => {
+				overflow = 1;
+			const app = document.querySelector("#app");
+			const video = document.createElement("video");
+			video.id = "vid";
+			video.autoplay = true;
+			video.muted = true;
+			video.playsInline = true;
+			video.width = innerWidth;
+			video.height = innerHeight;
+			const canvas = document.createElement("canvas");
+			canvas.id = "canvas";
+			canvas.width = innerWidth;
+			canvas.height = innerHeight;
+			app.append(video, canvas);
+			let stream, frame;
+			function draw() {
 				const ctx = canvas.getContext("2d");
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				ctx.save();
-				ctx.translate(video.width, 0);
-				ctx.scale(-1, 1);
-				ctx.drawImage(video, 0, 0, video.width, video.height);
-				ctx.restore();
-				requestAnimationFrame(() => getFrameFromVideo(video, canvas));
-			};
-
-			const getCameraStream = video => {
-				navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
-					video.srcObject = stream;
-				});
-			};
-
-			const createVideo = (id, width, height) => {
-				const video = document.createElement("video");
-				video.id = id;
-				video.width = width;
-				video.height = height;
-				video.autoplay = true;
-				video.controls = true;
-				return video;
-			};
-
-			const createCanvas = (id, width, height) => {
-				const canvas = document.createElement("canvas");
-				canvas.id = id;
-				canvas.width = width;
-				canvas.height = height;
-				return canvas;
-			};
-
-			const init = () => {
-				var windowWidth = window.innerWidth;
-				var windowHeight = window.innerHeight;
-				const video = createVideo("vid", windowWidth, windowHeight);
-				const canvas = createCanvas("canvas", windowWidth, windowHeight);
-				const app = document.getElementById("app");
-				getCameraStream(video);
-				getFrameFromVideo(video, canvas);
-				app.appendChild(video);
-				app.appendChild(canvas);
-				console.log("init");
-			};
-
-			document.getElementById("app").onload = init();
-		</script>
-		<script is:inline>
-			//偵測瀏覽器版本
-			var browser = navigator.appName;
-			var box = document.querySelector(".settings-box");
-			if (browser == "Netscape") {
-				//如果瀏覽器為Netscape或者Firefox
-				//開始監聽鍵盤事件
-				document.captureEvents(Event.KEYDOWN);
-				document.onkeydown = function (event) {
-					if (event.which == 90) {
-						if (status == 1) {
-							box.style.display = "none";
-							status = 0;
-						} else {
-							box.style.display = "block";
-							status = 1;
-						}
-					}
-				};
-			} else {
-				//假設瀏覽器不為Nescape則猜測為ie
-				//開始監聽鍵盤事件
-				document.onkeydown = function () {
-					if (event.whitch == 90) {
-						if (status == 1) {
-							box.style.display = "none";
-							status = 0;
-						} else {
-							box.style.display = "block";
-							status = 1;
-						}
-					}
-				};
+				if (video.readyState >= 2) {
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					ctx.save();
+					ctx.translate(canvas.width, 0);
+					ctx.scale(-1, 1);
+					ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+					ctx.restore();
+				}
+				frame = requestAnimationFrame(draw);
 			}
+			async function startCamera() {
+				try {
+					if (!navigator.mediaDevices?.getUserMedia) throw new Error("Camera unavailable");
+					stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "user" } });
+					video.srcObject = stream;
+					await video.play();
+					draw();
+				} catch {
+					const message = document.createElement("p");
+					message.setAttribute("role", "status");
+					message.textContent = "無法開啟鏡頭。請允許相機權限，並確認此頁使用 HTTPS 或 localhost。";
+					message.style.cssText = "position:fixed;bottom:1rem;left:1rem;right:1rem;color:white;background:#222;padding:1rem;z-index:10";
+					app.append(message);
+				}
+			}
+			startCamera();
+			window.addEventListener(
+				"pagehide",
+				() => {
+					cancelAnimationFrame(frame);
+					stream?.getTracks().forEach(track => track.stop());
+				},
+				{ once: true }
+			);
+			document.addEventListener("keydown", event => {
+				if (event.key.toLowerCase() === "z") {
+					const box = document.querySelector(".settings-box");
+					status = status == 1 ? 0 : 1;
+					box.style.display = status ? "block" : "none";
+				}
+			});
+			document.querySelectorAll("#xFlip, #yFlip").forEach(input =>
+				input.addEventListener("change", () => {
+					app.style.transform = `scale(${document.querySelector("#xFlip").checked ? -1 : 1}, ${document.querySelector("#yFlip").checked ? -1 : 1})`;
+				})
+			);
 		</script>
 	</body>
 </html>

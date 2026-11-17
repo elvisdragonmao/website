@@ -1,0 +1,1102 @@
+[
+	{
+		"id": "project-2228b65ade6c",
+		"title": "emfont",
+		"description": "A free, open-source Chinese, Japanese, and Korean webfont service. 1.2M+ requests per day.",
+		"category": "Tools",
+		"featured": true,
+		"projectUrl": "https://font.emtech.cc/",
+		"codeUrl": "https://github.com/elvisdragonmao/emfont",
+		"image": {
+			"src": "/images/work/project-2228b65ade6c.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-94188e5ad55a",
+		"title": "emtech",
+		"description": "Articles and tutorials about programming, design, and my life experience.",
+		"category": "Websites",
+		"featured": false,
+		"projectUrl": "https://emtech.cc/",
+		"codeUrl": "https://github.com/elvisdragonmao/emtech",
+		"image": {
+			"src": "/images/work/project-94188e5ad55a.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-43aba731ab2f",
+		"title": "The Ambivalent Facade",
+		"description": "A website for the solo exhibition The Ambivalent Facade.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "https://ambivalent.emtech.cc/",
+		"codeUrl": "https://github.com/elvisdragonmao/TheAmbivalentFacade",
+		"image": {
+			"src": "/images/work/project-43aba731ab2f.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-7ae453884cff",
+		"title": "SITCON 2026",
+		"description": "Largest student IT conference in East Asia. Official website with complex animation, Awwwards Nominee.",
+		"category": "Events",
+		"featured": true,
+		"projectUrl": "https://sitcon.org/2026/",
+		"codeUrl": "https://github.com/sitcon-tw/2026",
+		"image": {
+			"src": "/images/work/project-7ae453884cff.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-fe415b2716d8",
+		"title": "WinstonBot",
+		"description": "A site / Discord bot that checks Chinese wording, spelling, and proper-name capitalization.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://winston.emtech.cc/",
+		"codeUrl": "https://github.com/elvisdragonmao/WinstonBot",
+		"image": {
+			"src": "/images/work/project-fe415b2716d8.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-10d74e054fe0",
+		"title": "SITCON Video Player",
+		"description": "A browser player that automatically loops selected SITCON opening videos for conference.",
+		"category": "Websites",
+		"featured": false,
+		"projectUrl": "https://sitcon.elvismao.com/",
+		"codeUrl": "https://github.com/elvisdragonmao/SITCON-video",
+		"image": {
+			"src": "/images/work/project-10d74e054fe0.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-27d85eef1a82",
+		"title": "ADL Video Search Bot",
+		"description": "A LINE bot for finding and watching instructional videos from Taiwan’s Adaptive Learning platform.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/adl-linebot",
+		"image": {
+			"src": "/images/work/project-27d85eef1a82.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-80b7c9cfbe60",
+		"title": "Please Close the Door",
+		"description": "A micro:bit door alarm that beeps when a door stays open for more than five seconds.",
+		"category": "Experiments",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/pls-close-the-door",
+		"image": null
+	},
+	{
+		"id": "project-83f195f132e9",
+		"title": "Text Formatter",
+		"description": "Clean up copied text by removing unwanted spaces, line breaks, and selected characters.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/format-text/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/format-text.astro",
+		"image": {
+			"src": "/images/work/project-83f195f132e9.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-9b1f7bbab098",
+		"title": "Food Personality",
+		"description": "A playful personality quiz that matches you with a food.",
+		"category": "Experiments",
+		"featured": false,
+		"projectUrl": "https://food-personality.com/",
+		"codeUrl": "https://github.com/elvisdragonmao/food-personality",
+		"image": {
+			"src": "/images/work/project-9b1f7bbab098.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-36a3dfcb20be",
+		"title": "NiceFormat",
+		"description": "Convert images to WebP by dragging files onto a desktop executable.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/NiceFormat",
+		"image": null
+	},
+	{
+		"id": "project-3495c881bc5f",
+		"title": "QR Code Generator",
+		"description": "Generate QR codes from text or links with an instant preview.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/qr/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/qr.astro",
+		"image": {
+			"src": "/images/work/project-3495c881bc5f.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-0698d55ac00d",
+		"title": "CSS Filter Generator",
+		"description": "Find a CSS filter that recolors an icon to match a chosen color.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/svg-filter/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/svg-filter.astro",
+		"image": {
+			"src": "/images/work/project-0698d55ac00d.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-a7f09cab2b51",
+		"title": "Screen Recorder",
+		"description": "Record your screen directly in the browser without installing an application.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/sr/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/sr.astro",
+		"image": {
+			"src": "/images/work/project-a7f09cab2b51.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-bbe906460d8b",
+		"title": "StandBy",
+		"description": "A browser clock inspired by the iOS StandBy display.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/StandBy/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/StandBy.astro",
+		"image": {
+			"src": "/images/work/project-bbe906460d8b.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-3779ca464d7d",
+		"title": "SYSH Class Countdown",
+		"description": "A live countdown to classes and breaks at Xi Yuan Senior High School.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/sysh/time/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/sysh/time.astro",
+		"image": {
+			"src": "/images/work/project-3779ca464d7d.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-1098f31e41f8",
+		"title": "EM Linkbot",
+		"description": "A LINE bot for quickly searching Wikipedia and other online sources.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://line.me/R/ti/p/%40604fbckm",
+		"codeUrl": "",
+		"image": {
+			"src": "/images/work/project-1098f31e41f8.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-487bd86c692c",
+		"title": "EM-SFW Camera Viewer",
+		"description": "View your camera feed in the browser and flip its orientation.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/EM-SFW/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/EM-SFW.astro",
+		"image": {
+			"src": "/images/work/project-487bd86c692c.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-b9feb9da4f97",
+		"title": "ClipCC",
+		"description": "A Scratch-based programming editor with extensions, adjustable frame rates, and expanded drawing features.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://editor.codingclip.com/",
+		"codeUrl": "",
+		"image": {
+			"src": "/images/work/project-b9feb9da4f97.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-5f786bfed363",
+		"title": "Class 303 Digital Yearbook",
+		"description": "A digital yearbook collecting photos and memories from Class 303.",
+		"category": "Websites",
+		"featured": false,
+		"projectUrl": "/code/303/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/303/index.astro",
+		"image": {
+			"src": "/images/work/project-5f786bfed363.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-06657ed6b0e5",
+		"title": "iPhone 3D Touch Scale",
+		"description": "An experiment that uses pressure-sensitive iPhone touch input to estimate weight.",
+		"category": "Experiments",
+		"featured": false,
+		"projectUrl": "/code/weight-with-iPhone/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/weight-with-iPhone.astro",
+		"image": {
+			"src": "/images/work/project-06657ed6b0e5.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-cb7a9658ea31",
+		"title": "Fullstack",
+		"description": "A small stacking game built from HTML checkboxes.",
+		"category": "Experiments",
+		"featured": false,
+		"projectUrl": "/code/fullstack/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/fullstack.astro",
+		"image": {
+			"src": "/images/work/project-cb7a9658ea31.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-c6d7fc22ad42",
+		"title": "Golden Ratio Palette Generator",
+		"description": "Generate color palettes using the golden ratio.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/3color/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/3color.astro",
+		"image": {
+			"src": "/images/work/project-c6d7fc22ad42.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-87a114165314",
+		"title": "Background Color Playground",
+		"description": "Preview solid colors and gradients across the browser window.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/bg/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/bg.astro",
+		"image": {
+			"src": "/images/work/project-87a114165314.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-35275112e415",
+		"title": "Digital Clock",
+		"description": "A full-screen digital clock with large gradient-colored numerals.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/clock/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/clock.astro",
+		"image": {
+			"src": "/images/work/project-35275112e415.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-18609bf2f330",
+		"title": "Queue Number Display",
+		"description": "A simple browser display for calling the next number in a queue.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/counter-call/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/counter-call.astro",
+		"image": {
+			"src": "/images/work/project-18609bf2f330.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-75914510164a",
+		"title": "Debate Timer",
+		"description": "A browser timer for debate speeches with audible time signals.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/debate-timer/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/debate-timer.astro",
+		"image": {
+			"src": "/images/work/project-75914510164a.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-0df77c226f99",
+		"title": "LINE Flex Message Sender",
+		"description": "Compose and share LINE Flex Messages from a browser interface.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/liff/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/liff.astro",
+		"image": {
+			"src": "/images/work/project-0df77c226f99.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-9e9d2d2f89fc",
+		"title": "Plaques Guesser",
+		"description": "A practice game for reading coordinates from Taiwanese utility-pole plaques in GeoGuessr.",
+		"category": "Experiments",
+		"featured": false,
+		"projectUrl": "/code/plaques/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/plaques.astro",
+		"image": {
+			"src": "/images/work/project-9e9d2d2f89fc.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-c77481a40d29",
+		"title": "macOS Screen Time Explorer",
+		"description": "Visualize macOS application usage as daily sessions, timelines, and summary statistics.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/screen-time/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/screen-time.astro",
+		"image": {
+			"src": "/images/work/project-c77481a40d29.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-82786e1906be",
+		"title": "Seating Chart Generator",
+		"description": "Generate a seating chart, shuffle its order, and rearrange seats by dragging them.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/seat/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/seat.astro",
+		"image": {
+			"src": "/images/work/project-82786e1906be.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-1d56cfca60fd",
+		"title": "Simple Text Display",
+		"description": "Display a short message in a clean, full-screen browser view.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/sm/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/sm.astro",
+		"image": {
+			"src": "/images/work/project-1d56cfca60fd.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-0e9ec486c444",
+		"title": "Color Countdown",
+		"description": "A countdown that shows time passing through changing background colors.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "/code/sysh/timer/",
+		"codeUrl": "https://github.com/elvisdragonmao/website/blob/main/src/pages/code/sysh/timer.astro",
+		"image": {
+			"src": "/images/work/project-0e9ec486c444.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-b6e203c6ac06",
+		"title": "少年殺人事件 — Album OS",
+		"description": "An album website with draggable windows, lyrics, a wiki, and anonymous chat.",
+		"category": "Websites",
+		"featured": true,
+		"projectUrl": "https://ifeisu.co/",
+		"codeUrl": "https://github.com/elvisdragonmao/boy-murder-incident",
+		"image": {
+			"src": "/images/work/project-b6e203c6ac06.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-94104dbc37f0",
+		"title": "FurryTeaParty 2027",
+		"description": "The official website and content management system for FurryTeaParty 2027 event.",
+		"category": "Events",
+		"featured": true,
+		"projectUrl": "https://www.furryteaparty.com/zh-TW",
+		"codeUrl": "",
+		"image": {
+			"src": "/images/work/project-94104dbc37f0.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-ae5f91956fce",
+		"title": "HUAN 讙",
+		"description": "A media playback and digital signage system for remotely managing content and schedules across multiple devices.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://docs.linyao.tw/huan",
+		"codeUrl": "https://github.com/linyao-tw/huan",
+		"image": {
+			"src": "/images/work/project-ae5f91956fce.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-bb0858634f4b",
+		"title": "superfile",
+		"description": "A terminal file manager with a modern interface for browsing and organizing files.",
+		"category": "Tools",
+		"featured": true,
+		"projectUrl": "https://superfile.dev",
+		"codeUrl": "https://github.com/yorukot/superfile",
+		"image": {
+			"src": "/images/work/project-bb0858634f4b.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-8c9b08ac27af",
+		"title": "nycu.club Domain Console",
+		"description": "A domain management console that lets authorized club members manage DNS records within their own nycu.club namespaces.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://nycu.club",
+		"codeUrl": "https://github.com/NYCU-SDC/domain",
+		"image": {
+			"src": "/images/work/project-8c9b08ac27af.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-3dd80f2af055",
+		"title": "EM3",
+		"description": "A Moodle client that brings courses, materials, assignments, and grading into a simpler interface.",
+		"category": "Tools",
+		"featured": true,
+		"projectUrl": "https://e3.emtech.cc",
+		"codeUrl": "https://github.com/elvisdragonmao/EM3",
+		"image": {
+			"src": "/images/work/project-3dd80f2af055.webp",
+			"width": 445,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-6cd36fddb0fe",
+		"title": "Netstamp",
+		"description": "An open-source network monitoring platform that collects measurements from probes you control.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://netstamp.dev",
+		"codeUrl": "https://github.com/yorukot/Netstamp",
+		"image": {
+			"src": "/images/work/project-6cd36fddb0fe.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-69bd61cb6abe",
+		"title": "olowo",
+		"description": "A third-party oloo client with station maps, battery details, scooter rentals, and ride history.",
+		"category": "Tools",
+		"featured": true,
+		"projectUrl": "https://olowo.emtech.cc",
+		"codeUrl": "https://github.com/elvisdragonmao/olowo",
+		"image": {
+			"src": "/images/work/project-69bd61cb6abe.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-24f31af8f06d",
+		"title": "embate",
+		"description": "A debate judging tool for mapping arguments, linking responses, and keeping speech and preparation time.",
+		"category": "Tools",
+		"featured": true,
+		"projectUrl": "https://debate.emtech.cc",
+		"codeUrl": "https://github.com/elvisdragonmao/embate",
+		"image": {
+			"src": "/images/work/project-24f31af8f06d.webp",
+			"width": 442,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-14511a6af22d",
+		"title": "Spotify Soloist Display",
+		"description": "A full-screen Spotify display with animated album artwork, playback details, and synchronized lyrics.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/soloist-display",
+		"image": {
+			"src": "/images/work/project-14511a6af22d.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-4c0c3250e9df",
+		"title": "Developer Utilities",
+		"description": "A collection of reusable Git settings, GitHub Actions, formatting configurations, and project setup notes.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/utils",
+		"image": null
+	},
+	{
+		"id": "project-54fe1cd4bad7",
+		"title": "Where Is oloo?",
+		"description": "An analysis of shared oloo scooter availability across the NYCU campuses.",
+		"category": "Experiments",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/where-is-oloo",
+		"image": {
+			"src": "/images/work/project-54fe1cd4bad7.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-472f51d9a1f8",
+		"title": "SITCON Tickets",
+		"description": "A registration system for SITCON events.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "https://tickets.sitcon.org",
+		"codeUrl": "https://github.com/sitcon-tw/tickets",
+		"image": {
+			"src": "/images/work/project-472f51d9a1f8.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-ae70aa908c38",
+		"title": "Mac Setup Guide",
+		"description": "A practical guide to setting up and configuring a new Mac.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/mac-init",
+		"image": {
+			"src": "/images/work/project-ae70aa908c38.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-049519487d24",
+		"title": "Local Transcriber",
+		"description": "A local transcription workflow that identifies speakers and organizes AI-generated notes in Obsidian.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/transcriber",
+		"image": {
+			"src": "/images/work/project-049519487d24.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-9fea674d9967",
+		"title": "MR18 Launchpad",
+		"description": "A Raspberry Pi bridge that turns a Novation Launchpad Mini into a control surface for the MIDAS MR18 mixer.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://g.elvismao.com/mr18-launchpad/",
+		"codeUrl": "https://github.com/elvisdragonmao/mr18-launchpad",
+		"image": {
+			"src": "/images/work/project-9fea674d9967.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-d31167a3a983",
+		"title": "emvnc",
+		"description": "A native, open-source macOS VNC viewer for connecting to remote desktops.",
+		"category": "Tools",
+		"featured": true,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/emvnc",
+		"image": {
+			"src": "/images/work/project-d31167a3a983.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-ed830934a1ee",
+		"title": "Public Slides",
+		"description": "A collection of Elvis Mao’s public presentation slides.",
+		"category": "Websites",
+		"featured": false,
+		"projectUrl": "https://slides.elvismao.com",
+		"codeUrl": "https://github.com/elvisdragonmao/slides",
+		"image": {
+			"src": "/images/work/project-ed830934a1ee.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-5529aba06913",
+		"title": "BambooFox Receipt Sender",
+		"description": "A command-line tool that emails membership fee receipts from a CSV list.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/bamboofox/receipt",
+		"image": null
+	},
+	{
+		"id": "project-64cecdd0b208",
+		"title": "Linyao Design System",
+		"description": "A React component library with shared design tokens, themes, and accessible interaction patterns.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/linyao-tw/ui",
+		"image": {
+			"src": "/images/work/project-64cecdd0b208.webp",
+			"width": 476,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-abff1a3fc6ef",
+		"title": "SCAICT Discord Bot",
+		"description": "A cat-themed Discord bot for the SCAICT community.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://dc.scaict.org",
+		"codeUrl": "https://github.com/SCAICT/SCAICT-uwu",
+		"image": {
+			"src": "/images/work/project-abff1a3fc6ef.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-51bfe7c46457",
+		"title": "SCAICT Website",
+		"description": "The official website of the SCAICT student computing community.",
+		"category": "Websites",
+		"featured": false,
+		"projectUrl": "https://scaict.org",
+		"codeUrl": "https://github.com/SCAICT/SCAICT.github.io",
+		"image": {
+			"src": "/images/work/project-51bfe7c46457.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-0748b0d0dc54",
+		"title": "emjudge",
+		"description": "A platform for submitting frontend assignments and grading them automatically.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://judge.emtech.cc",
+		"codeUrl": "https://github.com/elvisdragonmao/emjudge",
+		"image": {
+			"src": "/images/work/project-0748b0d0dc54.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-a8b3c30480c7",
+		"title": "BambooFox Website",
+		"description": "The BambooFox community website brings together events, cybersecurity tutorials, write-ups, and club information.",
+		"category": "Websites",
+		"featured": false,
+		"projectUrl": "http://bamboofox.org/",
+		"codeUrl": "https://github.com/bamboofox/bamboofox.github.io",
+		"image": {
+			"src": "/images/work/project-a8b3c30480c7.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-79858acd18e3",
+		"title": "SDC Core System",
+		"description": "A form platform for NYCU SDC, with sign-in, submissions, and an administration dashboard.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/NYCU-SDC/core-system-frontend",
+		"image": null
+	},
+	{
+		"id": "project-ab951dc179f1",
+		"title": "NYCU Lost and Found",
+		"description": "A scraper that collects lost-and-found notices from NYCU.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/nycu-lostfound-scraper",
+		"image": null
+	},
+	{
+		"id": "project-4a74b39175ef",
+		"title": "SCAICT Winter Camp 2024",
+		"description": "The website for SCAICT’s joint winter camp in 2024.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "https://wc.scaict.org",
+		"codeUrl": "https://github.com/SCAICT/112-winter-camp",
+		"image": null
+	},
+	{
+		"id": "project-ac37cee64589",
+		"title": "SITCON 2026 Lightning Talk",
+		"description": "An audience interaction system that lets attendees launch avatar balls from their phones onto a shared physics display.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/sitcon-tw/2026-lightning-talk",
+		"image": null
+	},
+	{
+		"id": "project-2f26531f26ce",
+		"title": "SITCON 2026 Conference Game",
+		"description": "A web game for attendees taking part in SITCON 2026.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "https://2026-game.sitcon.party",
+		"codeUrl": "https://github.com/sitcon-tw/2026-game",
+		"image": null
+	},
+	{
+		"id": "project-f87ee59b24cf",
+		"title": "NYCU Library Room Finder",
+		"description": "An alternative interface for checking room availability and booking study spaces at the NYCU library.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://nyculib.elvismao.com/",
+		"codeUrl": "https://github.com/elvisdragonmao/nycu-studycarrel",
+		"image": {
+			"src": "/images/work/project-f87ee59b24cf.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-d6a0e601c207",
+		"title": "embox",
+		"description": "A simple website for uploading and downloading files.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/embox",
+		"image": {
+			"src": "/images/work/project-d6a0e601c207.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-91e46c059b9c",
+		"title": "SITCON 2026 Sponsorship",
+		"description": "A web-based sponsorship prospectus for SITCON 2026.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "http://sitcon.org/2026/cfs/",
+		"codeUrl": "https://github.com/sitcon-tw/2026-cfs",
+		"image": {
+			"src": "/images/work/project-91e46c059b9c.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-b6b9d42170bc",
+		"title": "SITCON Camp 2025 Point Exchange",
+		"description": "A virtual points trading system with market charts, rankings, and a Telegram bot for SITCON Camp 2025.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/sitcon-tw/camp2025-stock",
+		"image": {
+			"src": "/images/work/project-b6b9d42170bc.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-e6b511d9fccd",
+		"title": "Speech to Telegram",
+		"description": "A bridge that transcribes microphone audio with Whisper and sends it to a Telegram group.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/sdr-to-telegram",
+		"image": {
+			"src": "/images/work/project-e6b511d9fccd.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-b43b1bbe2d8a",
+		"title": "SITCON Camp 2025 Arcade",
+		"description": "A browser arcade made for SITCON Camp 2025.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "https://camp.sitcon.party/arcade",
+		"codeUrl": "https://github.com/sitcon-tw/camp2025-arcade",
+		"image": {
+			"src": "/images/work/project-b43b1bbe2d8a.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-342adcf0b644",
+		"title": "SITCON Camp 2025",
+		"description": "A website project for SITCON Camp 2025.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "https://sitcon.camp/2025/",
+		"codeUrl": "https://github.com/sitcon-tw/camp2025",
+		"image": {
+			"src": "/images/work/project-342adcf0b644.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-26d29d982dc9",
+		"title": "emblog",
+		"description": "A deprecated static blog generator with a single-page interface.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/emblog",
+		"image": null
+	},
+	{
+		"id": "project-82bc1e3cea91",
+		"title": "TNL Article Downloader",
+		"description": "A tool for downloading articles from The News Lens.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/TNL-spider",
+		"image": {
+			"src": "/images/work/project-82bc1e3cea91.webp",
+			"width": 476,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-280207174884",
+		"title": "TOTP4All",
+		"description": "A lightweight browser tool for managing time-based one-time authentication codes.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/TOTP4All",
+		"image": {
+			"src": "/images/work/project-280207174884.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-1ad35048e71c",
+		"title": "NCS Downloader",
+		"description": "A web tool for downloading NCS music with track metadata and cover images.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/NCS-Downloader",
+		"image": null
+	},
+	{
+		"id": "project-88b4543707a1",
+		"title": "emstatus",
+		"description": "A website monitoring dashboard that uses Google Apps Script to collect uptime data and stores results on GitHub.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/emstatus",
+		"image": {
+			"src": "/images/work/project-88b4543707a1.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-63680dd9d5b8",
+		"title": "SCAICT Winter Camp 113",
+		"description": "A website project for a SCAICT winter camp.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/SCAICT/113-winter-camp",
+		"image": null
+	},
+	{
+		"id": "project-85ccf3e5f1c2",
+		"title": "CrossDown",
+		"description": "A lightweight Markdown editor that displays its preview in a separate window for presentations.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "https://edit-mr.github.io/CrossDown/",
+		"codeUrl": "https://github.com/elvisdragonmao/CrossDown",
+		"image": {
+			"src": "/images/work/project-85ccf3e5f1c2.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-649da6a06b80",
+		"title": "Physical CTF",
+		"description": "A web interface for submitting flags found in a physical capture-the-flag activity.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "https://demoflag.scaict.org",
+		"codeUrl": "https://github.com/SCAICT/physical-CTF",
+		"image": {
+			"src": "/images/work/project-649da6a06b80.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-28125393fb03",
+		"title": "Roll Call",
+		"description": "An attendance system for recording who is present in a class.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/roll-call",
+		"image": {
+			"src": "/images/work/project-28125393fb03.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-91ae64f61773",
+		"title": "SCAICT Barcode Challenge",
+		"description": "An interactive HITCON game that challenges players to recreate EAN-8 barcodes with popsicle sticks.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "https://g.scaict.org/2024-HITCON-barcode",
+		"codeUrl": "https://github.com/SCAICT/2024-HITCON-barcode",
+		"image": {
+			"src": "/images/work/project-91ae64f61773.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-54ce6928d5f2",
+		"title": "Arduino Air Hockey",
+		"description": "A two-player air hockey game built with an Arduino Uno, two joysticks, and a small LCD screen.",
+		"category": "Experiments",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/Arduino-AirHockey",
+		"image": {
+			"src": "/images/work/project-54ce6928d5f2.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-249c11c62f07",
+		"title": "Sparduino",
+		"description": "An Arduino project that displays the track currently playing on Spotify.",
+		"category": "Experiments",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/Sparduino",
+		"image": {
+			"src": "/images/work/project-249c11c62f07.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
+		"id": "project-147b4062050f",
+		"title": "AWP for ClipCC",
+		"description": "A ClipCC extension for drawing styled text with Google Fonts and custom typefaces.",
+		"category": "Tools",
+		"featured": false,
+		"projectUrl": "",
+		"codeUrl": "https://github.com/elvisdragonmao/clipcc-extension-AWP",
+		"image": {
+			"src": "/images/work/project-147b4062050f.webp",
+			"width": 500,
+			"height": 250
+		}
+	}
+]

@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/nfc" title="客製虛擬名片網頁 | 毛哥EM的基地" description="使用 NFC 技術製作的虛擬名片網頁。" theme="#FFF" />
+		<Head locale="zh-Hant" title="客製虛擬名片網頁 | 毛哥EM的基地" description="使用 NFC 技術製作的虛擬名片網頁。" theme="#FFF" />
 		<style is:global>
 			*,
 			*:before,
@@ -188,7 +188,6 @@ import Head from "@components/Head.astro";
 				card.style.width = 60 * scroll + 30 + "vmax";
 				card.style.height = 70 * scroll + 20 + "vmax";
 				card.style.left = -25 * scroll + 75 > 50 ? -25 * scroll + 75 + "%" : "50%";
-				console.log(-10 * scroll + 10);
 				card.style.transform = -10 * scroll + 10 > 0 ? `translate(-50%, -50%)  rotateX(${-10 * scroll + 10}deg) rotateY(${20 * scroll - 20}deg)` : `translate(-50%, -50%)`;
 				all.style.opacity = scroll < 1 ? scroll : "1";
 			});

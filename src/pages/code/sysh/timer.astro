@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/sysh/timer/" tile="顏色倒數計時器 | 毛哥EM的基地" />
+		<Head locale="zh-Hant" title="顏色倒數計時器 | 毛哥EM的基地" />
 		<style is:global>
 			body {
 				display: flex;
@@ -34,6 +34,7 @@ import Head from "@components/Head.astro";
 			<input type="datetime-local" id="target-time" />
 			<button id="calculate-button">開始</button>
 			<p>當背景變回紅色時時間到</p>
+			<p id="time-difference" role="status"></p>
 			<footer>毛哥EM製作</footer>
 		</main>
 
@@ -42,20 +43,26 @@ import Head from "@components/Head.astro";
 			const calculateButton = document.getElementById("calculate-button");
 			const timeDifferenceText = document.getElementById("time-difference");
 
+			let timer;
 			calculateButton.addEventListener("click", () => {
-				document.querySelector("main").style.display = "none";
 				const targetTime = new Date(targetTimeInput.value).getTime();
-				const tar = Math.floor((targetTime - new Date().getTime()) / 1000);
+				const duration = targetTime - Date.now();
+				if (!Number.isFinite(targetTime) || duration <= 0) {
+					timeDifferenceText.textContent = "請選擇未來的時間。";
+					return;
+				}
+				clearInterval(timer);
 				const updateDisplay = () => {
-					var currentTime = new Date().getTime();
-					var timeDiff = (1 - (targetTime - currentTime) / 1000 / tar) * 360;
-					document.body.style.backgroundColor = `hsl(${timeDiff}, 50%,50%)`;
-					console.log(`Time difference: ${timeDiff}`);
+					const remaining = Math.max(0, targetTime - Date.now());
+					const progress = Math.min(1, 1 - remaining / duration);
+					document.body.style.backgroundColor = `hsl(${progress * 360}, 50%, 50%)`;
+					timeDifferenceText.textContent = remaining ? `剩餘 ${Math.ceil(remaining / 1000)} 秒` : "時間到！";
+					if (!remaining) clearInterval(timer);
 				};
-
 				updateDisplay();
-				const timer = setInterval(updateDisplay, 500);
+				timer = setInterval(updateDisplay, 500);
 			});
+			window.addEventListener("pagehide", () => clearInterval(timer));
 		</script>
 	</body>
 </html>

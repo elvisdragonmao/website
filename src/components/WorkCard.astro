@@ -1,0 +1,60 @@
+---
+import type { WorkProject } from "../data/work";
+import { workBoxFrame } from "../lib/work-box";
+import { getLocale, type Locale } from "../i18n";
+import { workCopy } from "../i18n/work";
+
+interface Props {
+	project: WorkProject;
+	featured?: boolean;
+	locale?: Locale;
+}
+const { project, featured = false, locale = getLocale(Astro.url.pathname) } = Astro.props;
+const copy = workCopy(locale);
+const frame = featured ? workBoxFrame(48, 30) : [];
+---
+
+<article class:list={["work-card", { "work-card-featured": featured, "work-card-text": !project.image }]} data-work-id={project.id} data-work-cube={featured ? "" : undefined}>
+	{
+		featured && (
+			<svg class="work-cube-outline" viewBox="0 0 384 480" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+				{frame.map((row, y) => (
+					<text x="0" y={y * 16 + 12} xml:space="preserve">
+						{row}
+					</text>
+				))}
+			</svg>
+		)
+	}
+	<div class="work-card-content">
+		<div class="work-card-media" aria-hidden="true">
+			{project.image && <img src={project.image.src} width={project.image.width} height={project.image.height} alt="" loading="lazy" decoding="async" />}
+		</div>
+		<div class="work-card-copy">
+			<h3>{project.title}</h3>
+			<p>{project.description}</p>
+			<div class="work-card-links">
+				{
+					project.projectUrl && (
+						<a class="work-card-primary" href={project.projectUrl} target="_blank" rel="noopener noreferrer" aria-label={copy.viewProject(project.title)}>
+							{copy.view}{" "}
+							<span class="link-arrow" aria-hidden="true">
+								↗
+							</span>
+						</a>
+					)
+				}
+				{
+					project.codeUrl && (
+						<a class:list={[{ "work-card-primary": !project.projectUrl }]} href={project.codeUrl} target="_blank" rel="noopener noreferrer" aria-label={copy.viewCode(project.title)}>
+							{copy.code}{" "}
+							<span class="link-arrow" aria-hidden="true">
+								↗
+							</span>
+						</a>
+					)
+				}
+			</div>
+		</div>
+	</div>
+</article>

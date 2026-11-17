@@ -4,8 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/martingale" title="馬丁格爾策略模擬 | 毛哥EM的基地" description="模擬馬丁格爾投注策略的結果，觀察資金變化和勝率。" theme="#FFF" />
-		<title>馬丁格爾策略模擬</title>
+		<Head locale="zh-Hant" title="馬丁格爾策略模擬 | 毛哥EM的基地" description="模擬馬丁格爾投注策略的結果，觀察資金變化和勝率。" theme="#FFF" />
 		<style is:global>
 			* {
 				box-sizing: border-box;
@@ -77,7 +76,7 @@ import Head from "@components/Head.astro";
 				let winCount = 0;
 				let loseCount = 0;
 
-				while (balance > 0) {
+				while (balance >= bet && round < 10000) {
 					round++;
 					const win = Math.random() < 0.5; // 50% 機率贏
 					output += `第 ${round} 局：投注 ${bet} 元，`;
@@ -105,6 +104,7 @@ import Head from "@components/Head.astro";
 					}
 				}
 
+				if (round === 10000) output += "<div>已達 10,000 局上限，模擬結束。</div>";
 				output += `<div>共進行 ${round} 局，贏了 ${winCount} 局，輸了 ${loseCount} 局。</div>`;
 				totalRounds++;
 				finalBalance += balance;
@@ -116,7 +116,14 @@ import Head from "@components/Head.astro";
 			}
 
 			const start = () => {
-				for (let i = 0; i < document.getElementById("times").value; i++) {
+				const initial = Number(document.getElementById("initialBet").value);
+				const balance = Number(document.getElementById("startingBalance").value);
+				const times = Number(document.getElementById("times").value);
+				if (![initial, balance, times].every(Number.isFinite) || initial <= 0 || balance < initial || !Number.isInteger(times) || times < 1 || times > 100) {
+					document.getElementById("output").textContent = "請輸入有效本金、正數投注（不超過本金）及 1–100 次模擬。";
+					return;
+				}
+				for (let i = 0; i < times; i++) {
 					simulateMartingale();
 				}
 			};

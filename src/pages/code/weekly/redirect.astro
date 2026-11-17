@@ -2,29 +2,26 @@
 import Head from "@components/Head.astro";
 ---
 
-<head>
-	<Head path="code/weekly" title="本週旌旗青年週報|毛哥EM的基地" description="輕鬆下載旌旗青年週報 PDF 檔" theme="#00adb5" favicon={false} />
-</head>
-<body>
-	<h1 id="link"></h1>
-	<script type="text/javascript">
-		//add day
-		function addDays(days) {
-			Today.setDate(Today.getDate() + days);
-			var Month = Today.getMonth() + 1;
-			if (Month < 10) {
-				Month = "" + 0 + Month;
-			}
-			var Day = Today.getDate();
-			if (Day < 10) {
-				Day = "" + 0 + Day;
-			}
-			var link = "https://www.bannerch.org/images/media/weekly/2023/weekly-" + Today.getFullYear() + Month + Day + ".pdf";
-			return link;
-		}
-		Today = new Date();
-		var SatThis = addDays(6 - Today.getDay());
-		document.getElementById("link").innerHTML = "跳轉中...";
-		document.location.href = SatThis;
-	</script>
-</body>
+<html lang="zh-Hant">
+	<head>
+		<Head locale="zh-Hant" title="本週旌旗青年週報 | 毛哥EM的基地" description="本週旌旗青年週報下載連結" theme="#00adb5" favicon={false} />
+	</head>
+	<body>
+		<main>
+			<h1>本週旌旗青年週報</h1>
+			<p><a id="link" target="_blank" rel="noopener">開啟本週週報</a></p>
+			<p>此工具沿用教會公開週報的檔名規則；若檔案未上架或已搬移，下載連結可能無法使用。</p>
+			<p><a href="/code/weekly/manual/">選擇其他日期</a> · <a href="/code/weekly/">回週報下載器</a></p>
+		</main>
+		<script is:inline>
+			const saturday = new Date();
+			saturday.setDate(saturday.getDate() + 6 - saturday.getDay());
+			const year = saturday.getFullYear();
+			const month = String(saturday.getMonth() + 1).padStart(2, "0");
+			const day = String(saturday.getDate()).padStart(2, "0");
+			const link = document.querySelector("#link");
+			link.href = `https://www.bannerch.org/images/media/weekly/${year}/weekly-${year}${month}${day}.pdf`;
+			link.textContent = `開啟本週週報 ${year}/${month}/${day}`;
+		</script>
+	</body>
+</html>

@@ -4,7 +4,7 @@ import Head from "@components/Head.astro";
 
 <html lang="zh-Hant">
 	<head>
-		<Head path="code/sm" title="Simple Text Display | 毛哥EM的基地" description="簡單的文字顯示" theme="#585379" />
+		<Head locale="zh-Hant" title="Simple Text Display | 毛哥EM的基地" description="簡單的文字顯示" theme="#585379" />
 		<style is:global>
 			body {
 				background: #faf3eb;
@@ -72,14 +72,14 @@ import Head from "@components/Head.astro";
 		<div contenteditable class="text"></div>
 		<script is:inline>
 			const text = document.querySelector(".text");
-			text.innerHTML = new URLSearchParams(window.location.search).get("text");
+			text.textContent = new URLSearchParams(window.location.search).get("text") || "";
 			const fill = () => {
 				const url = new URL(window.location);
 				url.searchParams.set("text", text.innerText);
 				window.history.replaceState({}, "", url);
 				let fontSize = window.innerHeight;
 				document.body.style.fontSize = fontSize + "px";
-				while (text.scrollWidth > window.innerWidth - 32 || text.scrollHeight > window.innerHeight) {
+				while (fontSize > 12 && (text.scrollWidth > window.innerWidth - 32 || text.scrollHeight > window.innerHeight)) {
 					fontSize--;
 					document.body.style.fontSize = fontSize + "px";
 				}

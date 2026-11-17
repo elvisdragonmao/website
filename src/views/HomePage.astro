@@ -1,0 +1,191 @@
+---
+import { CHARACTER_POSTER_URL } from "../data/character";
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+import Icon from "../components/Icon.astro";
+import WorkList from "../components/WorkList.astro";
+import SceneLoader from "../components/SceneLoader.astro";
+import headings from "../data/ascii-headings.json";
+import "../styles/home-story.css";
+import "../styles/home-motion.css";
+import { getLocale, localizePath, type Locale } from "../i18n";
+import { homeCopy } from "../i18n/home";
+interface Props {
+	locale?: Locale;
+}
+const locale = Astro.props.locale ?? getLocale(Astro.url.pathname);
+const copy = homeCopy[locale];
+const ascii = (text: string) => {
+	const rows = text.split("\n");
+	return { rows, width: Math.max(...rows.map(row => row.length)) * 8.5 + 2, height: rows.length * 15 + 2 };
+};
+const workArt = ascii(headings.work);
+// Split between the comma and "I", preserving the original glyphs and their scale.
+const mobileWorkArt = [ascii(workArt.rows.map(row => row.slice(0, 79)).join("\n")), ascii(workArt.rows.map(row => row.slice(79)).join("\n"))];
+const mobileWorkWidth = Math.max(...mobileWorkArt.map(art => art.width));
+const ctaArt = ascii(headings.cta);
+const aboutArt = ascii(headings.about);
+const fireCopy = copy.fire;
+const aliveCopy = copy.alive;
+const exploringCopy = copy.exploring;
+const exploringSupport = copy.exploringSupport;
+const whyCopy = copy.why;
+---
+
+<Layout home locale={locale}>
+	<script is:inline data-astro-rerun>
+		document.documentElement.classList.add("home-loading");
+		window.setTimeout(() => document.documentElement.classList.remove("home-loading"), 12000);
+	</script>
+	<SceneLoader locale={locale} />
+	<canvas id="world" aria-hidden="true"></canvas>
+	<img id="world-fallback" src={CHARACTER_POSTER_URL} alt="" aria-hidden="true" />
+	<main id="main">
+		<section id="cover" class="scene scene-cover" data-scene="cover" aria-label={copy.introduction}>
+			<div class="cover-copy"><h1 data-cover-label><span>{copy.hello}</span></h1></div>
+		</section>
+		<section id="desk" class="scene scene-track scene-desk" data-scene="desk" aria-label={copy.rolesLabel}>
+			<div class="scene-viewport">
+				<div class="world-label role-label" data-anchor="developer" data-role="developer" style="--label-x:31%;--label-y:51%;--label-rotation:-3deg">
+					<span class="label-pin" aria-hidden="true"></span><span class="label-leader" aria-hidden="true"></span>
+					<h2>{copy.developer}</h2>
+				</div>
+				<div class="world-label role-label" data-anchor="designer" data-role="designer" style="--label-x:62%;--label-y:39%;--label-rotation:3deg">
+					<span class="label-pin" aria-hidden="true"></span><span class="label-leader" aria-hidden="true"></span>
+					<h2>{copy.designer}</h2>
+				</div>
+				<div class="world-label role-label" data-anchor="researcher" data-role="researcher" style="--label-x:56%;--label-y:72%;--label-rotation:-2deg">
+					<span class="label-pin" aria-hidden="true"></span><span class="label-leader" aria-hidden="true"></span>
+					<h2>{copy.researcher}</h2>
+				</div>
+				<div class="world-label role-label" data-anchor="dragon" data-role="dragon" style="--label-x:30%;--label-y:29%;--label-rotation:2deg">
+					<span class="label-pin" aria-hidden="true"></span><span class="label-leader" aria-hidden="true"></span>
+					<h2>{copy.dragon}</h2>
+				</div>
+			</div>
+		</section>
+		<section id="fire" class="scene scene-track scene-fire" data-scene="fire">
+			<h2 class="sr-only">{fireCopy}</h2>
+			<div class="scene-viewport" data-story-layer="fire">
+				<div class="cinematic-subtitle story-panel" data-world-label="fire">
+					<div class="story-type story-heading" data-story-type aria-hidden="true"><span class="story-reserve">{fireCopy}</span><span class="story-output" data-story-output>{fireCopy}</span></div>
+				</div>
+			</div>
+		</section>
+		<section id="alive" class="scene scene-track scene-alive" data-scene="alive">
+			<h2 class="sr-only">{aliveCopy}</h2>
+			<div class="scene-viewport" data-story-layer="alive">
+				<div class="cinematic-subtitle story-panel" data-world-label="alive">
+					<div class="story-type story-heading" data-story-type aria-hidden="true"><span class="story-reserve">{aliveCopy}</span><span class="story-output" data-story-output>{aliveCopy}</span></div>
+				</div>
+			</div>
+		</section>
+		<section id="beyond" class="scene scene-track scene-beyond" data-scene="beyond">
+			<h2 class="sr-only">{copy.exploring}</h2>
+			<p class="sr-only">{exploringSupport}</p>
+			<div class="scene-viewport" data-story-layer="beyond">
+				<div class="cinematic-subtitle story-panel" data-world-label="beyond">
+					<div class="story-type story-heading" data-story-type aria-hidden="true">
+						<span class="story-reserve">{exploringCopy}</span><span class="story-output" data-story-output>{exploringCopy}</span>
+					</div>
+					<p class="story-type annotation-support" data-story-type data-story-delay="0.2" aria-hidden="true">
+						<span class="story-reserve">{exploringSupport}</span><span class="story-output" data-story-output>{exploringSupport}</span>
+					</p>
+					<a class="annotation-link" href={localizePath("/about/#research", locale)}>{copy.researchLink} <Icon /></a>
+				</div>
+			</div>
+		</section>
+		<section id="work" class="work-section ascii-work" data-scene="work">
+			<div class="section-heading work-heading">
+				<h2 class="ascii-headline ascii-art">
+					<span class="sr-only">{copy.workHeading}</span>
+					<svg class="work-title-wide" viewBox={`0 0 ${workArt.width} ${workArt.height}`} aria-hidden="true" focusable="false">
+						{
+							workArt.rows.map((row, index) => (
+								<text x="1" y={14 + index * 15} xml:space="preserve">
+									{row}
+								</text>
+							))
+						}
+					</svg>
+					<span class="work-title-stacked" aria-hidden="true">
+						{
+							mobileWorkArt.map(art => (
+								<svg viewBox={`0 0 ${art.width} ${art.height}`} style={`width:${(art.width / mobileWorkWidth) * 100}%`} focusable="false">
+									{art.rows.map((row, index) => (
+										<text x="1" y={14 + index * 15} xml:space="preserve">
+											{row}
+										</text>
+									))}
+								</svg>
+							))
+						}
+					</span>
+				</h2>
+				<p>{copy.workIntro[0]}<br />{copy.workIntro[1]}</p>
+			</div>
+			<WorkList locale={locale} />
+			<a class="text-link work-all" href={localizePath("/work/", locale)}>{copy.workLink} <Icon /></a>
+		</section>
+		<section id="why" class="scene scene-track scene-why" data-scene="why">
+			<h2 class="sr-only">{whyCopy}</h2>
+			<div class="scene-viewport" data-story-layer="why">
+				<div class="earth-message story-panel" data-world-label="why" data-earth-label>
+					<div class="story-scoreboard" aria-hidden="true">
+						<div class="story-scoreboard-original">
+							<div class="story-type story-heading" data-story-type><span class="story-reserve">{whyCopy}</span><span class="story-output" data-story-output>{whyCopy}</span></div>
+						</div>
+						<div class="story-scoreboard-next">{copy.wild}</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section id="contact" class="contact-section content-surface" data-scene="contact">
+			<div class="contact-intro">
+				<h2 class="sr-only">{copy.cta}</h2>
+				<div class="contact-heading" data-story-layer="contact">
+					<p class:list={{ "sr-only": locale === "en" }} aria-hidden={locale !== "en" ? "true" : undefined}>{locale === "en" ? copy.wild : copy.cta}</p>
+					<div class="ascii-art contact-ascii">
+						<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer" aria-label={copy.emailLabel}>
+							<svg viewBox={`0 0 ${ctaArt.width} ${ctaArt.height}`} aria-hidden="true" focusable="false">
+								{
+									ctaArt.rows.map((row, index) => (
+										<text x="1" y={14 + index * 15} xml:space="preserve">
+											{row}
+										</text>
+									))
+								}
+							</svg>
+						</a>
+					</div>
+					<a class="contact-email" href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer">[ info@elvismao.com <span class="link-arrow" aria-hidden="true">↗</span> ]</a>
+				</div>
+			</div>
+			<Footer newsletter />
+		</section>
+		<a class="next-page" data-next-page href={localizePath("/about/", locale)}>
+			<span class="next-page-caption">{copy.keepScrolling[0]}<br />{copy.keepScrolling[1]}</span>
+			<div class="next-page-destination">
+				<h2 class="ascii-art next-page-ascii">
+					<span class="sr-only">{copy.about}</span><svg viewBox={`0 0 ${aboutArt.width} ${aboutArt.height}`} aria-hidden="true" focusable="false">
+						{
+							aboutArt.rows.map((row, index) => (
+								<text x="1" y={14 + index * 15} xml:space="preserve">
+									{row}
+								</text>
+							))
+						}
+					</svg>
+				</h2><span class="next-page-action">
+					{copy.nextPage}<span class="next-page-progress">
+						<span data-next-progress role="progressbar" aria-label={copy.progressLabel} aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></span>
+					</span><Icon />
+				</span>
+			</div>
+			<span class="next-page-crosses" aria-hidden="true"><span>+</span><span>+</span><span>+</span><span>+</span><span>+</span></span>
+		</a>
+	</main>
+</Layout>
+<script>
+	import "../scripts/world";
+</script>

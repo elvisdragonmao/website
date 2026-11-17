@@ -1,10 +1,10 @@
 ---
-
+import Head from "@components/Head.astro";
 ---
 
-<html lang="zh-tw">
+<html lang="zh-Hant">
 	<head>
-		<title>JavaScript & CSS 陀螺儀使圖片三維翻轉</title>
+		<Head locale="zh-Hant" title="JavaScript & CSS 陀螺儀使圖片三維翻轉" description="使用裝置方向感測器，讓網頁圖案跟著手機的傾斜方向旋轉。" theme="#000000" />
 		<style is:global>
 			* {
 				margin: 0;
@@ -35,12 +35,21 @@
 		<div id="ro"></div>
 		<div id="xyz-img">🔫</div>
 		<script is:inline>
-			document.addEventListener("mousedown", requestFullScreen);
-			document.addEventListener("touchstart", requestFullScreen);
+			document.addEventListener("click", async () => {
+				requestFullScreen();
+				if (typeof window.DeviceOrientationEvent?.requestPermission === "function") {
+					try {
+						const permission = await DeviceOrientationEvent.requestPermission();
+						if (permission !== "granted") document.getElementById("ro").textContent = "請允許裝置方向感測器權限。";
+					} catch {
+						document.getElementById("ro").textContent = "無法取得裝置方向感測器權限。";
+					}
+				}
+			});
 			let elem = document.documentElement; // get the root element of the document
 			function requestFullScreen() {
 				if (elem.requestFullscreen) {
-					elem.requestFullscreen();
+					elem.requestFullscreen().catch(() => {});
 				} else if (elem.webkitRequestFullscreen) {
 					elem.webkitRequestFullscreen();
 				} else if (elem.msRequestFullscreen) {
@@ -53,6 +62,7 @@
 					window.addEventListener(
 						"deviceorientation",
 						function (event) {
+							if (!Number.isFinite(event.alpha)) return;
 							xyz_img.style.transform = "rotateZ(" + (event.alpha - 90) + "deg)";
 							document.getElementById("ro").innerHTML = Math.round(event.alpha);
 						},

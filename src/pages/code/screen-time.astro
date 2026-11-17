@@ -5,11 +5,8 @@ import Head from "@components/Head.astro";
 <!doctype html>
 <html lang="zh-Hant">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>macOS 螢幕使用時間分析</title>
-		<Head path="code/screen-time" title="macOS 螢幕使用時間分析 | 毛哥EM的基地" description="匯出並視覺化 macOS knowledgeC.db 的 App 使用紀錄，查看每日 sessions、時間軸與摘要統計。" theme="#1d1d1f" />
-		<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+		<Head locale="zh-Hant" title="macOS 螢幕使用時間分析 | 毛哥EM的基地" description="匯出並視覺化 macOS knowledgeC.db 的 App 使用紀錄，查看每日 sessions、時間軸與摘要統計。" theme="#1d1d1f" />
+		<script is:inline src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
 		<style is:global>
 			:root {
 				color-scheme: light;
@@ -1461,11 +1458,14 @@ import Head from "@components/Head.astro";
 				setCommandStatus("");
 			}
 
+			let chartAttempts = 0;
 			function waitForEcharts() {
 				if (window.echarts) {
 					initDashboard();
-				} else {
+				} else if (++chartAttempts < 100) {
 					setTimeout(waitForEcharts, 50);
+				} else {
+					document.getElementById("fileStatus").textContent = "圖表程式載入失敗，請檢查網路後重新整理。";
 				}
 			}
 

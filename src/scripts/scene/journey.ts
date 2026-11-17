@@ -1,0 +1,98 @@
+import * as THREE from "three";
+
+export interface StoryRange {
+	name: string;
+	top: number;
+	height: number;
+}
+export const clamp01 = (n: number) => THREE.MathUtils.clamp(n, 0, 1);
+export const ease = (n: number) => {
+	const t = clamp01(n);
+	return t * t * t * (t * (t * 6 - 15) + 10);
+};
+export const DESK_OFFSET = new THREE.Vector3(4.25, 0, -2.7);
+export const EARTH_CENTER = new THREE.Vector3(8.9, 3.6, -4.1);
+// The flyover is a short change of scene, ending at the first workstation.
+const flyPosition = new THREE.CubicBezierCurve3(new THREE.Vector3(-1.2, 5.25, 1.9), new THREE.Vector3(-1.05, 5.25, 0.8), new THREE.Vector3(-0.5, 5.25, -0.25), new THREE.Vector3(0.35, 5.25, -0.25));
+const flyLook = new THREE.CubicBezierCurve3(new THREE.Vector3(-1.1, 2.55, -4.1), new THREE.Vector3(-0.95, 2.55, -4.1), new THREE.Vector3(-0.4, 2.55, -4.1), new THREE.Vector3(0.45, 2.55, -4.1));
+export class CameraJourney {
+	position = new THREE.Vector3();
+	look = new THREE.Vector3();
+	deskProgress = 0;
+	coverProgress = 0;
+	localProgress = 0;
+	roll = 0;
+	phase = "cover";
+	weights = new THREE.Vector3();
+	presence = 1;
+	fireLift = 0;
+	workPresence = 0;
+	contactPresence = 0;
+	earthPresence = 0;
+	earthProgress = 0;
+	private target = new THREE.Vector3();
+	frame(scroll: number, height: number, width: number, ranges: StoryRange[], _time: number, _pointer: THREE.Vector2, reduced: boolean): void {
+		const range = (name: string) => ranges.find(r => r.name === name) ?? { name, top: 0, height };
+		const desk = range("desk"),
+			fire = range("fire"),
+			alive = range("alive"),
+			beyond = range("beyond"),
+			work = range("work"),
+			why = range("why"),
+			contact = range("contact");
+		const eyeLine = scroll + height * 0.48;
+		this.phase = (ranges.find(r => eyeLine >= r.top && eyeLine < r.top + r.height) ?? ranges.at(-1))?.name ?? "cover";
+		const progress = (r: StoryRange) => clamp01((scroll - r.top + height * 0.48) / Math.max(height * 0.6, r.height - height * 0.2));
+		this.localProgress = progress(range(this.phase));
+		const deskStart = height * 0.68;
+		const deskEnd = desk.top + desk.height - height * 0.75;
+		// Match the cubic's outgoing tangent to the scan's velocity in scroll units.
+		flyPosition.v2.x = 0.35 - (7.45 * deskStart) / (3 * Math.max(height, deskEnd - deskStart));
+		flyLook.v2.x = flyPosition.v2.x + 0.1;
+		this.coverProgress = clamp01(scroll / deskStart);
+		const scanTime = Math.max(0, (scroll - deskStart) / Math.max(height, deskEnd - deskStart));
+		// Approach the MIDI setup asymptotically: still moving under the fire,
+		// without walking past the instrument or stopping at a hard endpoint.
+		const scan = scanTime < 0.84 ? scanTime : 0.84 + 0.16 * (1 - Math.exp(-(scanTime - 0.84) / 0.16));
+		this.deskProgress = clamp01(scan);
+		if (scroll < deskStart) {
+			// Ease out of the close-up, retaining terminal velocity into the scan.
+			const t = this.coverProgress * this.coverProgress * (2 - this.coverProgress);
+			flyPosition.getPoint(t, this.position);
+			flyLook.getPoint(t, this.look);
+		} else {
+			const d = this.deskProgress;
+			this.position.set(THREE.MathUtils.lerp(0.35, 7.8, d), 5.25, -0.25);
+			this.look.set(THREE.MathUtils.lerp(0.45, 7.9, d), 2.55, -4.1);
+		}
+		const fireEnter = ease((scroll - fire.top + height * 0.65) / (height * 0.65));
+		// Procedural scenes share a stationary stage. Their animation belongs to time,
+		// pointer and the wipe, rather than an incidental moving 3D camera.
+		const fieldEnter = ease((scroll - alive.top + height * 0.8) / (height * 0.8));
+		if (fieldEnter > 0) {
+			this.position.lerp(this.target.set(8.6, 4.5, -1.8), fieldEnter);
+			this.look.lerp(this.target.set(8.4, 3.45, -4), fieldEnter);
+		}
+		const whyEnter = ease((scroll - why.top + height * 1.25) / (height * 1.15));
+		if (whyEnter > 0) {
+			const distance = width < 700 ? Math.max(5.4, 2 / (Math.tan(Math.PI / 10) * (width / height))) : 5.4;
+			this.position.lerp(this.target.set(EARTH_CENTER.x, EARTH_CENTER.y + 0.12, EARTH_CENTER.z + distance), whyEnter);
+			this.look.lerp(EARTH_CENTER, whyEnter);
+		}
+		this.presence = 1 - ease(this.coverProgress / 0.6);
+		this.roll = reduced ? 0 : Math.sin(this.deskProgress * Math.PI) * -0.008;
+		const weight = (r: StoryRange) => ease((eyeLine - r.top + height * 0.15) / (height * 0.55)) * (1 - ease((eyeLine - (r.top + r.height - height * 0.25)) / (height * 0.65)));
+		this.fireLift = ease((scroll - alive.top + height * 0.72) / (height * 0.9));
+		const fireWeight = fireEnter * (1 - ease((this.fireLift - 0.35) / 0.65));
+		const aliveWeight = ease((scroll - alive.top + height * 0.85) / (height * 0.5)) * (1 - ease((scroll - beyond.top + height * 0.35) / (height * 0.7)));
+		this.weights.set(fireWeight, aliveWeight, weight(beyond));
+		this.workPresence = ease((scroll - work.top + height * 0.55) / (height * 0.6)) * (1 - ease((scroll - why.top + height * 0.5) / (height * 0.8)));
+		this.contactPresence = ease((scroll - contact.top + height * 0.5) / (height * 0.8));
+		this.earthProgress = Math.max(0, (scroll - why.top + height * 0.4) / Math.max(height, why.height));
+		this.earthPresence = ease((scroll - why.top + height * 1.25) / (height * 1.5)) * (1 - ease((scroll - contact.top + height * 0.3) / (height * 0.8)));
+		if (reduced && this.phase === "desk") {
+			this.position.set(3.7, 7.2, -2.4);
+			this.look.set(3.5, 2.3, -4);
+		}
+	}
+}

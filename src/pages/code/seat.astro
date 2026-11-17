@@ -3,10 +3,10 @@ import Head from "@components/Head.astro";
 import trash from "@assets/img/icon/trash-can.png";
 ---
 
-<html lang="zh-tw">
+<html lang="zh-Hant">
 	<head>
 		<Head
-			path="code/seat"
+			locale="zh-Hant"
 			title="座位表生成器-隨機、自訂座位 | 毛哥EM的基地"
 			description="輸入人數會自動生成排序，點擊隨機排序進行洗牌，所有方塊均可拖曳自訂位置，拖曳至垃圾桶刪除方塊"
 			theme="#0081c9"
@@ -211,12 +211,11 @@ import trash from "@assets/img/icon/trash-can.png";
 			let activeOffsetX = 0;
 			let activeOffsetY = 0;
 			let blockWidth;
+			let room;
 			window.addEventListener("load", function () {
 				const populationInput = document.querySelectorAll(".population");
-				let room = document.getElementById("room");
-				populationInput.forEach(function (populate) {
-					populate.addEventListener("change", set());
-				});
+				room = document.getElementById("room");
+				set();
 				populationInput.forEach(function (populate) {
 					populate.addEventListener("change", set);
 				});
@@ -289,6 +288,7 @@ import trash from "@assets/img/icon/trash-can.png";
 				const oneRemPx = rootFontSize;
 				var x = parseInt(document.getElementById("x").value);
 				var y = parseInt(document.getElementById("y").value);
+				if (!Number.isFinite(x) || !Number.isFinite(y) || x < 1 || y < 1 || x > 30 || y > 30) return;
 				if (window.innerWidth < window.innerHeight) roomWidth = window.innerWidth;
 				else roomWidth = window.innerHeight - oneRemPx * 2;
 				if (x > y) var more = x;
@@ -344,7 +344,7 @@ import trash from "@assets/img/icon/trash-can.png";
 		<div id="setting">
 			<h1>座位表生成器</h1>
 			<h2>毛哥EM製作</h2>
-			人數 <input type="number" class="population" id="x" value="5" min="1" />×<input type="number" class="population" id="y" value="5" min="1" /><br />
+			人數 <input type="number" class="population" id="x" value="5" min="1" max="30" />×<input type="number" class="population" id="y" value="5" min="1" max="30" /><br />
 			標示用 <input type="text" id="title" value="講桌" />
 			<button id="add" onclick="add()">添加</button>
 			<button id="clear" onclick="clearA()">清空標示</button>
