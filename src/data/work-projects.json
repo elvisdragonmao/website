@@ -28,6 +28,20 @@
 		}
 	},
 	{
+		"id": "project-43aba731ab2f",
+		"title": "The Ambivalent Facade",
+		"description": "A website for the solo exhibition The Ambivalent Facade.",
+		"category": "Events",
+		"featured": false,
+		"projectUrl": "https://ambivalent.emtech.cc/",
+		"codeUrl": "https://github.com/elvisdragonmao/TheAmbivalentFacade",
+		"image": {
+			"src": "/images/work/project-43aba731ab2f.webp",
+			"width": 500,
+			"height": 250
+		}
+	},
+	{
 		"id": "project-7ae453884cff",
 		"title": "SITCON 2026",
 		"description": "Largest student IT conference in East Asia. Official website with complex animation, Awwwards Nominee.",
@@ -840,16 +854,6 @@
 			"width": 500,
 			"height": 250
 		}
-	},
-	{
-		"id": "project-43aba731ab2f",
-		"title": "The Ambivalent Facade",
-		"description": "A website for the solo exhibition The Ambivalent Facade.",
-		"category": "Websites",
-		"featured": false,
-		"projectUrl": "https://ambivalent.emtech.cc/",
-		"codeUrl": "https://github.com/elvisdragonmao/TheAmbivalentFacade",
-		"image": null
 	},
 	{
 		"id": "project-91e46c059b9c",
