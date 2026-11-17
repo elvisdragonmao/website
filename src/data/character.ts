@@ -1,3 +1,5 @@
-/** Public derivatives only; editable masters live outside the deployment directory. */
-export const CHARACTER_MODEL_URL = "/models/dragon.glb";
+import characterAsset from "./character-asset.json";
+
+/** Runtime assets are staged separately from Git before building. */
+export const CHARACTER_MODEL_URL = characterAsset.path;
 export const CHARACTER_POSTER_URL = "/images/dragon.webp";

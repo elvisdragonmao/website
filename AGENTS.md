@@ -65,3 +65,5 @@ The homepage intentionally has no Open Graph or Twitter preview image. Do not ge
 ## Character Assets
 
 Keep editable and runtime 3D model files outside Git, in the user's Desktop backup. The character preparation/export commands accept external input and output paths. Preserve the existing model ignore rules. Historical `EM.stl` and `303/ar` model records are intentionally retained; do not rewrite their Git history as part of character optimization.
+
+The homepage still needs `/models/dragon.glb` at runtime. Never deploy a clean checkout without staging it. `pnpm build` runs `scripts/stage-character.mjs`, which validates an existing ignored local model or restores the published model with the exact byte length and SHA-256 recorded in `src/data/character-asset.json`. For offline builds or recovery, set `CHARACTER_MODEL_SOURCE` to the approved runtime model's absolute path. Update the manifest deliberately when replacing that derivative; do not commit the binary. Build verification also checks the deployed copy, so a missing model must fail the build instead of silently shipping the static fallback.

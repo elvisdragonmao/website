@@ -1,0 +1,10 @@
+"novabeast" by joshuasteinhoff6
+https://sketchfab.com/3d-models/novabeast-64f297c10547454ea4b83860146af56d
+https://skfb.ly/p98MB
+Licensed under Creative Commons Attribution 4.0 International:
+https://creativecommons.org/licenses/by/4.0/
+
+Changes for Elvis Mao's website: standing normalization, minimal head/eye rig,
+optical-axis calibration, native eyelid Blink with eye/highlight corrective,
+protected-face mesh simplification, resized WebP texture maps, and web geometry
+compression. Original UVs, color design, eye geometry, skinning and Blink are retained. The source artist does not endorse these changes.

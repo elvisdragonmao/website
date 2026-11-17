@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,6 +8,12 @@ import { compatibilityRedirects, mainPaths, toolPaths } from "./routing.mjs";
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
 const catalog = JSON.parse(readFileSync(new URL("../src/data/work-projects.json", import.meta.url), "utf8"));
 const origin = "https://elvismao.com";
+const characterAsset = JSON.parse(readFileSync(new URL("../src/data/character-asset.json", import.meta.url), "utf8"));
+const characterPath = join(dist, characterAsset.path.slice(1));
+assert.ok(existsSync(characterPath), "Homepage runtime character must be included in the deployment");
+const characterBytes = readFileSync(characterPath);
+assert.equal(characterBytes.length, characterAsset.bytes, "Homepage character byte length");
+assert.equal(createHash("sha256").update(characterBytes).digest("hex"), characterAsset.sha256, "Homepage character checksum");
 const htmlAt = path => readFileSync(join(dist, path === "/" ? "index.html" : `${path.replace(/^\//, "")}index.html`), "utf8");
 let documents = 0;
 let seoDocuments = 0;

@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "corepack pnpm run check && astro build && node scripts/finalize-build.mjs && corepack pnpm run verify:build",
+		"build": "node scripts/stage-character.mjs && corepack pnpm run check && astro build && node scripts/finalize-build.mjs && corepack pnpm run verify:build",
 		"character:export": "node scripts/export-character.mjs",
 		"character:prepare": "node scripts/prepare-character.mjs",
 		"check": "astro check",
