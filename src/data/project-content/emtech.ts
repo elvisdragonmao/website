@@ -54,7 +54,7 @@ export const emtechContent = {
 		imageAlt: "毛哥EM資訊密技首頁，呈現文章、課程導覽與封面插畫",
 		card: {
 			type: "技術寫作與內容平台",
-			summary: "逾140萬字中文技術教學，以及為搜尋、課程與討論打造的自有平台。",
+			summary: "分享科技、藝術、技術與生活。",
 			metric: "逾140萬字原創內容"
 		},
 		role: "作者、設計與全端開發",
@@ -97,7 +97,7 @@ export const emtechContent = {
 		imageAlt: "毛哥EM资讯密技首页，呈现文章、课程导航与封面插画",
 		card: {
 			type: "技术写作与内容平台",
-			summary: "超过140万字中文技术教程，以及为搜索、课程与讨论打造的自有平台。",
+			summary: "分享科技、艺术、技术与生活。",
 			metric: "超过140万字原创内容"
 		},
 		role: "作者、设计与全栈开发",

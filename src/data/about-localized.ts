@@ -3,22 +3,22 @@ import { awards, experiences, otherRecognition, talks } from "./about";
 
 type Pair = readonly [string, string];
 const experienceCopy = {
-	debate: { role: ["英語辯論教練與評審", "英语辩论教练与评审"], organization: ["Ascent Academy", "Ascent Academy"] },
-	haix: { role: ["系統管理員暨大學部研究員", "系统管理员暨本科生研究员"], organization: ["國立陽明交通大學 HAIX Lab", "国立阳明交通大学 HAIX Lab"] },
+	debate: { role: ["英語辯論講師與評審", "英语辩论讲师与评审"], organization: ["Ascent Academy", "Ascent Academy"] },
+	haix: { role: ["網管兼研究助理", "网管兼研究助理"], organization: ["國立陽明交通大學 人機互動與創意計算實驗室", "国立阳明交通大学 人机交互与创意计算实验室"] },
 	independent: { role: ["獨立開發者與設計師", "独立开发者与设计师"] },
-	sitcon: { role: ["開發組組長", "开发组组长"], organization: ["SITCON", "SITCON"] },
-	bamboofox: { role: ["社長", "社长"], organization: ["陽明交大 BambooFox 資安社", "阳明交大 BambooFox 信息安全社"] },
+	sitcon: { role: ["開發組長", "开发组长"], organization: ["SITCON", "SITCON"] },
+	bamboofox: { role: ["社長", "社长"], organization: ["陽明交大 BambooFox 網路安全策進會", "阳明交大 BambooFox 网络安全策进会"] },
 	awwwards: { role: ["青年評審", "青年评审"], organization: ["Awwwards", "Awwwards"] }
 } satisfies Record<(typeof experiences)[number]["id"], { role: Pair; organization?: Pair }>;
 
 const talkCopy = {
 	react: { title: ["React 前端開發入門", "React 前端开发入门"], context: ["陽明交大春季課程，2 學分", "阳明交大春季课程，2 学分"] },
-	"monthly-workshops": { title: ["每月技術與創作工作坊", "每月技术与创作工作坊"], context: ["陽明交大資傳社", "阳明交大资传社"] },
+	"monthly-workshops": { title: ["每月技術與創作工作坊", "每月技术与创作工作坊"], context: ["陽明交大教學發展中心", "阳明交大教学发展中心"] },
 	"frontend-workshop": { title: ["前端開發工作坊", "前端开发工作坊"], context: ["清華大學服務科學研究所", "清华大学服务科学研究所"] },
-	"more-than-css": { title: ["不只是 CSS", "不只是 CSS"], context: ["SITCON 夏令營，選修課程", "SITCON 夏令营，选修课程"] },
-	"frontend-math": { title: ["前端特效：國中數學就夠了", "前端特效：初中数学就够了"], context: ["SITCON", "SITCON"] },
-	"scaict-open-source": { title: ["通往自由之路：SCAICT 的開源旅程", "通往自由之路：SCAICT 的开源旅程"], context: ["COSCUP", "COSCUP"] },
-	"iphone-programming": { title: ["從捷徑到終端機：iPhone 上的程式設計之旅", "从快捷指令到终端：iPhone 上的编程之旅"], context: ["SITCON", "SITCON"] },
+	"more-than-css": { title: ["不只是 CSS", "不只是 CSS"], context: ["SITCON 夏令營，邀請講師", "SITCON 夏令营，邀请讲师"] },
+	"frontend-math": { title: ["前端特效：國中數學就夠了", "前端特效：初中数学就够了"], context: ["SITCON 2025", "SITCON 2025"] },
+	"scaict-open-source": { title: ["通往自由之路：SCAICT 的開源旅程", "通往自由之路：SCAICT 的开源旅程"], context: ["COSCUP 2024", "COSCUP 2024"] },
+	"iphone-programming": { title: ["從捷徑到終端機：iPhone 上的程式設計之旅", "从快捷指令到终端：iPhone 上的编程之旅"], context: ["SITCON 2024", "SITCON 2024"] },
 	community: { title: ["社群經營", "社群经营"], context: ["AIS3 Club", "AIS3 Club"] },
 	"python-camp": { title: ["Python 程式營", "Python 编程营"], context: ["SYTV，教育部國教署", "SYTV，教育部国教署"] },
 	"line-bot": { title: ["LINE 機器人", "LINE 机器人"], context: ["SCAICT 國中課程", "SCAICT 初中课程"] },
@@ -27,7 +27,7 @@ const talkCopy = {
 	"digital-notes": { title: ["數位筆記技巧", "数字笔记技巧"], context: ["Apple Straight A", "Apple Straight A"] },
 	scraping: { title: ["網頁爬蟲", "网页爬虫"], context: ["SCAICT 聯合迎新", "SCAICT 联合迎新"] },
 	"web-design": { title: ["網頁設計", "网页设计"], context: ["SCAICT 十月主題課程", "SCAICT 十月主题课程"] },
-	"web-microcourse": { title: ["網頁設計微課程", "网页设计微课程"], context: ["市立西苑高中", "市立西苑高中"] },
+	"web-microcourse": { title: ["網頁設計微課程", "网页设计微课程"], context: ["台中市立西苑高中", "台中市立西苑高中"] },
 	"debate-host": { title: ["英語辯論關主", "英语辩论关卡主持"], context: ["臺中青年計畫", "台中青年计划"] },
 	"web-workshop": { title: ["網頁設計工作坊", "网页设计工作坊"], context: ["SYTV，教育部國教署", "SYTV，教育部国教署"] },
 	"python-scraping": { title: ["Python 網頁爬蟲工作坊", "Python 网页爬虫工作坊"], context: ["SYTV，教育部國教署", "SYTV，教育部国教署"] },
@@ -54,11 +54,11 @@ const awardCopy = {
 } satisfies Record<(typeof awards)[number]["items"][number]["id"], { title: Pair; context?: Pair }>;
 
 const recognitionCopy: readonly Pair[] = [
-	["CSSREELS — 精選作品", "CSSREELS — 精选作品"],
-	["CSS Light — 每日精選", "CSS Light — 每日精选"],
-	["TopDesignKing — 每日之王", "TopDesignKing — 每日之王"],
+	["CSSREELS — Featured", "CSSREELS — Featured"],
+	["CSS Light — Featured of the Day", "CSS Light — Featured of the Day"],
+	["TopDesignKing — King of the Day", "TopDesignKing — King of the Day"],
 	["Top CSS Gallery", "Top CSS Gallery"],
-	["Web Guru Award — 每日達人", "Web Guru Award — 每日达人"]
+	["Web Guru Award — Guru of the Day", "Web Guru Award — Guru of the Day"]
 ];
 
 /** Dates, ordering, IDs and project references remain shared with the English data. */

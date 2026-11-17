@@ -11,7 +11,8 @@ export const sitconContent = {
 		imageAlt: "SITCON 2026's Jam the Chaos website with orbiting geometric objects",
 		card: {
 			type: "Creative direction & interactive web",
-			summary: "A student conference turned into a web jam: draggable 3D, a playful personal agenda and an explorable venue.",
+			summary:
+				"The largest student community in East Asia. From dynamic vortexes to modeling the Academia Sinica venue, the project features complex 3D effects and a variety of creative special effects.",
 			metric: "Awwwards Nominee"
 		},
 		role: "Visual & interaction design, website development lead",
@@ -54,7 +55,7 @@ export const sitconContent = {
 		imageAlt: "SITCON 2026 Jam the Chaos 網站與環繞運行的幾何物件",
 		card: {
 			type: "視覺設計與互動網頁",
-			summary: "讓研討會成為一場網頁即興演奏：拖動 3D 物件、搖晃自己的議程，再走進立體會場。",
+			summary: "​學生計算機年會 2026 官網，全​東​亞​最​大​的​學​生​社​群。從動態旋渦到建模中研院會場，複雜的 3D 與各種充滿創意特效。",
 			metric: "Awwwards 提名"
 		},
 		role: "視覺與互動設計、網站開發組長",
@@ -97,7 +98,7 @@ export const sitconContent = {
 		imageAlt: "SITCON 2026 Jam the Chaos 网站与环绕运行的几何物体",
 		card: {
 			type: "视觉设计与互动网页",
-			summary: "让技术大会成为一场网页即兴演奏：拖动 3D 物体、摇晃自己的日程，再走进立体会场。",
+			summary: "学生计算机年会 2026 官网，全东亚最大的学生社群。从动态旋涡到建模中研院会场，复杂的 3D 与各种充满创意特效。",
 			metric: "Awwwards 提名"
 		},
 		role: "视觉与交互设计、网站开发负责人",

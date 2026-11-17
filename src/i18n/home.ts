@@ -44,7 +44,7 @@ export const homeCopy = {
 		workHeading: "Well, I did some work",
 		workIntro: ["For people I'll never meet,", "and people I'll never forget."],
 		workLink: "View all projects",
-		wild: "Let's make something wild.",
+		wild: "Got something wild in mind?",
 		cta: "Let's make something happen",
 		emailLabel: "Email Elvis Mao",
 		keepScrolling: ["Keep scrolling", "to get to know me."],
