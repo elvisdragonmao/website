@@ -67,12 +67,6 @@
 	min-width: 0;
 	grid-column: span 4;
 }
-.about-facet h2 {
-	font-size: clamp(24px, 2.3vw, 34px);
-	line-height: 1.35;
-	margin-bottom: 20px;
-	max-width: 20ch;
-}
 .about-facet p {
 	color: #aeb7b1;
 }
@@ -89,10 +83,6 @@
 	align-items: center;
 	gap: 24px;
 }
-.facet-touch h2 {
-	font-size: clamp(30px, 3.4vw, 48px);
-	max-width: 16ch;
-}
 .facet-furry {
 	padding-top: 6px;
 }
@@ -101,10 +91,6 @@
 }
 .facet-debate {
 	padding-top: 72px;
-}
-.facet-debate h2 {
-	font-size: clamp(30px, 3vw, 42px);
-	max-width: 12ch;
 }
 .about-page .about-font-metric {
 	margin-top: 32px;
@@ -200,12 +186,6 @@
 .about-section {
 	margin-bottom: 112px;
 	scroll-margin-top: 110px;
-}
-.about-section > h2,
-.about-section-heading h2 {
-	font-size: clamp(28px, 3vw, 42px);
-	line-height: 1.3;
-	margin-bottom: 36px;
 }
 .about-section-heading {
 	display: flex;
@@ -539,16 +519,9 @@
 		grid-column: 1 / -1;
 		padding-top: 0;
 	}
-	.about-facet h2 {
-		font-size: 28px;
-	}
 	.facet-touch {
 		display: grid;
 		grid-template-columns: 1fr;
-	}
-	.facet-touch h2 {
-		font-size: 38px;
-		max-width: 17ch;
 	}
 	.facet-touch .about-art {
 		grid-row: 1;
@@ -566,10 +539,6 @@
 		margin: 0;
 		height: 130px;
 	}
-	.facet-furry h2 {
-		margin: 0;
-		font-size: 26px;
-	}
 	.facet-furry p {
 		font-size: 13px;
 	}
@@ -578,10 +547,6 @@
 	}
 	.facet-debate {
 		grid-column: 2;
-	}
-	.facet-source h2,
-	.facet-debate h2 {
-		font-size: 25px;
 	}
 	.facet-source p,
 	.facet-debate p {
@@ -608,11 +573,6 @@
 	.about-section {
 		margin-bottom: 80px;
 		scroll-margin-top: 100px;
-	}
-	.about-section > h2,
-	.about-section-heading h2 {
-		font-size: 29px;
-		margin-bottom: 26px;
 	}
 	.about-section-heading {
 		gap: 12px;
