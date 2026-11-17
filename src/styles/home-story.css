@@ -232,6 +232,7 @@
 	content: " ]";
 }
 .home-page .contact-section .footer-studio {
+	display: block;
 	margin-top: 26px;
 }
 .home-page .contact-section .footer-socials a::before {
