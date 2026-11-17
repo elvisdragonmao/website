@@ -29,7 +29,7 @@ const title = String.raw`  ____            _           _
                |__/`;
 ---
 
-<Layout locale={locale} title={copy.title} description={copy.description}>
+<Layout locale={locale} title={copy.title} description={copy.description} collection={[...featured, ...categories.flatMap(category => category.projects)]}>
 	<main id="main" class="page-main projects-page">
 		<header class="projects-heading">
 			<h1><span class="sr-only">{copy.heading}</span><pre aria-hidden="true">{title}</pre></h1>

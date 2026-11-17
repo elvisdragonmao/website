@@ -28,7 +28,7 @@ const text = (key: Parameters<typeof aboutText>[1]) => aboutText(locale, key);
 const { experiences, awards, otherRecognition } = getAboutData(locale);
 ---
 
-<Layout locale={locale} title="Elvis Dragon Mao" description={text("roles")}>
+<Layout locale={locale} title={text("seoTitle")} description={text("seoDescription")}>
 	<main id="main" class="about-page" data-about-theme="btop">
 		<header class="about-hero">
 			<div class="about-identity">

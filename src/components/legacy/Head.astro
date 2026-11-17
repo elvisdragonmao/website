@@ -1,28 +1,26 @@
 ---
+import SEO from "../SEO.astro";
+import type { SocialImage } from "../../data/seo";
+import type { Locale } from "../../i18n";
 interface Props {
 	title?: string;
 	description?: string;
 	image?: string;
 	theme?: string;
-	path?: string;
-	i18n?: string[];
+	locale: Locale;
 	favicon?: boolean;
-	ga?: boolean;
+	noindex?: boolean;
 }
-const { title = "Elvis Mao", description, image, theme = "#080909", favicon = true } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
-const shareImage = image ? new URL(image, Astro.site ?? Astro.url.origin) : undefined;
+const { title = "Elvis Mao", description, image, theme = "#080909", locale, favicon = true, noindex = false } = Astro.props;
+const fallback = { en: `${title} — a web project by Elvis Mao.`, "zh-Hant": `${title}，毛哥 EM 的網頁專案。`, "zh-Hans": `${title}，毛哥 EM 的网页项目。` };
+const shareImage: SocialImage | undefined =
+	image && !image.endsWith(".svg")
+		? { src: image, alt: title, type: /\.webp(?:$|[?#])/i.test(image) ? "image/webp" : /\.png(?:$|[?#])/i.test(image) ? "image/png" : /\.jpe?g(?:$|[?#])/i.test(image) ? "image/jpeg" : undefined }
+		: undefined;
 ---
 
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>{title}</title>
-{description && <meta name="description" content={description} />}
+<SEO title={title} description={description ?? fallback[locale]} locale={locale} image={shareImage} noindex={noindex} translated={false} />
 <meta name="theme-color" content={theme} />
-<link rel="canonical" href={canonical} />
-<meta property="og:title" content={title} />
-<meta property="og:type" content="website" />
-<meta property="og:url" content={canonical} />
-{description && <meta property="og:description" content={description} />}
-{shareImage && <meta property="og:image" content={shareImage} />}
 {favicon && <link rel="icon" type="image/svg+xml" href="/favicon.svg" />}

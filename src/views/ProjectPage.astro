@@ -16,7 +16,13 @@ const copy = getProjectPageCopy(locale);
 const next = projects[(projects.findIndex(item => item.slug === project.slug) + 1) % projects.length];
 ---
 
-<Layout locale={locale} title={`${project.name} — Elvis Mao`} description={project.introduction}>
+<Layout
+	locale={locale}
+	title={`${project.name} — Elvis Mao`}
+	description={project.introduction}
+	project={project}
+	image={project.imageFormat === "svg" ? undefined : { src: project.image, alt: project.imageAlt, width: project.imageWidth, height: project.imageHeight, type: `image/${project.imageFormat}` }}
+>
 	<main id="main" class="page-main project-page">
 		<header class="page-heading project-heading">
 			<a class="back-link" href={localizePath("/work/", locale)}><Icon name="arrowLeft" /> {copy.allWork}</a><p class="eyebrow">{project.type}</p><h1>

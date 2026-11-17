@@ -21,6 +21,9 @@ export interface Project {
 	introduction: string;
 	image: string;
 	imageAlt: string;
+	imageWidth: number;
+	imageHeight: number;
+	imageFormat: string;
 	card: { type: string; summary: string; metric: string };
 	role: string;
 	status: string;
@@ -40,6 +43,9 @@ export const projects: Project[] = [
 		headline: "More room for\nChinese type.",
 		introduction: "An open-source service that helps websites use Chinese fonts without turning font delivery into a project of its own.",
 		image: emfontCover.src,
+		imageWidth: emfontCover.width,
+		imageHeight: emfontCover.height,
+		imageFormat: emfontCover.format,
 		imageAlt: "The emfont Chinese webfont service website",
 		role: "Creator & maintainer",
 		status: "Live service",
@@ -82,6 +88,9 @@ export const projects: Project[] = [
 		headline: "Curiosity is\ncontagious.",
 		introduction: "Original articles and tutorials about code, design, and things I wanted to understand well enough to explain.",
 		image: emtechCover.src,
+		imageWidth: emtechCover.width,
+		imageHeight: emtechCover.height,
+		imageFormat: emtechCover.format,
 		imageAlt: "The emtech technical publication website",
 		role: "Author & creator",
 		status: "Ongoing publication",
@@ -121,6 +130,9 @@ export const projects: Project[] = [
 		headline: "Jam\nthe Chaos.",
 		introduction: "A website for the largest student IT conference in East Asia. Visual and interaction design, alongside leading the website development team.",
 		image: sitconCover.src,
+		imageWidth: sitconCover.width,
+		imageHeight: sitconCover.height,
+		imageFormat: sitconCover.format,
 		imageAlt: "The SITCON 2026 Jam the Chaos website",
 		role: "Website designer & development team lead",
 		status: "Conference website",
@@ -162,6 +174,9 @@ export const projects: Project[] = [
 		headline: "What\ngoes unsaid?",
 		introduction: "An online meeting can contain more agreement than anyone says aloud. OmniObserve explores how people might find that common ground.",
 		image: omniobserveCover.src,
+		imageWidth: omniobserveCover.width,
+		imageHeight: omniobserveCover.height,
+		imageFormat: omniobserveCover.format,
 		imageAlt: "Concept overview showing private expression and shared perspectives",
 		role: "Research collaborator; software & experimental infrastructure",
 		status: "Research prototype · TAICHI 2026 poster",
