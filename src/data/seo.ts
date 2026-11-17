@@ -1,4 +1,4 @@
-/** Public identity facts and sharing defaults, shared by all document shells. */
+/** Public identity facts and optional social-image types, shared by document shells. */
 export const siteIdentity = {
 	name: "Elvis Mao",
 	personName: "Elvis Dragon Mao",
@@ -14,10 +14,3 @@ export interface SocialImage {
 	height?: number;
 	type?: string;
 }
-
-export const defaultSocialImage = {
-	src: "/images/og/home.png",
-	width: 1200,
-	height: 630,
-	type: "image/png"
-} as const;

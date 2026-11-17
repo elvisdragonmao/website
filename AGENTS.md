@@ -57,3 +57,11 @@ Prepare every cover as follows:
 6. Verify the final file's format and dimensions, then inspect its framing and legibility in the project card.
 
 Every card must retain its **2:1 dark-gray media rectangle**, including cards with `image: null` or a failed image request, so the grid stays aligned. Use an empty `alt` for these decorative covers and do not show alt text, broken-image icons, or other missing-image text inside the placeholder. Keep the existing failed-image handling that hides the image while preserving its media container.
+
+## Homepage Sharing Metadata
+
+The homepage intentionally has no Open Graph or Twitter preview image. Do not generate a replacement or use the 3D character model or `/images/dragon.webp` as a sharing-image fallback. The homepage cover and its existing fallback image are separate and may remain. Project detail pages may use their own project covers.
+
+## Character Assets
+
+Keep editable and runtime 3D model files outside Git, in the user's Desktop backup. The character preparation/export commands accept external input and output paths. Preserve the existing model ignore rules. Historical `EM.stl` and `303/ar` model records are intentionally retained; do not rewrite their Git history as part of character optimization.

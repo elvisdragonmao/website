@@ -24,7 +24,7 @@ interface StructuredDataOptions {
 	locale: Locale;
 	title: string;
 	description: string;
-	image: SocialImage;
+	image?: SocialImage;
 	profileImage: string;
 	project?: SeoProject;
 	collection?: SeoCollectionItem[];
@@ -37,11 +37,10 @@ export const seoLabels = {
 		about: "About",
 		work: "Projects",
 		credits: "Credits",
-		newsletter: "The Hmmm Newsletter",
-		image: "Elvis Mao, developer, designer and HCI researcher, with his blue dragon character."
+		newsletter: "The Hmmm Newsletter"
 	},
-	"zh-Hant": { home: "Elvis Mao", about: "關於我", work: "作品", credits: "致謝", newsletter: "Hmmm 電子報", image: "毛哥 EM：開發者、設計師與人機互動研究者，以及他的藍色龍角色。" },
-	"zh-Hans": { home: "Elvis Mao", about: "关于我", work: "作品", credits: "致谢", newsletter: "Hmmm 电子报", image: "毛哥 EM：开发者、设计师与人机交互研究者，以及他的蓝色龙角色。" }
+	"zh-Hant": { home: "Elvis Mao", about: "關於我", work: "作品", credits: "致謝", newsletter: "Hmmm 電子報" },
+	"zh-Hans": { home: "Elvis Mao", about: "关于我", work: "作品", credits: "致谢", newsletter: "Hmmm 电子报" }
 } satisfies Record<Locale, Record<string, string>>;
 
 export function canonicalUrl(pathname: string, site: URL): string {
@@ -92,14 +91,6 @@ export function structuredData(options: StructuredDataOptions): Record<string, u
 			alternateName: ["毛哥 EM", "Elvis Dragon Mao", "elvismao.com"],
 			inLanguage: ["en", "zh-Hant", "zh-Hans"],
 			publisher: { "@id": personId }
-		},
-		{
-			"@type": "ImageObject",
-			"@id": imageId,
-			url: absolute(image.src),
-			contentUrl: absolute(image.src),
-			caption: image.alt,
-			...(image.width && image.height ? { width: image.width, height: image.height } : {})
 		}
 	];
 	const page: Record<string, unknown> = {
@@ -110,9 +101,20 @@ export function structuredData(options: StructuredDataOptions): Record<string, u
 		description,
 		inLanguage: locale,
 		isPartOf: { "@id": siteId },
-		author: { "@id": personId },
-		primaryImageOfPage: { "@id": imageId }
+		author: { "@id": personId }
 	};
+	if (image) {
+		graph.push({
+			"@type": "ImageObject",
+			"@id": imageId,
+			url: absolute(image.src),
+			contentUrl: absolute(image.src),
+			caption: image.alt,
+			...(image.width && image.height ? { width: image.width, height: image.height } : {})
+		});
+		page.primaryImageOfPage = { "@id": imageId };
+	}
+
 	if (pathname === "/" || pathname === "/about/") page.mainEntity = { "@id": personId };
 	if (project) {
 		const workId = `${root}#project-${project.slug}`;

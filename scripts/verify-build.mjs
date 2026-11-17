@@ -19,20 +19,16 @@ function assertSeo(html, path, locale) {
 	assert.equal([...html.matchAll(/<title>/g)].length, 1, `${path}: one document title`);
 	assert.ok(meta(html, "description")?.trim(), `${path}: description`);
 	assert.equal(meta(html, "og:url", "property"), canonical, `${path}: sharing canonical`);
-	assert.equal(meta(html, "twitter:card"), "summary_large_image", `${path}: sharing card`);
 	const image = meta(html, "og:image", "property");
-	assert.ok(image?.startsWith("https://"), `${path}: absolute social image`);
+	assert.equal(meta(html, "twitter:card"), image ? "summary_large_image" : "summary", `${path}: sharing card`);
 	assert.equal(meta(html, "twitter:image"), image, `${path}: consistent social image`);
-	assert.ok(meta(html, "og:image:alt", "property"), `${path}: social image description`);
-	const imageUrl = new URL(image);
-	if (imageUrl.origin === origin) assert.ok(existsSync(join(dist, decodeURIComponent(imageUrl.pathname))), `${path}: sharing image file`);
-	if (imageUrl.pathname === "/images/og/home.png") {
-		assert.equal(meta(html, "og:image:width", "property"), "1200", `${path}: home image width`);
-		assert.equal(meta(html, "og:image:height", "property"), "630", `${path}: home image height`);
-		const png = readFileSync(join(dist, "images/og/home.png"));
-		assert.equal(png.readUInt32BE(16), 1200, "Home OG PNG actual width");
-		assert.equal(png.readUInt32BE(20), 630, "Home OG PNG actual height");
+	if (image) {
+		assert.ok(image.startsWith("https://"), `${path}: absolute social image`);
+		assert.ok(meta(html, "og:image:alt", "property"), `${path}: social image description`);
+		const imageUrl = new URL(image);
+		if (imageUrl.origin === origin) assert.ok(existsSync(join(dist, decodeURIComponent(imageUrl.pathname))), `${path}: sharing image file`);
 	}
+	if (["/", "/zh-Hant/", "/zh-Hans/"].includes(path)) assert.equal(image, undefined, `${path}: no homepage social image`);
 	const scripts = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)];
 	assert.equal(scripts.length, 1, `${path}: one structured-data graph`);
 	const data = JSON.parse(scripts[0][1]);
