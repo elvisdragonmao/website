@@ -1,30 +1,75 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Icon from "../components/Icon.astro";
+import headings from "../data/ascii-headings.json";
 import { getLocale, localizePath, type Locale } from "../i18n/index";
+import "../styles/not-found.css";
 interface Props {
 	locale?: Locale;
 }
 const { locale = getLocale(Astro.url.pathname) } = Astro.props;
 const translations = {
 	en: {
-		title: "A Wrong Turn",
-		eyebrow: "404 / UNCHARTED TERRITORY",
-		headline: ["Even dragons", "take a wrong turn."],
-		description: "This page isn't here. There are still a few interesting places to go.",
-		back: "Back to Elvis Mao"
+		title: "Page not found",
+		lines: ["The page you're looking for isn't here.", "But you are."],
+		back: "Back home"
 	},
-	"zh-Hant": { title: "走錯路了", eyebrow: "404 / 未知領域", headline: ["就算是龍，", "也會走錯路。"], description: "這個頁面不在這裡。不過，還有幾個有趣的地方可以去。", back: "回到 Elvis Mao 首頁" },
-	"zh-Hans": { title: "走错路了", eyebrow: "404 / 未知领域", headline: ["就算是龙，", "也会走错路。"], description: "这个页面不在这里。不过，还有几个有趣的地方可以去。", back: "回到 Elvis Mao 首页" }
-} satisfies Record<Locale, { title: string; eyebrow: string; headline: string[]; description: string; back: string }>;
+	"zh-Hant": {
+		title: "找不到頁面",
+		lines: ["你想找的頁面不在這裡，", "不過幸好還有你在。"],
+		back: "回首頁"
+	},
+	"zh-Hans": {
+		title: "找不到页面",
+		lines: ["你想找的页面不在这里，", "不过幸好还有你在。"],
+		back: "回首页"
+	}
+} satisfies Record<Locale, { title: string; lines: [string, string]; back: string }>;
 const copy = translations[locale];
+const rows = headings.notFound.split("\n");
+const artWidth = Math.max(...rows.map(row => row.length)) * 8.4 + 2;
+const artHeight = rows.length * 16 + 2;
+// Static text shading: a little light at the edge of an otherwise empty page.
+const lightCols = 88;
+const lightRows = 34;
+const shades = " .:-=+";
+const light = Array.from({ length: lightRows }, (_, y) =>
+	Array.from({ length: lightCols }, (_, x) => {
+		const u = x / (lightCols - 1);
+		const v = y / (lightRows - 1);
+		const glow = Math.exp(-(((u - 0.84) / 0.43) ** 2 + ((v - 0.78) / 0.4) ** 2) * 2);
+		const dither = ((x * 17 + y * 13) % 7) / 7;
+		return shades[Math.min(shades.length - 1, Math.floor(glow * 5 + dither * 0.6))];
+	}).join("")
+);
 ---
 
-<Layout noindex locale={locale} title={`${copy.title} — Elvis Mao`} description={copy.description}>
-	<main id="main" class="page-main not-found">
-		<span class="eyebrow">{copy.eyebrow}</span>
-		<h1>{copy.headline[0]}<br />{copy.headline[1]}</h1>
-		<p>{copy.description}</p>
-		<a class="text-link" href={localizePath("/", locale)}>{copy.back} <Icon /></a>
+<Layout noindex locale={locale} title={`${copy.title} — Elvis Mao`} description={copy.lines.join(" ")}>
+	<div class="not-found-shade" aria-hidden="true">
+		<svg class="not-found-light" viewBox={`0 0 ${lightCols * 7.2 + 2} ${lightRows * 14 + 2}`} aria-hidden="true" focusable="false">
+			{
+				light.map((row, i) => (
+					<text x="1" y={12 + i * 14} xml:space="preserve">
+						{row}
+					</text>
+				))
+			}
+		</svg>
+	</div>
+	<main id="main" class="not-found">
+		<h1 class="not-found-code">
+			<span class="sr-only">404</span>
+			<svg viewBox={`0 0 ${artWidth} ${artHeight}`} aria-hidden="true" focusable="false">
+				{
+					rows.map((row, i) => (
+						<text x="1" y={14 + i * 16} xml:space="preserve">
+							{row}
+						</text>
+					))
+				}
+			</svg>
+		</h1>
+		<p class="not-found-message"><span>{copy.lines[0]}</span><span>{copy.lines[1]}</span></p>
+		<a class="not-found-home" href={localizePath("/", locale)}><Icon name="arrowLeft" />{copy.back}</a>
 	</main>
 </Layout>

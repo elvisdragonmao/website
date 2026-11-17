@@ -147,27 +147,6 @@
 .next-project .icon {
 	font-size: 0.7em;
 }
-.not-found {
-	padding-top: 27svh;
-	padding-bottom: 100px;
-}
-.not-found > .eyebrow {
-	margin-bottom: 30px;
-}
-.not-found h1 {
-	font-size: clamp(36px, 5.5vw, 90px);
-	line-height: 1.1;
-	letter-spacing: -0.06em;
-}
-.not-found p {
-	font-size: 13px;
-	color: var(--muted);
-	max-width: 450px;
-	margin: 30px 0;
-}
-.not-found .text-link {
-	margin-top: 10px;
-}
 @media (max-width: 1100px) {
 	.case-sections > section,
 	.project-credits {
@@ -277,12 +256,6 @@
 	}
 	.next-project > span + span {
 		font-size: 34px;
-	}
-	.not-found {
-		padding-top: 240px;
-	}
-	.not-found h1 {
-		font-size: 38px;
 	}
 }
 
