@@ -495,3 +495,13 @@
 		top: calc(50% + 74px + min(139px, 12.8vw));
 	}
 }
+
+.home-page .cover-scroll-hint {
+	position: absolute;
+	right: var(--margin);
+	bottom: max(24px, env(safe-area-inset-bottom));
+	font-size: 11px;
+	line-height: 1.4;
+	color: var(--muted);
+	text-shadow: 0 1px 6px #080909;
+}

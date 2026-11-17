@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { createDoomFire } from "./doom-fire";
 
+export const MOBILE_ASCII_CELL_SIZE = 7;
+
 /** A coloured glyph surface shared by the character, desktop and mathematical fields. */
 export function createAsciiSurface() {
 	const source = new THREE.WebGLRenderTarget(800, 600, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter });
@@ -182,7 +184,7 @@ export function createAsciiSurface() {
 		scene,
 		camera,
 		resize(width: number, height: number, large = false) {
-			const cell = width < 600 ? 8.5 : large ? 20 : 14;
+			const cell = width < 600 ? MOBILE_ASCII_CELL_SIZE : large ? 20 : 14;
 			uniforms.uGrid.value.set(Math.ceil(width / cell), Math.ceil(height / (cell * 1.5)));
 			fire.resize(uniforms.uGrid.value.x, uniforms.uGrid.value.y);
 			source.setSize(Math.round(width * 0.65), Math.round(height * 0.65));

@@ -3,12 +3,12 @@ import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { CHARACTER_MODEL_URL } from "../data/character";
 import { WorldAnnotations } from "./scene/annotations";
-import { createAsciiSurface } from "./scene/ascii";
+import { createAsciiSurface, MOBILE_ASCII_CELL_SIZE } from "./scene/ascii";
 import { DEFAULT_COVER, readCoverSettings, sanitizeCoverSettings } from "./scene/cover-settings";
 import { CursorGaze } from "./scene/cursor-gaze";
 import { createDesk } from "./scene/desk";
 import { createEarth } from "./scene/earth";
-import { CameraJourney, DESK_OFFSET, EARTH_CENTER, type StoryRange, ease } from "./scene/journey";
+import { CameraJourney, DESK_OFFSET, EARTH_CENTER, ease, type StoryRange } from "./scene/journey";
 import { SceneLoader } from "./scene/loader";
 import { StoryText } from "./scene/story-text";
 
@@ -527,7 +527,8 @@ async function createWorld(canvas: HTMLCanvasElement, signal: AbortSignal): Prom
 		art.uniforms.uFireOrigin.value.set(THREE.MathUtils.clamp(projected.x * 0.5 + 0.5, 0.15, 0.85), THREE.MathUtils.clamp(projected.y * 0.5 + 0.5, 0.08, 0.4));
 		art.uniforms.uFieldCenter.value.set(0.5, 0.5);
 		scene.updateMatrixWorld();
-		const cell = coverPresence > 0.05 ? coverSettings.asciiCellSize : width < 600 ? 8.5 : largeGrain ? 20 : 14;
+		const coverCell = width < 600 && !isLab ? Math.min(coverSettings.asciiCellSize, MOBILE_ASCII_CELL_SIZE) : coverSettings.asciiCellSize;
+		const cell = coverPresence > 0.05 ? coverCell : width < 600 ? MOBILE_ASCII_CELL_SIZE : largeGrain ? 20 : 14;
 		art.uniforms.uGrid.value.set(Math.ceil(width / cell), Math.ceil(height / (cell * 1.5)));
 		annotations.update(camera, desk.anchors, ranges, isLab ? 0 : scrollY, width, height, time, reduced.matches, journey.deskProgress);
 		annotations.updateCover(follow, journey.coverProgress, reduced.matches);
