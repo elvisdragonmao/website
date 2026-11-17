@@ -203,6 +203,8 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 			});
 	};
 	const resize = new ResizeObserver(schedule);
+	// A failed font request should still allow the monospace fallback to render.
+	const fontReady = document.fonts.load('500 12px "IBM Plex Mono"').catch(() => {});
 	// Prepare static glyphs shortly before they enter view, not for every panel on load.
 	const mediaVisibility = new IntersectionObserver(
 		entries => {
@@ -216,49 +218,50 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 	for (const element of root.querySelectorAll<HTMLElement>("[data-image-art]")) {
 		const images = [...element.querySelectorAll<HTMLImageElement>("img")];
 		const canvases = [...element.querySelectorAll<HTMLCanvasElement>("[data-image-output]")];
-		if (!canvases.length) {
-			void Promise.all(images.map(image => image.decode()))
-				.then(() => {
-					if (!signal.aborted) element.dataset.mediaReady = "true";
-				})
-				.catch(() => {});
-			continue;
-		}
 		const layers = canvases.map((canvas): ImageArtwork => ({ element, images, canvas, ready: false, visible: false, layer: Number(canvas.dataset.imageOutput) }));
 		artworks.push(...layers);
-		void Promise.all([...images.map(image => image.decode()), document.fonts.load('500 12px "IBM Plex Mono"')])
-			.then(() => {
-				if (signal.aborted) return;
-				for (const art of layers) art.ready = true;
-				schedule();
-			})
-			.catch(() => {
-				/* Source images remain the fallback. */
-			});
+		let fontsLoaded = !canvases.length;
+		const prepare = () => {
+			if (signal.aborted || !fontsLoaded || !images.every(image => image.complete && image.naturalWidth > 0)) return;
+			if (!canvases.length) element.dataset.mediaReady = "true";
+			for (const art of layers) art.ready = true;
+			schedule();
+		};
+		// Lazy images can have decode() rejected during a route swap and still load
+		// successfully later. Observe load, and also handle already-cached images.
+		for (const image of images) image.addEventListener("load", prepare, { signal });
+		prepare();
+		if (!canvases.length) continue;
+		void fontReady.then(() => {
+			fontsLoaded = true;
+			prepare();
+		});
 		resize.observe(element);
 		mediaVisibility.observe(element);
 	}
-	const music = root.querySelector<HTMLElement>('[data-image-art="music"]');
-	const musicCard = music?.closest<HTMLElement>(".facet-music");
 	const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
-	musicCard?.addEventListener(
-		"pointermove",
-		event => {
-			if (!music || reduced.matches || !finePointer.matches) return;
-			const box = musicCard.getBoundingClientRect();
-			music.style.setProperty("--music-x", `${((event.clientX - box.left) / box.width - 0.5) * 10}px`);
-			music.style.setProperty("--music-y", `${((event.clientY - box.top) / box.height - 0.5) * 6}px`);
-		},
-		{ signal, passive: true }
-	);
-	musicCard?.addEventListener(
-		"pointerleave",
-		() => {
-			music?.style.setProperty("--music-x", "0px");
-			music?.style.setProperty("--music-y", "0px");
-		},
-		{ signal }
-	);
+	for (const media of root.querySelectorAll<HTMLElement>(".media-music, .media-debate")) {
+		const card = media.closest<HTMLElement>(".about-facet");
+		if (!card) continue;
+		card.addEventListener(
+			"pointermove",
+			event => {
+				if (reduced.matches || !finePointer.matches) return;
+				const box = card.getBoundingClientRect();
+				media.style.setProperty("--media-x", `${((event.clientX - box.left) / box.width - 0.5) * 10}px`);
+				media.style.setProperty("--media-y", `${((event.clientY - box.top) / box.height - 0.5) * 6}px`);
+			},
+			{ signal, passive: true }
+		);
+		card.addEventListener(
+			"pointerleave",
+			() => {
+				media.style.setProperty("--media-x", "0px");
+				media.style.setProperty("--media-y", "0px");
+			},
+			{ signal }
+		);
+	}
 	const visibility = new IntersectionObserver(
 		entries => {
 			visible = entries.some(e => e.isIntersecting);
