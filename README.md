@@ -85,7 +85,7 @@ corepack pnpm run deploy
 
 `docs/`, `assets/character/`, `public/models/` and 3D model formats are intentionally excluded from Git and backed up separately. A fresh clone includes the static character poster. Restore the local runtime model before expecting the full interactive character in development or deployment. Builds do not regenerate models or require Desktop files.
 
-The editable source is `assets/character/source.blend`, with packed image maps. Source models and reports stay outside `public/`.
+The editable `source.blend` and original GLB stay in the Desktop backup, with all image maps packed. The default commands below expect a restored local `assets/character/` folder; external-path options let masters stay outside the checkout. Only the small ignored runtime derivative needs to be copied into `public/models/` for a local interactive cover.
 
 ```sh
 # Recompress an existing uncompressed GLB:
@@ -101,7 +101,7 @@ The preparation command also accepts `--input`, `--output` and `--report` paths,
 corepack pnpm run character:prepare -- --input /path/to/source.glb --output /path/to/dragon.glb
 ```
 
-The runtime pipeline protects the face/chest, eye topology, all active Blink vertices, UVs, skin weights, hierarchy and calibration. It reduces the approved 48,314-triangle source to 31,094 triangles, resizes the body map to at most 2048² and other maps to at most 1024², encodes WebP quality 78 with full alpha precision, then applies Meshopt. It validates the final binary before replacing the derivative and leaves the editable masters untouched. Lower-body geometry is retained because it can enter the responsive camera flight.
+The runtime pipeline protects the face/chest, eye topology, all active Blink vertices, UVs, skin weights, hierarchy and calibration. It reduces the approved 48,314-triangle source to 31,094 triangles, resizes the body map to at most 2048² and other maps to at most 1024², encodes WebP quality 78 with full alpha precision, then applies Meshopt. It validates the final binary before replacing the derivative and leaves the editable masters untouched. Lower-body geometry is retained because it can enter the responsive camera flight. Geometry QA found no new non-manifold, winding or skin-weight issues; the original model's intentional mirrored UVs, eye-highlight islands and small degenerate/zero-length geometry remain documented in the Desktop reports.
 
 Only export requires Blender. Set `BLENDER_BIN` if the executable is outside its standard macOS location or PATH. Production uses the committed cover preset; browser-saved tuning and development renderer controls are not exposed in the production build.
 
