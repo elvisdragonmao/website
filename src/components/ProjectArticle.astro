@@ -1,0 +1,29 @@
+---
+import type { MarkdownInstance } from "astro";
+import type { ProjectSlug } from "../data/project-types";
+import type { Locale } from "../i18n";
+import { getProjectPageCopy } from "../i18n/projects";
+
+interface Props {
+	slug: ProjectSlug;
+	locale: Locale;
+}
+const { slug, locale } = Astro.props;
+const articles = import.meta.glob<MarkdownInstance<Record<string, never>>>("../content/projects/*/*.md", { eager: true });
+const article = articles[`../content/projects/${locale}/${slug}.md`];
+if (!article) throw new Error(`Missing project article: ${locale}/${slug}`);
+const { Content } = article;
+const headings = article.getHeadings().filter(heading => heading.depth === 2);
+const copy = getProjectPageCopy(locale);
+---
+
+<div class="project-reading-layout">
+	<aside class="project-outline">
+		<nav aria-label={copy.onThisPage}>
+			{headings.map(heading => <a href={`#${heading.slug}`}>{heading.text}</a>)}
+		</nav>
+	</aside>
+	<article class="project-article">
+		<Content />
+	</article>
+</div>

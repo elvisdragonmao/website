@@ -10,7 +10,7 @@ import { emtechContent } from "./project-content/emtech";
 import { omniobserveContent } from "./project-content/omniobserve";
 import { sitconContent } from "./project-content/sitcon-2026";
 import { projectSlugs, type LocalizedProjectCopy, type ProjectCopy, type ProjectSlug } from "./project-types";
-export { projectSlugs, type ProjectSection, type ProjectSlug } from "./project-types";
+export { projectSlugs, type ProjectSlug } from "./project-types";
 
 export interface Project extends ProjectCopy {
 	slug: ProjectSlug;

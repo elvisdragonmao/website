@@ -3,6 +3,7 @@ import type { Locale } from "./index";
 const projectPageCopy = {
 	en: {
 		allWork: "All work",
+		onThisPage: "On this page",
 		project: "PROJECT",
 		role: "MY ROLE",
 		status: "STATUS",
@@ -14,6 +15,7 @@ const projectPageCopy = {
 	},
 	"zh-Hant": {
 		allWork: "所有作品",
+		onThisPage: "本頁內容",
 		project: "專案",
 		role: "我的角色",
 		status: "狀態",
@@ -25,6 +27,7 @@ const projectPageCopy = {
 	},
 	"zh-Hans": {
 		allWork: "所有作品",
+		onThisPage: "本页内容",
 		project: "项目",
 		role: "我的角色",
 		status: "状态",

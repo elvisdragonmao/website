@@ -2,6 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import Footer from "../components/Footer.astro";
 import Icon from "../components/Icon.astro";
+import ProjectArticle from "../components/ProjectArticle.astro";
+import "../styles/project.css";
 import { getProjects } from "../data/projects";
 import { getLocale, localizePath, type Locale } from "../i18n/index";
 import { getProjectPageCopy } from "../i18n/projects";
@@ -34,7 +36,18 @@ const next = projects[(projects.findIndex(item => item.slug === project.slug) + 
 						</>
 					))
 				}
-			</h1><p class="page-intro">{project.introduction}</p><div class="project-meta">
+			</h1><p class="page-intro">{project.introduction}</p>
+			{
+				project.metric && (
+					<p class="project-highlight">
+						<>
+							<strong>{project.metric}</strong>
+							<span>{project.metricLabel}</span>
+						</>
+					</p>
+				)
+			}
+			<div class="project-meta">
 				<div><span>{copy.project}</span><p>{project.name}</p></div><div><span>{copy.role}</span><p>{project.role}</p></div><div><span>{copy.status}</span><p>{project.status}</p></div>
 			</div>{
 				project.external && (
@@ -54,16 +67,6 @@ const next = projects[(projects.findIndex(item => item.slug === project.slug) + 
 			}
 		</figure>
 		{
-			project.metric && (
-				<div class="project-stat">
-					<>
-						<span>{project.metric}</span>
-						<p>{project.metricLabel}</p>
-					</>
-				</div>
-			)
-		}
-		{
 			project.video && (
 				<figure class="project-video">
 					<iframe
@@ -77,25 +80,7 @@ const next = projects[(projects.findIndex(item => item.slug === project.slug) + 
 				</figure>
 			)
 		}
-		<div class="case-sections">
-			{
-				project.sections.map((section, i) => (
-					<section>
-						<>
-							<span class="eyebrow">
-								0{i + 1} / {section.label}
-							</span>
-							<div>
-								<h2>{section.title}</h2>
-								{section.paragraphs.map(paragraph => (
-									<p>{paragraph}</p>
-								))}
-							</div>
-						</>
-					</section>
-				))
-			}
-		</div>
+		<ProjectArticle slug={project.slug} locale={locale} />
 		{
 			project.credits && (
 				<div class="project-credits">
