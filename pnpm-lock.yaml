@@ -215,6 +215,9 @@ importers:
       prettier-plugin-packagejson:
         specifier: ^3.0.2
         version: 3.1.0(prettier@3.9.10)
+      sharp:
+        specifier: ^0.35.5
+        version: 0.35.5(@types/node@26.6.6)
       typescript:
         specifier: ~5.9.3
         version: 5.9.3

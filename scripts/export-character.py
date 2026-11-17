@@ -4,9 +4,13 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
 source = root / "assets/character/source.blend"
+if "--source" in sys.argv:
+    source = Path(sys.argv[sys.argv.index("--source") + 1]).expanduser().resolve()
 destination = root / "assets/character/source.glb"
 if "--output" in sys.argv:
     destination = Path(sys.argv[sys.argv.index("--output") + 1]).resolve()
+assert source.exists(), "Packed Blender master not found; pass --source /path/to/source.blend"
+assert source != destination and destination.suffix == ".glb", "Export to a separate .glb file"
 bpy.ops.wm.open_mainfile(filepath=str(source))
 images = [image for image in bpy.data.images if image.source == "FILE"]
 assert len(images) == 5 and all(image.packed_file for image in images), "Master must contain five packed textures"
