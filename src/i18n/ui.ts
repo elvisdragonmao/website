@@ -31,7 +31,7 @@ export type UIKey = keyof typeof en;
 export type UIStrings = { [Key in UIKey]: string };
 
 const zhHant: UIStrings = {
-	"site.title": "毛哥 EM — 開發者、設計師與人機互動研究者",
+	"site.title": "毛哥EM — 開發者、設計師與人機互動研究者",
 	"site.description": "互動網站、開源服務與人機互動研究。也是一隻藍龍。",
 	"nav.skip": "跳到主要內容",
 	"nav.home": "Elvis Mao 首頁",
@@ -60,7 +60,7 @@ const zhHant: UIStrings = {
 };
 
 const zhHans: UIStrings = {
-	"site.title": "毛哥 EM — 开发者、设计师与人机交互研究者",
+	"site.title": "毛哥EM — 开发者、设计师与人机交互研究者",
 	"site.description": "交互网站、开源服务与人机交互研究。也是一只蓝龙。",
 	"nav.skip": "跳到主要内容",
 	"nav.home": "Elvis Mao 首页",

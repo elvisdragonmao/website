@@ -88,7 +88,7 @@ export function structuredData(options: StructuredDataOptions): Record<string, u
 			"@id": siteId,
 			url: root,
 			name: siteIdentity.name,
-			alternateName: ["毛哥 EM", "Elvis Dragon Mao", "elvismao.com"],
+			alternateName: ["毛哥EM", "Elvis Dragon Mao", "elvismao.com"],
 			inLanguage: ["en", "zh-Hant", "zh-Hans"],
 			publisher: { "@id": personId }
 		}

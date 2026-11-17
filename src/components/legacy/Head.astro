@@ -12,7 +12,7 @@ interface Props {
 	noindex?: boolean;
 }
 const { title = "Elvis Mao", description, image, theme = "#080909", locale, favicon = true, noindex = false } = Astro.props;
-const fallback = { en: `${title} — a web project by Elvis Mao.`, "zh-Hant": `${title}，毛哥 EM 的網頁專案。`, "zh-Hans": `${title}，毛哥 EM 的网页项目。` };
+const fallback = { en: `${title} — a web project by Elvis Mao.`, "zh-Hant": `${title}，毛哥EM 的網頁專案。`, "zh-Hans": `${title}，毛哥EM 的网页项目。` };
 const shareImage: SocialImage | undefined =
 	image && !image.endsWith(".svg")
 		? { src: image, alt: title, type: /\.webp(?:$|[?#])/i.test(image) ? "image/webp" : /\.png(?:$|[?#])/i.test(image) ? "image/png" : /\.jpe?g(?:$|[?#])/i.test(image) ? "image/jpeg" : undefined }

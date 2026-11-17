@@ -2,7 +2,7 @@
 export const siteIdentity = {
 	name: "Elvis Mao",
 	personName: "Elvis Dragon Mao",
-	alternateNames: ["Elvis Mao", "EM", "毛哥 EM"],
+	alternateNames: ["Elvis Mao", "EM", "毛哥EM"],
 	email: "info@elvismao.com",
 	profiles: ["https://github.com/elvisdragonmao", "https://www.instagram.com/elvisdragonmao/", "https://t.me/elvisdragonmao"]
 } as const;

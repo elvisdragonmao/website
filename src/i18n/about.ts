@@ -2,14 +2,14 @@ import type { Locale } from "./index";
 
 // Every message declares all supported locales; missing translations are a type error.
 const messages = {
-	seoTitle: ["About Elvis Mao — Developer, Designer & HCI Researcher", "關於毛哥 EM — 開發者、設計師與人機互動研究者", "关于毛哥 EM — 开发者、设计师与人机交互研究者"],
+	seoTitle: ["About Elvis Mao — Developer, Designer & HCI Researcher", "關於毛哥EM — 開發者、設計師與人機互動研究者", "关于毛哥EM — 开发者、设计师与人机交互研究者"],
 	seoDescription: [
-		"Meet Elvis Dragon Mao (毛哥 EM), a developer, designer and HCI researcher at NYCU. Explore his research, teaching, open-source projects and creative work.",
-		"認識毛哥 EM（Elvis Dragon Mao）：開發者、設計師與陽明交大人機互動研究者。探索我的研究、教學、開源專案、創作與經歷。",
-		"认识毛哥 EM（Elvis Dragon Mao）：开发者、设计师与阳明交大人机交互研究者。探索我的研究、教学、开源项目、创作与经历。"
+		"Meet Elvis Dragon Mao (毛哥EM), a developer, designer and HCI researcher at NYCU. Explore his research, teaching, open-source projects and creative work.",
+		"認識毛哥EM（Elvis Dragon Mao）：開發者、設計師與陽明交大人機互動研究者。探索我的研究、教學、開源專案、創作與經歷。",
+		"认识毛哥EM（Elvis Dragon Mao）：开发者、设计师与阳明交大人机交互研究者。探索我的研究、教学、开源项目、创作与经历。"
 	],
 	roles: ["Developer · Designer · Researcher · Debater", "開發者 · 設計師 · 研究者 · 辯士", "开发者 · 设计师 · 研究者 · 辩手"],
-	alias: ["a.k.a. 毛哥 EM, EM, Elvis Mao.", "也可以叫我毛哥 EM、EM、Elvis Mao。", "也可以叫我毛哥 EM、EM、Elvis Mao。"],
+	alias: ["a.k.a. 毛哥EM, EM, Elvis Mao.", "也可以叫我毛哥EM、EM、Elvis Mao。", "也可以叫我毛哥EM、EM、Elvis Mao。"],
 	resume: ["resume", "履歷", "简历"],
 	touchTitle: ["Touch, I need something more.", "觸碰，讓互動不只如此。", "触碰，让交互不止于此。"],
 	touchDescription: [

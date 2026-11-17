@@ -144,7 +144,7 @@ const whyCopy = copy.why;
 			<div class="contact-intro">
 				<h2 class="sr-only">{copy.cta}</h2>
 				<div class="contact-heading" data-story-layer="contact">
-					<p class="sr-only">{copy.wild}</p>
+					<p class:list={{ "sr-only": locale === "en" }} aria-hidden={locale !== "en" ? "true" : undefined}>{locale === "en" ? copy.wild : copy.cta}</p>
 					<div class="ascii-art contact-ascii">
 						<a href="mailto:info@elvismao.com" target="_blank" rel="noopener noreferrer" aria-label={copy.emailLabel}>
 							<svg viewBox={`0 0 ${ctaArt.width} ${ctaArt.height}`} aria-hidden="true" focusable="false">

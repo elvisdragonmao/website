@@ -31,8 +31,8 @@ export const newsletterCopy = {
 		caption: "You can unsubscribe at any time. Google Forms will open in a new tab to confirm your submission."
 	},
 	"zh-Hant": {
-		title: "交個朋友 — 毛哥 EM",
-		description: "每個月一封信，聊聊毛哥 EM 做的東西、正在探索的想法，以及值得分享的新發現。",
+		title: "交個朋友 — 毛哥EM",
+		description: "每個月一封信，聊聊毛哥EM 做的東西、正在探索的想法，以及值得分享的新發現。",
 		heading: "Hmmm 電子報",
 		intro: "每個月，寄一封信給你。",
 		details: "聊聊我做的東西、正在探索的想法、讀到的文章，還有生活中的小發現。想收到的話，就留下你的 Email 吧。",
@@ -46,8 +46,8 @@ export const newsletterCopy = {
 		caption: "隨時都可以取消訂閱。送出後會在新分頁開啟 Google 表單，確認是否提交成功。"
 	},
 	"zh-Hans": {
-		title: "交个朋友 — 毛哥 EM",
-		description: "每个月一封信，聊聊毛哥 EM 做的东西、正在探索的想法，以及值得分享的新发现。",
+		title: "交个朋友 — 毛哥EM",
+		description: "每个月一封信，聊聊毛哥EM 做的东西、正在探索的想法，以及值得分享的新发现。",
 		heading: "Hmmm 电子报",
 		intro: "每个月，寄一封信给你。",
 		details: "聊聊我做的东西、正在探索的想法、读到的文章，还有生活中的小发现。想收到的话，就留下你的 Email 吧。",
