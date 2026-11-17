@@ -95,7 +95,27 @@ corepack pnpm run character:prepare
 corepack pnpm run character:export
 ```
 
+The preparation command also accepts `--input`, `--output` and `--report` paths, so masters and optimized derivatives can stay in a Desktop backup. Export accepts `--source`, `--output`, `--runtime-output` and `--report`.
+
+```sh
+corepack pnpm run character:prepare -- --input /path/to/source.glb --output /path/to/dragon.glb
+```
+
+The runtime pipeline protects the face/chest, eye topology, all active Blink vertices, UVs, skin weights, hierarchy and calibration. It reduces the approved 48,314-triangle source to 31,094 triangles, resizes the body map to at most 2048² and other maps to at most 1024², encodes WebP quality 78 with full alpha precision, then applies Meshopt. It validates the final binary before replacing the derivative and leaves the editable masters untouched. Lower-body geometry is retained because it can enter the responsive camera flight.
+
 Only export requires Blender. Set `BLENDER_BIN` if the executable is outside its standard macOS location or PATH. Production uses the committed cover preset; browser-saved tuning and development renderer controls are not exposed in the production build.
+
+## Performance and SEO maintenance
+
+About photos use quality-65 WebP at no more than twice their measured display dimensions (and never above the 3840 × 2160 bounding limit for 1080p displays). The portrait is prioritized; below-fold media and ASCII canvases load and paint near the viewport. Their preparation details are in `src/assets/about/README.md`.
+
+`src/data/translated-paths.json` is the shared route registry. `src/lib/work-box.ts` owns both glyph-frame variants. Route transition rendering lives in `src/scripts/navigation/pixel-wipe.ts`, while `page-experience.ts` handles mounting and cleanup.
+
+`src/components/SEO.astro` supplies canonical URLs, real locale alternates, robots, Open Graph, Twitter cards and JSON-LD to both page shells. Public identity and sharing defaults live in `src/data/seo.ts`; `src/lib/seo.ts` builds Person, WebSite, page, breadcrumb and project graphs. Work's ItemList follows the visible card order. Error pages are noindex and contain no rich-result graph. Build verification checks the actual metadata, image files and graph references.
+
+The homepage intentionally has no social-preview image. Project pages can share their actual project cover; other pages retain text metadata without a generic image fallback.
+
+`public/_headers` gives fingerprinted `/_astro/` files immutable caching and prevents alternate `workers.dev` hosts from being indexed. Stable public image URLs keep the hosting platform's normal revalidation behavior.
 
 ## Integrations and credits
 
