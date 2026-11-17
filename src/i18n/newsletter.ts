@@ -11,7 +11,7 @@ interface NewsletterCopy {
 	interest: string;
 	interestPlaceholder: string;
 	subscribe: string;
-	opening: string;
+
 	caption: string;
 }
 export const newsletterCopy = {
@@ -27,8 +27,8 @@ export const newsletterCopy = {
 		interest: "Anything you'd like to hear about? (optional)",
 		interestPlaceholder: "Tell me what interests you.",
 		subscribe: "Subscribe",
-		opening: "Opening the subscription confirmation in a new tab…",
-		caption: "You can unsubscribe at any time. Google Forms will open in a new tab to confirm your submission."
+
+		caption: "You can unsubscribe at any time."
 	},
 	"zh-Hant": {
 		title: "交個朋友 — 毛哥EM",
@@ -42,8 +42,8 @@ export const newsletterCopy = {
 		interest: "有什麼想聽我分享的嗎？（選填）",
 		interestPlaceholder: "告訴我你感興趣的事。",
 		subscribe: "訂閱",
-		opening: "正在新分頁開啟訂閱確認頁面⋯",
-		caption: "隨時都可以取消訂閱。送出後會在新分頁開啟 Google 表單，確認是否提交成功。"
+
+		caption: "隨時都可以取消訂閱。"
 	},
 	"zh-Hans": {
 		title: "交个朋友 — 毛哥EM",
@@ -57,7 +57,46 @@ export const newsletterCopy = {
 		interest: "有什么想听我分享的吗？（选填）",
 		interestPlaceholder: "告诉我你感兴趣的事。",
 		subscribe: "订阅",
-		opening: "正在新标签页打开订阅确认页面⋯",
-		caption: "随时都可以取消订阅。提交后会在新标签页打开 Google 表单，确认是否提交成功。"
+
+		caption: "随时都可以取消订阅。"
 	}
 } satisfies Record<Locale, NewsletterCopy>;
+
+const feedback = {
+	en: {
+		pending: "Sending…",
+		pendingLabel: "Sending…",
+		success: "You're on the list. Thanks for subscribing!",
+		successLabel: "Subscribed",
+		error: "We couldn't confirm your subscription. Please try again.",
+		validation: "Please check the highlighted fields."
+	},
+	"zh-Hant": {
+		pending: "正在送出⋯",
+		pendingLabel: "送出中⋯",
+		success: "訂閱成功，謝謝你！",
+		successLabel: "已訂閱",
+		error: "未能確認訂閱，請稍後再試。",
+		validation: "請檢查標示紅色的欄位。"
+	},
+	"zh-Hans": {
+		pending: "正在提交⋯",
+		pendingLabel: "提交中⋯",
+		success: "订阅成功，谢谢你！",
+		successLabel: "已订阅",
+		error: "未能确认订阅，请稍后重试。",
+		validation: "请检查标红的字段。"
+	}
+} satisfies Record<Locale, Record<"pending" | "pendingLabel" | "success" | "successLabel" | "error" | "validation", string>>;
+
+export function newsletterFormAttributes(locale: Locale): Record<string, string> {
+	const copy = feedback[locale];
+	return {
+		"data-pending-message": copy.pending,
+		"data-pending-label": copy.pendingLabel,
+		"data-success-message": copy.success,
+		"data-success-label": copy.successLabel,
+		"data-error-message": copy.error,
+		"data-validation-message": copy.validation
+	};
+}

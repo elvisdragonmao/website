@@ -2,7 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import Footer from "../components/Footer.astro";
 import { getLocale, type Locale } from "../i18n";
-import { newsletterCopy } from "../i18n/newsletter";
+import "../styles/newsletter.css";
+import { newsletterCopy, newsletterFormAttributes } from "../i18n/newsletter";
 interface Props {
 	locale?: Locale;
 }
@@ -15,22 +16,19 @@ const copy = newsletterCopy[locale];
 		<h1>{copy.heading}</h1>
 		<p class="letter-lead">{copy.intro}</p>
 		<p>{copy.details}</p>
-		<form
-			data-newsletter
-			data-opening-message={copy.opening}
-			action="https://docs.google.com/forms/d/e/1FAIpQLSeITLO_J8DsxypUmCL8Ubd4n_2WpiFI5hCnmtUY-TrKYys2Iw/formResponse"
-			method="post"
-			target="_blank"
-			data-astro-reload
-		>
+		<form data-newsletter {...newsletterFormAttributes(locale)} action="/api/newsletter/" method="post" novalidate data-astro-reload>
 			<label for="letter-name">{copy.name}</label>
-			<input id="letter-name" name="entry.1211740646" autocomplete="name" placeholder={copy.namePlaceholder} />
+			<div class="letter-field" data-newsletter-field>
+				<input id="letter-name" name="name" autocomplete="name" maxlength="120" placeholder={copy.namePlaceholder} aria-describedby="letter-status" />
+			</div>
 			<label for="letter-email">{copy.email}</label>
-			<input id="letter-email" name="entry.1272945868" type="email" autocomplete="email" required aria-describedby="letter-caption letter-status" />
+			<div class="letter-field" data-newsletter-field>
+				<input id="letter-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="letter-caption letter-status" />
+			</div>
 			<label for="letter-interest">{copy.interest}</label>
-			<textarea id="letter-interest" name="entry.1531547295" rows="3" placeholder={copy.interestPlaceholder}></textarea>
-			<input type="hidden" name="entry.488472312" value="elvismao.com" />
-			<input type="hidden" name="entry.1137316312" value="" />
+			<div class="letter-field" data-newsletter-field>
+				<textarea id="letter-interest" name="interest" rows="3" maxlength="2000" placeholder={copy.interestPlaceholder} aria-describedby="letter-status"></textarea>
+			</div>
 			<button type="submit">{copy.subscribe}</button>
 			<output id="letter-status" data-status role="status" aria-live="polite"></output>
 		</form>

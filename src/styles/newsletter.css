@@ -1,0 +1,40 @@
+[data-newsletter] {
+	--newsletter-error: #f28b82;
+}
+[data-newsletter] :is(input, textarea) {
+	box-shadow: none;
+}
+[data-newsletter] button:disabled {
+	cursor: default;
+	opacity: 0.7;
+}
+[data-newsletter][data-state="pending"] button {
+	cursor: progress;
+}
+[data-newsletter] [data-status]:not(:empty) {
+	display: block;
+	margin-top: 14px;
+	line-height: 1.7;
+}
+[data-newsletter]:is([data-state="invalid"], [data-state="error"]) [data-status] {
+	color: var(--newsletter-error);
+}
+[data-newsletter][data-state="success"] [data-status] {
+	color: var(--accent);
+}
+/* State-specific selectors keep the error line visible through footer theme/focus rules. */
+.site-footer .newsletter-panel [data-newsletter] .newsletter-input-row[data-invalid="true"] {
+	box-shadow: none;
+}
+.site-footer .newsletter-panel [data-newsletter] .newsletter-input-row[data-invalid="true"]::before,
+.site-footer .newsletter-panel [data-newsletter] .newsletter-input-row[data-invalid="true"]::after {
+	color: var(--newsletter-error);
+}
+.letter-page [data-newsletter] [data-newsletter-field][data-invalid="true"] :is(input, textarea) {
+	border-color: var(--newsletter-error);
+	outline-color: var(--newsletter-error);
+}
+
+.letter-page [data-newsletter-field] :is(input, textarea) {
+	display: block;
+}

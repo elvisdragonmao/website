@@ -31,6 +31,9 @@ jobs:
       - name: Check formatting
         run: corepack pnpm run format:check
 
+      - name: Test newsletter submissions
+        run: corepack pnpm test
+
       - name: Build Astro site
         run: corepack pnpm run build
 

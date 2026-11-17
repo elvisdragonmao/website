@@ -19,7 +19,7 @@ const en = {
 	"newsletter.subscribe": "[subscribe]",
 	"newsletter.caption": "observations and things I've been making.",
 	"newsletter.frequency": "1/month max.",
-	"newsletter.opening": "Opening subscription confirmation…",
+
 	"common.view": "View",
 	"common.code": "Code",
 	"common.showAll": "Show all ({count})",
@@ -51,7 +51,7 @@ const zhHant: UIStrings = {
 	"newsletter.subscribe": "[訂閱]",
 	"newsletter.caption": "我的觀察，以及最近做的東西。",
 	"newsletter.frequency": "每月最多一封。",
-	"newsletter.opening": "正在開啟訂閱確認頁面……",
+
 	"common.view": "查看",
 	"common.code": "原始碼",
 	"common.showAll": "顯示全部（{count}）",
@@ -80,7 +80,7 @@ const zhHans: UIStrings = {
 	"newsletter.subscribe": "[订阅]",
 	"newsletter.caption": "我的观察，以及最近做的东西。",
 	"newsletter.frequency": "每月最多一封。",
-	"newsletter.opening": "正在打开订阅确认页面……",
+
 	"common.view": "查看",
 	"common.code": "源代码",
 	"common.showAll": "显示全部（{count}）",

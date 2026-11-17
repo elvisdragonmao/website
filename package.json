@@ -15,6 +15,7 @@
 		"format:check": "prettier --check .",
 		"lint": "corepack pnpm run format:check",
 		"preview": "astro preview --host 127.0.0.1",
+		"test": "node --test tests/*.test.ts",
 		"verify:build": "node scripts/verify-build.mjs"
 	},
 	"dependencies": {

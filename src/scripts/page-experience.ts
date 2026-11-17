@@ -1,5 +1,6 @@
 import { navigate, type TransitionBeforePreparationEvent } from "astro:transitions/client";
 import { PixelWipe, type PixelWipeState } from "./navigation/pixel-wipe";
+import { setupNewsletters } from "./newsletter";
 import { setupScrollExperience } from "./scroll-experience";
 
 /** Page-only interactions. ClientRouter retains ownership of normal link navigation. */
@@ -8,7 +9,6 @@ type ExperienceDebug = PixelWipeState & {
 	pageInitializations: number;
 	pageCleanups: number;
 	bottomNavigations: number;
-	nativeNewsletterSubmissions: number;
 	bottomProgress: number;
 };
 declare global {
@@ -28,7 +28,6 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 		covers: 0,
 		uncovers: 0,
 		bottomNavigations: 0,
-		nativeNewsletterSubmissions: 0,
 		phase: "idle",
 		bottomProgress: 0
 	};
@@ -156,25 +155,6 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 		paint();
 	}
 
-	function newsletters(scope: PageScope) {
-		document.querySelectorAll<HTMLFormElement>("form[data-newsletter]").forEach(form => {
-			form.addEventListener(
-				"submit",
-				() => {
-					// The configured backend uses its native confirmation page. No blind no-cors
-					// fetch, background subscription, fabricated success, or swallowed submission.
-					if (!form.checkValidity()) return;
-					const referrer = form.querySelector<HTMLInputElement>('[name="entry.1137316312"]');
-					if (referrer) referrer.value = new URLSearchParams(location.search).get("f") || location.href;
-					const status = form.querySelector<HTMLOutputElement>("[data-status]");
-					if (status) status.textContent = form.dataset.openingMessage ?? "";
-					debug.nativeNewsletterSubmissions++;
-				},
-				{ signal: scope.abort.signal }
-			);
-		});
-	}
-
 	function navContrast(scope: PageScope) {
 		const footer = document.querySelector<HTMLElement>(".site-footer.has-newsletter");
 		const nav = document.querySelector<HTMLElement>(".site-nav");
@@ -200,7 +180,7 @@ if (!import.meta.env.DEV || !window.__EM_PAGE_EXPERIENCE__) {
 		debug.pageInitializations++;
 		nextPage(page);
 		setupScrollExperience(page.abort.signal);
-		newsletters(page);
+		setupNewsletters(page.abort.signal);
 		navContrast(page);
 		if (debug.phase === "covered") void wipe.uncover();
 	};

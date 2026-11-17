@@ -1,5 +1,7 @@
 ---
 import { getLocale, t, type Locale } from "../i18n";
+import { newsletterFormAttributes } from "../i18n/newsletter";
+import "../styles/newsletter.css";
 interface Props {
 	locale?: Locale;
 }
@@ -18,24 +20,17 @@ const titleLines = t(locale, "newsletter.title").split("\n");
 			))
 		}
 	</h3>
-	<form
-		id="newsletter-form"
-		data-newsletter
-		data-opening-message={t(locale, "newsletter.opening")}
-		action="https://docs.google.com/forms/d/e/1FAIpQLSeITLO_J8DsxypUmCL8Ubd4n_2WpiFI5hCnmtUY-TrKYys2Iw/formResponse"
-		method="post"
-		target="_blank"
-		data-astro-reload
-	>
+	<form id="newsletter-form" data-newsletter {...newsletterFormAttributes(locale)} action="/api/newsletter/" method="post" novalidate data-astro-reload>
 		<label class="sr-only" for="newsletter-name">{t(locale, "newsletter.name")}</label>
-		<div class="newsletter-input-row">
-			<input id="newsletter-name" name="entry.1211740646" type="text" autocomplete="name" placeholder={t(locale, "newsletter.name")} required />
+		<div class="newsletter-input-row" data-newsletter-field>
+			<input id="newsletter-name" name="name" maxlength="120" aria-describedby="newsletter-status" type="text" autocomplete="name" placeholder={t(locale, "newsletter.name")} required />
 		</div>
 		<label class="sr-only" for="newsletter-email">{t(locale, "newsletter.email")}</label>
-		<div class="newsletter-input-row">
+		<div class="newsletter-input-row" data-newsletter-field>
 			<input
 				id="newsletter-email"
-				name="entry.1272945868"
+				name="email"
+				maxlength="254"
 				type="email"
 				autocomplete="email"
 				placeholder={t(locale, "newsletter.emailPlaceholder")}
@@ -44,8 +39,6 @@ const titleLines = t(locale, "newsletter.title").split("\n");
 			/>
 		</div>
 		<button class="newsletter-submit" type="submit">{t(locale, "newsletter.subscribe")}</button>
-		<input type="hidden" name="entry.488472312" value="elvismao.com" />
-		<input type="hidden" name="entry.1137316312" value="" />
 		<output id="newsletter-status" data-status role="status" aria-live="polite"></output>
 	</form>
 	<p id="newsletter-caption" class="newsletter-caption"><span>{t(locale, "newsletter.caption")}</span><br />{t(locale, "newsletter.frequency")}</p>

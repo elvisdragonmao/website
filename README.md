@@ -1,6 +1,6 @@
 # elvismao.com
 
-Elvis Mao / 毛哥 EM's personal website, built with Astro, TypeScript and Three.js. The portfolio, newsletter and historical web tools live in one application at the repository root.
+Elvis Mao / 毛哥EM's personal website, built with Astro, TypeScript and Three.js. The portfolio, newsletter and historical web tools live in one application at the repository root.
 
 ## Development
 
@@ -55,11 +55,13 @@ src/
   assets/        bundled case study images and required legacy tool assets
   components/    shared UI, About components and legacy tool shell
   data/          shared structured content and asset references
-  dev/           development-only visual labs
+  dev/           development-only visual labs and newsletter endpoint
   i18n/          typed UI and page dictionaries
   layouts/       metadata, language and document shell
   pages/         English routes, localized wrappers and historical tools
   scripts/       browser interactions and Three.js scene
+  server/        shared newsletter submission handler
+  worker.ts      production API router and static asset fallback
   styles/        shared and page styles
   views/         common page implementations
 public/
@@ -79,7 +81,7 @@ corepack pnpm run deploy
 
 `deploy:check` builds and validates the Cloudflare bundle without publishing. `deploy` publishes after a successful build and requires Cloudflare authentication. The Worker configuration is `wrangler.jsonc`; the static output is `dist/`. Configure a connected host's project root as the repository root, its build command as `corepack pnpm run build`, and its output directory as `dist`.
 
-`.github/workflows/website.yml` installs frozen dependencies, checks formatting, builds and runs a Wrangler dry run. It does not publish automatically. Cloudflare serves the nearest localized `404.html` with HTTP 404 for missing pages.
+`.github/workflows/website.yml` installs frozen dependencies, checks formatting, runs the isolated newsletter tests, builds and runs a Wrangler dry run. It does not publish automatically. Cloudflare serves the nearest localized `404.html` with HTTP 404 for missing pages.
 
 ## Local character assets
 
@@ -119,7 +121,7 @@ The homepage intentionally has no social-preview image. Project pages can share 
 
 ## Integrations and credits
 
-Newsletter forms preserve the existing Google Forms POST endpoint and field mappings. Google provides submission confirmation; this site does not infer successful subscription from an opaque request. Work inquiries link to [LinYao Studio](https://linyao.tw/).
+Newsletter forms post to the same-origin `/api/newsletter/` endpoint. Its shared handler forwards the existing Google Forms fields and reports success only after reading an explicit confirmation in the response HTML. Empty or malformed fields are highlighted only after submission; network and upstream errors keep the form available for retry. Cloudflare runs the Worker first only for `/api/*`; other routes remain static assets. The same handler is exposed by a dev-only Astro route for `pnpm dev`. Work inquiries link to [LinYao Studio](https://linyao.tw/).
 
 Some historical tools require their external service, an API key, or physical device capabilities. The weekly bulletin publisher's archived PDF URLs may be unavailable; the tool retains date selection and generated links. iPhone pressure measurements require actual 3D Touch hardware.
 
