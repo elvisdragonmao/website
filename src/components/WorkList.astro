@@ -28,7 +28,7 @@ const frame = galleryBoxFrame(cols, rows);
 				</svg>
 				<div class="work-box-front">
 					<div class="project-box-media work-box-media" data-work-image>
-						<img src={project.image} alt={project.imageAlt} width="1440" height="1000" loading="lazy" />
+						<img src={project.thumbnail?.src ?? project.image} alt="" width={project.thumbnail?.width ?? project.imageWidth} height={project.thumbnail?.height ?? project.imageHeight} loading="lazy" />
 					</div>
 					<div class="project-box-copy work-box-copy">
 						<span class="project-box-type">{project.card.type}</span>

@@ -45,7 +45,13 @@ const next = projects[(projects.findIndex(item => item.slug === project.slug) + 
 			}
 		</header>
 		<figure class="project-hero">
-			<img src={project.image} alt={project.imageAlt} width="1440" height="1000" fetchpriority="high" />{project.slug === "omniobserve" && <figcaption>{copy.concept}</figcaption>}
+			<img src={project.image} alt={project.imageAlt} width={project.imageWidth} height={project.imageHeight} fetchpriority="high" />{
+				project.imageSource && (
+					<figcaption>
+						{copy.media} · <a href={project.imageSource}>{copy.source}</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+					</figcaption>
+				)
+			}
 		</figure>
 		{
 			project.metric && (
@@ -55,6 +61,20 @@ const next = projects[(projects.findIndex(item => item.slug === project.slug) + 
 						<p>{project.metricLabel}</p>
 					</>
 				</div>
+			)
+		}
+		{
+			project.video && (
+				<figure class="project-video">
+					<iframe
+						src={project.video}
+						title={copy.video}
+						loading="lazy"
+						allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"
+						allowfullscreen
+						referrerpolicy="strict-origin-when-cross-origin"
+					/>
+				</figure>
 			)
 		}
 		<div class="case-sections">
