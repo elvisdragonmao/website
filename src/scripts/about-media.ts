@@ -3,6 +3,8 @@ type ImageArtwork = {
 	images: HTMLImageElement[];
 	canvas: HTMLCanvasElement;
 	ready: boolean;
+	visible: boolean;
+	paintedSize?: string;
 	layer?: number;
 };
 const hash = (n: number) => {
@@ -21,9 +23,12 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 		lastPaint = 0,
 		visible = false;
 	const paint = (art: ImageArtwork) => {
-		if (!art.ready || signal.aborted) return;
+		if (!art.ready || !art.visible || signal.aborted) return;
 		const { width, height } = art.element.getBoundingClientRect();
 		if (width < 1 || height < 1) return;
+		const ratio = Math.min(devicePixelRatio || 1, 2);
+		const size = `${width}:${height}:${ratio}`;
+		if (art.paintedSize === size) return;
 		const composition = document.createElement("canvas");
 		composition.width = Math.ceil(width * 2);
 		composition.height = Math.ceil(height * 2);
@@ -90,7 +95,6 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 		if (!sample) return;
 		sample.drawImage(composition, 0, 0, columns, rows);
 		const pixels = sample.getImageData(0, 0, columns, rows).data;
-		const ratio = Math.min(devicePixelRatio || 1, 2);
 		art.canvas.width = Math.round(width * ratio);
 		art.canvas.height = Math.round(height * ratio);
 		output.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -139,6 +143,7 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 			halo.height = art.canvas.height;
 			halo.getContext("2d")?.drawImage(art.canvas, 0, 0);
 		}
+		art.paintedSize = size;
 	};
 	const paintCloud = (time: number) => {
 		if (!cloud || !portrait) return;
@@ -198,6 +203,16 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 			});
 	};
 	const resize = new ResizeObserver(schedule);
+	// Prepare static glyphs shortly before they enter view, not for every panel on load.
+	const mediaVisibility = new IntersectionObserver(
+		entries => {
+			for (const entry of entries) {
+				for (const art of artworks) if (art.element === entry.target) art.visible = entry.isIntersecting;
+			}
+			schedule();
+		},
+		{ rootMargin: "320px" }
+	);
 	for (const element of root.querySelectorAll<HTMLElement>("[data-image-art]")) {
 		const images = [...element.querySelectorAll<HTMLImageElement>("img")];
 		const canvases = [...element.querySelectorAll<HTMLCanvasElement>("[data-image-output]")];
@@ -209,20 +224,19 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 				.catch(() => {});
 			continue;
 		}
-		for (const canvas of canvases) {
-			const art: ImageArtwork = { element, images, canvas, ready: false, layer: Number(canvas.dataset.imageOutput) };
-			artworks.push(art);
-			void Promise.all([...images.map(image => image.decode()), document.fonts.load('500 12px "IBM Plex Mono"')])
-				.then(() => {
-					if (signal.aborted) return;
-					art.ready = true;
-					schedule();
-				})
-				.catch(() => {
-					/* Source images remain the fallback. */
-				});
-		}
+		const layers = canvases.map((canvas): ImageArtwork => ({ element, images, canvas, ready: false, visible: false, layer: Number(canvas.dataset.imageOutput) }));
+		artworks.push(...layers);
+		void Promise.all([...images.map(image => image.decode()), document.fonts.load('500 12px "IBM Plex Mono"')])
+			.then(() => {
+				if (signal.aborted) return;
+				for (const art of layers) art.ready = true;
+				schedule();
+			})
+			.catch(() => {
+				/* Source images remain the fallback. */
+			});
 		resize.observe(element);
+		mediaVisibility.observe(element);
 	}
 	const music = root.querySelector<HTMLElement>('[data-image-art="music"]');
 	const musicCard = music?.closest<HTMLElement>(".facet-music");
@@ -266,6 +280,7 @@ export function startAboutMedia(root: HTMLElement, signal: AbortSignal): void {
 		"abort",
 		() => {
 			resize.disconnect();
+			mediaVisibility.disconnect();
 			visibility.disconnect();
 			cancelAnimationFrame(resizeFrame);
 			cancelAnimationFrame(animationFrame);
