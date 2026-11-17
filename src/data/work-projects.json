@@ -611,7 +611,11 @@
 		"featured": false,
 		"projectUrl": "",
 		"codeUrl": "https://github.com/elvisdragonmao/where-is-oloo",
-		"image": null
+		"image": {
+			"src": "/images/work/project-54fe1cd4bad7.webp",
+			"width": 500,
+			"height": 250
+		}
 	},
 	{
 		"id": "project-472f51d9a1f8",
@@ -1075,7 +1079,11 @@
 		"featured": false,
 		"projectUrl": "",
 		"codeUrl": "https://github.com/elvisdragonmao/Sparduino",
-		"image": null
+		"image": {
+			"src": "/images/work/project-249c11c62f07.webp",
+			"width": 500,
+			"height": 250
+		}
 	},
 	{
 		"id": "project-147b4062050f",
@@ -1085,6 +1093,10 @@
 		"featured": false,
 		"projectUrl": "",
 		"codeUrl": "https://github.com/elvisdragonmao/clipcc-extension-AWP",
-		"image": null
+		"image": {
+			"src": "/images/work/project-147b4062050f.webp",
+			"width": 500,
+			"height": 250
+		}
 	}
 ]

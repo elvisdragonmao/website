@@ -44,7 +44,8 @@ Use real project screenshots for the Work catalog. Prefer the project's working 
 Keep the confirmed project-specific sources:
 
 - Capture EM3 and emjudge in dark mode.
-- Use the README screenshots for embate, TNL Article Downloader, and Linyao Design System.
+- Use the README covers or screenshots for embate, TNL Article Downloader, Linyao Design System, Sparduino, and `Where Is oloo?`.
+- Use `assets/icon.webp` from `elvisdragonmao/clipcc-extension-AWP` for AWP for ClipCC; frame the full artwork without cropping its logo or text.
 
 Prepare every cover as follows:
 
