@@ -1,4 +1,4 @@
-import { readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,7 +11,7 @@ export const toolPaths = readdirSync(pages, { recursive: true, withFileTypes: tr
 		return `/code/${path.replace(/\.(astro|html)$/, "").replace(/(^|\/)index$/, "")}`.replace(/\/?$/, "/");
 	})
 	.sort();
-export const mainPaths = ["/", "/about/", "/work/", "/colophon/", "/hmmm/", "/work/emfont/", "/work/emtech/", "/work/sitcon-2026/", "/work/omniobserve/"];
+export const mainPaths = JSON.parse(readFileSync(new URL("../src/data/translated-paths.json", import.meta.url), "utf8"));
 export const compatibilityRedirects = Object.fromEntries(
 	[
 		["/code", "/work/"],

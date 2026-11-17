@@ -438,73 +438,6 @@ main {
 	color: var(--ink);
 	transform: translateY(-6px);
 }
-.ascii-frame {
-	position: absolute;
-	inset: 0;
-	overflow: hidden;
-	pointer-events: none;
-	color: #849897;
-	font:
-		12px/12px "IBM Plex Mono",
-		monospace;
-	transition: color 0.3s;
-}
-.project-box:hover .ascii-frame {
-	color: var(--cyan);
-}
-.ascii-corner,
-.ascii-horizontal,
-.ascii-vertical {
-	position: absolute;
-	display: block;
-	white-space: pre;
-	overflow: hidden;
-}
-.ascii-corner {
-	width: 8px;
-	height: 13px;
-	text-align: center;
-}
-.ascii-corner.top-left {
-	top: 0;
-	left: 0;
-}
-.ascii-corner.top-right {
-	top: 0;
-	right: 0;
-}
-.ascii-corner.bottom-left {
-	bottom: 0;
-	left: 0;
-}
-.ascii-corner.bottom-right {
-	bottom: 0;
-	right: 0;
-}
-.ascii-horizontal {
-	left: 9px;
-	right: 9px;
-	height: 13px;
-	letter-spacing: 1.3px;
-}
-.ascii-horizontal.top {
-	top: 0;
-}
-.ascii-horizontal.bottom {
-	bottom: 0;
-}
-.ascii-vertical {
-	top: 13px;
-	bottom: 13px;
-	width: 8px;
-	text-align: center;
-}
-.ascii-vertical.left {
-	left: 0;
-}
-.ascii-vertical.right {
-	right: 0;
-}
 .project-box-media {
 	position: relative;
 	aspect-ratio: 1.44;
@@ -559,16 +492,6 @@ main {
 	line-height: 1.7;
 	color: var(--cyan);
 	margin-top: 22px;
-}
-.project-gallery-full {
-	gap: 80px 6vw;
-	margin-bottom: 30px;
-}
-.project-gallery-full .project-box:nth-child(2) {
-	margin-top: 130px;
-}
-.project-gallery-full .project-box:nth-child(4) {
-	margin-top: 90px;
 }
 .work-all {
 	margin-top: 65px;
@@ -1059,13 +982,11 @@ main {
 	.work-heading > p {
 		font-size: 10px;
 	}
-	.project-gallery,
-	.project-gallery-full {
+	.project-gallery {
 		grid-template-columns: 1fr;
 		gap: 65px;
 	}
-	.project-box:nth-child(n),
-	.project-gallery-full .project-box:nth-child(n) {
+	.project-box:nth-child(n) {
 		margin-top: 0;
 	}
 	.project-box {

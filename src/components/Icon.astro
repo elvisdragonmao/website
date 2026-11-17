@@ -6,12 +6,12 @@ import github from "@phosphor-icons/core/assets/regular/github-logo.svg?raw";
 import telegram from "@phosphor-icons/core/assets/regular/telegram-logo.svg?raw";
 import instagram from "@phosphor-icons/core/assets/regular/instagram-logo.svg?raw";
 import search from "@phosphor-icons/core/assets/regular/magnifying-glass.svg?raw";
+const icons = { arrow, arrowLeft, envelope, github, telegram, instagram, search };
 interface Props {
-	name?: string;
+	name?: keyof typeof icons;
 	class?: string;
 }
 const { name = "arrow", class: className = "" } = Astro.props;
-const icons: Record<string, string> = { arrow, arrowLeft, envelope, github, telegram, instagram, search };
 ---
 
-<span class:list={["icon", className, { "icon-arrow": name === "arrow" }]} aria-hidden="true" set:html={icons[name] ?? arrow} />
+<span class:list={["icon", className, { "icon-arrow": name === "arrow" }]} aria-hidden="true" set:html={icons[name]} />

@@ -1,4 +1,5 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
+import translatedPaths from "../data/translated-paths.json";
 import { ui, type UIKey } from "./ui";
 
 export const locales = ["en", "zh-Hant", "zh-Hans"] as const;
@@ -6,7 +7,7 @@ export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "en";
 export const localeLabels: Record<Locale, string> = { en: "English", "zh-Hant": "繁體中文", "zh-Hans": "简体中文" };
 
-const translatedPaths = new Set(["/", "/about/", "/work/", "/colophon/", "/hmmm/", "/work/emfont/", "/work/emtech/", "/work/sitcon-2026/", "/work/omniobserve/"]);
+const translatedPages = new Set<string>(translatedPaths);
 
 export function isLocale(value: string): value is Locale {
 	return (locales as readonly string[]).includes(value);
@@ -38,7 +39,7 @@ export function localizePath(path: string, locale: Locale): string {
 export function availableLocalesForPath(pathname: string): readonly Locale[] {
 	const path = stripLocalePath(pathname.split(/[?#]/, 1)[0]!);
 	const normalized = path === "/" ? path : path.replace(/\/?$/, "/");
-	return translatedPaths.has(normalized) ? locales : [defaultLocale];
+	return translatedPages.has(normalized) ? locales : [defaultLocale];
 }
 
 export function t(locale: Locale, key: UIKey, params: Record<string, string | number> = {}): string {
