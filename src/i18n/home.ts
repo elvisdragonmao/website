@@ -63,7 +63,7 @@ export const homeCopy = {
 		hello: "嗨，我是毛哥EM",
 		rolesLabel: "我的身分",
 		developer: "一位開發者",
-		designer: "設計師",
+		designer: "被設計師",
 		researcher: "人機互動研究者",
 		dragon: "及一隻音樂龍",
 		researchLink: "看看我的研究",
