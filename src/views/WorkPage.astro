@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Footer from "../components/Footer.astro";
 import WorkCard from "../components/WorkCard.astro";
-import { localizedWorkProjects, workCategories } from "../data/work";
+import { workSections } from "../data/work";
 import { workCopy } from "../i18n/work";
 import type { Locale } from "../i18n";
 import "../styles/work.css";
@@ -12,15 +12,7 @@ interface Props {
 }
 const { locale } = Astro.props;
 const copy = workCopy(locale);
-const workProjects = localizedWorkProjects(locale);
-const featured = workProjects.filter(project => project.featured);
-const categories = workCategories
-	.map(category => ({
-		name: copy.categories[category],
-		id: category,
-		projects: workProjects.filter(project => !project.featured && project.category === category)
-	}))
-	.filter(category => category.projects.length);
+const { featured, categories } = workSections(locale);
 const title = String.raw`  ____            _           _
  |  _ \ _ __ ___ (_) ___  ___| |_ ___
  | |_) | '__/ _ \| |/ _ \/ __| __/ __|
@@ -36,7 +28,7 @@ const title = String.raw`  ____            _           _
 			<p>{copy.intro[0]}<br />{copy.intro[1]}</p>
 			<nav class="projects-index" aria-label={copy.categoriesLabel}>
 				<a href="#featured">{copy.featured}</a>
-				{categories.map(category => <a href={`#${category.id}`}>{category.name}</a>)}
+				{categories.map(category => <a href={`#${category.id}`}>{copy.categories[category.id]}</a>)}
 			</nav>
 		</header>
 		<section class="work-featured" id="featured" aria-labelledby="featured-heading">
@@ -47,7 +39,7 @@ const title = String.raw`  ____            _           _
 			categories.map(category => (
 				<section class="work-collection" id={category.id} data-expanded="false" aria-labelledby={`${category.id}-heading`}>
 					<div class="work-section-heading">
-						<h2 id={`${category.id}-heading`}>{category.name}</h2>
+						<h2 id={`${category.id}-heading`}>{copy.categories[category.id]}</h2>
 						<button
 							class="collection-toggle"
 							type="button"

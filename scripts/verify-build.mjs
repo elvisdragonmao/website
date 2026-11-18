@@ -109,6 +109,22 @@ for (const locale of ["en", "zh-Hant", "zh-Hans"]) {
 		}
 		documents++;
 	}
+	const llms = readFileSync(join(dist, prefix, "llms.txt"), "utf8");
+	assert.match(llms, /^# Elvis Dragon Mao \(EM\)\n\n> /, `${locale}: llms.txt heading and summary`);
+	for (const [pagePath, file] of [
+		["/", "index.md"],
+		["/about/", "about.md"],
+		["/work/", "work.md"]
+	]) {
+		const path = `${prefix}/${file}`;
+		const markdown = readFileSync(join(dist, path), "utf8");
+		const html = htmlAt(prefix + pagePath);
+		assert.match(markdown, /^# \S/, `${path}: Markdown heading`);
+		assert.ok(llms.includes(`(${origin}${path})`), `${locale}: llms.txt links to ${path}`);
+		assert.ok(html.includes(`title="Markdown" href="${path}"`), `${prefix + pagePath}: discoverable Markdown`);
+		assert.ok(html.includes(`rel="describedby" href="${prefix}/llms.txt"`), `${prefix + pagePath}: discoverable llms.txt`);
+		if (file === "work.md") assert.equal([...markdown.matchAll(/^- \*\*/gm)].length, catalog.length, `${path}: complete portfolio catalog`);
+	}
 }
 for (const locale of ["en", "zh-Hant", "zh-Hans"]) {
 	const file = locale === "en" ? "404.html" : `${locale}/404.html`;

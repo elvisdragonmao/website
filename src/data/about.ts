@@ -9,6 +9,8 @@ export const experiences = [
 
 export const researchInterests = "Human–AI Interaction · Interactive Systems · Speech Interfaces · Computer Vision · Wearable & Embedded Computing · Creative Support Tools";
 
+export const selectedResearchAuthors = ["Shih-Kai Hong, Ethel Yu-Tsen Hsiao, Yi-Jie Chen, Jason Zhi-Jun Chang, ", "Elvis Dragon Mao", ", and Grace Yu-Chun Yen."] as const;
+
 export const talks = [
 	{ id: "react", year: 2026, title: "Introduction to React Frontend Development", context: "NYCU Spring, 2 credits" },
 	{ id: "monthly-workshops", year: 2026, title: "Monthly Technical & Creative Workshops", context: "NYCU ICT" },

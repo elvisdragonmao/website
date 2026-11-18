@@ -8,6 +8,7 @@ import TechMarquee from "../components/about/TechMarquee.astro";
 import ContactBlue from "../components/about/ContactBlue.astro";
 import "@fontsource/ibm-plex-mono/500-italic.css";
 import TalksMonitor from "../components/about/TalksMonitor.astro";
+import { selectedResearchAuthors } from "../data/about";
 import { getAboutData } from "../data/about-localized";
 import { aboutText } from "../i18n/about";
 import { getLocale, localizePath, type Locale } from "../i18n/index";
@@ -144,7 +145,7 @@ const { experiences, awards, otherRecognition } = getAboutData(locale);
 				<p class="research-interests">{text("interests")}</p>
 				<article class="research-publication">
 					<h3><a href={localizePath("/work/omniobserve/", locale)}>{text("paper")}</a></h3>
-					<p>Shih-Kai Hong, Ethel Yu-Tsen Hsiao, Yi-Jie Chen, Jason Zhi-Jun Chang, <strong>Elvis Dragon Mao</strong>, and Grace Yu-Chun Yen.</p>
+					<p>{selectedResearchAuthors[0]}<strong>{selectedResearchAuthors[1]}</strong>{selectedResearchAuthors[2]}</p>
 					<p class="research-venue">{text("poster")}</p>
 				</article>
 				<div class="research-current">

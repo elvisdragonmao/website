@@ -24,3 +24,11 @@ export const workProjects: WorkProject[] = catalog.map(project => {
 export function localizedWorkProjects(locale: Locale): WorkProject[] {
 	return workProjects.map(project => ({ ...project, ...projectText(project.id, locale) }));
 }
+
+export function workSections(locale: Locale) {
+	const projects = localizedWorkProjects(locale);
+	return {
+		featured: projects.filter(project => project.featured),
+		categories: workCategories.map(id => ({ id, projects: projects.filter(project => !project.featured && project.category === id) })).filter(category => category.projects.length)
+	};
+}

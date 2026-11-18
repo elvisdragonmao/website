@@ -2,6 +2,7 @@
 import profile from "../assets/about/profile.webp";
 import { siteIdentity, type SocialImage } from "../data/seo";
 import { availableLocalesForPath, getLocale, localizePath, stripLocalePath, t, type Locale } from "../i18n";
+import { markdownPath } from "../lib/markdown-paths";
 import { canonicalUrl, ogLocales, serializeStructuredData, structuredData, type SeoCollectionItem, type SeoProject } from "../lib/seo";
 
 interface Props {
@@ -22,6 +23,7 @@ const site = Astro.site ?? new URL("https://elvismao.com");
 const canonical = canonicalUrl(Astro.url.pathname, site);
 const imageUrl = image ? new URL(image.src, site).href : undefined;
 const alternateLocales = translated && !noindex ? availableLocalesForPath(Astro.url.pathname) : [];
+const markdown = translated && !noindex ? markdownPath(stripLocalePath(Astro.url.pathname)) : undefined;
 const graph = noindex
 	? undefined
 	: structuredData({ site, pathname: stripLocalePath(Astro.url.pathname), canonical, locale, title, description, image, profileImage: profile.src, project, collection });
@@ -33,6 +35,8 @@ const graph = noindex
 <meta name="robots" content={noindex ? "noindex" : "index, follow, max-image-preview:large"} />
 <link rel="canonical" href={canonical} />
 <link rel="sitemap" type="application/xml" href={new URL("/sitemap-index.xml", site).href} />
+{markdown && <link rel="alternate" type="text/plain" title="Markdown" href={localizePath(markdown, locale)} />}
+{markdown && <link rel="describedby" href={localizePath("/llms.txt", locale)} />}
 {alternateLocales.length > 1 && alternateLocales.map(value => <link rel="alternate" hreflang={value} href={new URL(localizePath(Astro.url.pathname, value), site).href} />)}
 {alternateLocales.length > 1 && <link rel="alternate" hreflang="x-default" href={new URL(localizePath(Astro.url.pathname, "en"), site).href} />}
 <meta property="og:type" content="website" />

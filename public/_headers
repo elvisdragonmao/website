@@ -2,6 +2,10 @@
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Show Markdown source as selectable text when opened directly.
+/*.md
+  Content-Type: text/plain; charset=utf-8
+
 # Preview/alternate Workers hosts must not compete with the canonical domain.
 https://:worker.:account.workers.dev/*
   X-Robots-Tag: noindex

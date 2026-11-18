@@ -31,7 +31,7 @@ export function localizePath(path: string, locale: Locale): string {
 	const match = path.match(/^([^?#]*)([?#].*)?$/)!;
 	const pathname = stripLocalePath("/" + match[1]!.replace(/^\/+/, ""));
 	const url = getRelativeLocaleUrl(locale, pathname.replace(/^\//, ""), { normalizeLocale: false });
-	const normalized = /\.[^/]+$/.test(pathname) ? url : url.replace(/\/?$/, "/");
+	const normalized = /\.[^/]+$/.test(pathname) ? url.replace(/\/$/, "") : url.replace(/\/?$/, "/");
 	return normalized + (match[2] ?? "");
 }
 

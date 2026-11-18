@@ -117,6 +117,8 @@ About photos use quality-65 WebP at no more than twice their measured display di
 
 The homepage intentionally has no social-preview image. Project pages can share their actual project cover; other pages retain text metadata without a generic image fallback.
 
+`/llms.txt` points to the copyable Markdown versions of the homepage (`/index.md`), the homepage and About biography (`/about.md`), and the portfolio (`/work.md`). The same routes are available under `/zh-Hant/` and `/zh-Hans/`. Astro builds the files from the content used by the site.
+
 `public/_headers` gives fingerprinted `/_astro/` files immutable caching and prevents alternate `workers.dev` hosts from being indexed. Stable public image URLs keep the hosting platform's normal revalidation behavior.
 
 ## Integrations and credits
